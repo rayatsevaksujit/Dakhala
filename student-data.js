@@ -1,5 +1,319 @@
-// student-data.js - विद्यार्थी डेटा व लॉजिक फाईल
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <title>शाळा व्यवस्थापन व दाखला पोर्टल</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1b4f72;
+            --secondary-color: #2980b9;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --border-color: #d5dbdb;
+        }
 
+        body { 
+            font-family: 'Noto Sans Devanagari', Arial, sans-serif; 
+            background: var(--bg-color); 
+            margin: 0; 
+            padding: 10px; 
+            color: var(--text-color);
+            font-size: 13px;
+        }
+
+        .container { 
+            max-width: 950px; 
+            background: var(--card-bg); 
+            padding: 18px 22px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
+            margin: auto; 
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #ebf5fb;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            gap: 12px;
+        }
+        .app-logo {
+            background: var(--primary-color);
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .app-title h2 { margin: 0; font-size: 18px; color: var(--primary-color); }
+        .app-title p { margin: 2px 0 0 0; font-size: 12px; color: #7f8c8d; }
+
+        .upload-card {
+            background: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            padding: 8px 14px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .tool-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .tool-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            border-color: var(--secondary-color);
+        }
+        .tool-icon { font-size: 22px; margin-bottom: 5px; }
+        .tool-title { font-size: 14px; font-weight: 600; color: var(--primary-color); margin-bottom: 3px; }
+        .tool-desc { font-size: 11px; color: #666; margin-bottom: 8px; line-height: 1.3; }
+        .tool-link { font-size: 12px; color: var(--secondary-color); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+        
+        .back-bar { margin-bottom: 12px; display: none; }
+        .back-btn { background: #7f8c8d; color: white; padding: 4px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; width: auto; }
+
+        .tab-content { display: none; background: #fff; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color); }
+        .tab-content.active { display: block; }
+
+        .form-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 3px; font-weight: 600; color: var(--text-color); font-size: 13px; }
+        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Noto Sans Devanagari', sans-serif; }
+        input:disabled { background-color: #eaeded; color: #7f8c8d; cursor: not-allowed; }
+        input:focus { border-color: var(--secondary-color); outline: none; }
+        button { background-color: var(--secondary-color); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        button:hover { background-color: #2471a3; }
+
+        .lc-format {
+            border: 2px solid #000;
+            padding: 15px;
+            margin-top: 10px;
+            background: #fff;
+        }
+        .lc-header { text-align: center; font-weight: bold; margin-bottom: 10px; }
+        .lc-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .lc-table th, .lc-table td { border: 1px solid #000; padding: 5px 8px; font-size: 12px; text-align: left; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #printableArea, #printableArea * { visibility: visible; }
+            #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="app-header">
+        <div class="app-logo">🏫</div>
+        <div class="app-title">
+            <h2>शाळा व्यवस्थापन व दाखला पोर्टल</h2>
+            <p>डिजिटल साथीदार प्रशासकीय प्रणाली</p>
+        </div>
+    </div>
+    
+    <!-- एक्सेल फाईल अपलोड/बदल करण्यासाठी सोयीचे कार्ड -->
+    <div class="upload-card no-print">
+        <div>
+            <strong>📁 एक्सेल फाईल अपलोड / अपडेट करा:</strong> (नवीन फाईल टाकल्यास जुनी अपडेट होईल)
+        </div>
+        <input type="file" id="excelFile" accept=".xlsx, .xls, .csv, .xlsm" style="max-width: 250px; background: white; padding: 4px;">
+    </div>
+
+    <!-- मुख्य डॅशबोर्ड कार्ड्स -->
+    <div id="homeDashboard" class="no-print">
+        <div class="dashboard-grid">
+            <div class="tool-card" onclick="openTab('tabSchoolInfo')">
+                <div class="tool-icon">⚙️</div>
+                <div class="tool-title">शाळेची माहिती</div>
+                <div class="tool-desc">संस्था, शाळा, पत्ता व युडायस तपशील सेट करा.</div>
+                <a class="tool-link">माहिती भरा &rarr;</a>
+            </div>
+            <div class="tool-card" onclick="openTab('tabDakhala')">
+                <div class="tool-icon">📜</div>
+                <div class="tool-title">शाळा सोडल्याचा दाखला</div>
+                <div class="tool-desc">जनरल रजिस्टर नंबर टाकून एलसी (LC) जनरेट करा.</div>
+                <a class="tool-link">दाखला पहा &rarr;</a>
+            </div>
+            <div class="tool-card" onclick="openTab('tabBonafide')">
+                <div class="tool-icon">📋</div>
+                <div class="tool-title">बोनाफाईड सर्टिफिकेट</div>
+                <div class="tool-desc">विद्यार्थ्यांचे बोनाफाईड प्रमाणपत्र तयार करा.</div>
+                <a class="tool-link">सुरू करा &rarr;</a>
+            </div>
+            <div class="tool-card" onclick="openTab('tabCorrection')">
+                <div class="tool-icon">✏️</div>
+                <div class="tool-title">नाव दुरुस्ती व नोंद</div>
+                <div class="tool-desc">विद्यार्थ्यांच्या नावातील स्पेलिंग व तपशील बदल.</div>
+                <a class="tool-link">बदल करा &rarr;</a>
+            </div>
+            <div class="tool-card" onclick="openTab('tabIdCard')">
+                <div class="tool-icon">🪪</div>
+                <div class="tool-title">विद्यार्थी ओळखपत्र</div>
+                <div class="tool-desc">शाळेच्या विद्यार्थ्यांसाठी आयडी कार्ड प्रिंट करा.</div>
+                <a class="tool-link">जनरेट करा &rarr;</a>
+            </div>
+            <div class="tool-card" onclick="openTab('tabRegister')">
+                <div class="tool-icon">📊</div>
+                <div class="tool-title">जनरल रजिस्टर PDF</div>
+                <div class="tool-desc">संपूर्ण रजिस्टर डेटा सुरक्षित पीडीएफ फॉरमॅटमध्ये.</div>
+                <a class="tool-link">डाऊनलोड &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-bar no-print" id="backBar">
+        <button class="back-btn" onclick="goHome()">&larr; मुख्य डॅशबोर्डकडे जा</button>
+    </div>
+
+    <!-- टॅब १: शाळेची माहिती (ॲडमिन लॉकसह) -->
+    <div id="tabSchoolInfo" class="tab-content">
+        <h3>शाळेची तपशीलवार माहिती सेट करा</h3>
+        <p style="color: #c0392b; font-size: 12px; margin-bottom: 12px;">🔒 ही माहिती लॉक केलेली आहे. बदल करण्यासाठी खालील 'प्रशासन अनलॉक' बटणावर क्लिक करा.</p>
+        <div style="max-width: 500px;">
+            <div class="form-group">
+                <label>व्यवस्थापनाचे नाव / संस्थेचे नाव:</label>
+                <input type="text" id="instName" placeholder="संस्थेचे नाव टाका" disabled>
+            </div>
+            <div class="form-group">
+                <label>शाळेचे पूर्ण नाव:</label>
+                <input type="text" id="schoolName" placeholder="शाळेचे नाव टाका" disabled>
+            </div>
+            <div class="form-group">
+                <label>पत्ता, तालुका व जिल्हा:</label>
+                <input type="text" id="schoolAddress" placeholder="पत्ता टाका" disabled>
+            </div>
+            <div class="form-group">
+                <label>फोन नंबर व इ-मेल:</label>
+                <input type="text" id="schoolContact" placeholder="फोन व इ-मेल टाका" disabled>
+            </div>
+            <div class="form-group">
+                <label>माध्यम व यु-डायस क्रमांक:</label>
+                <input type="text" id="schoolExtra" placeholder="माध्यम व युडायस टाका" disabled>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 8px;">
+                <button type="button" onclick="requestAdminUnlock()" style="background: #e67e22; flex: 1;">🔐 प्रशासन अनलॉक (Edit)</button>
+                <button type="button" id="saveBtn" onclick="saveSchoolInfo()" style="background: #27ae60; flex: 1; display: none;">माहिती सेव्ह करा</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- टॅब २: शाळा सोडल्याचा दाखला -->
+    <div id="tabDakhala" class="tab-content">
+        <div class="form-group no-print" style="max-width: 350px;">
+            <label>🔍 जनरल रजिस्टर नंबर टाका:</label>
+            <input type="text" id="regNo" placeholder="उदा. 12435">
+            <button onclick="searchStudent()" style="margin-top: 6px; background: #27ae60;">माहिती शोधा व दाखला पहा</button>
+        </div>
+
+        <div id="printableArea">
+            <div class="lc-format" id="lcCard" style="display:none;">
+                <div style="font-size: 10px; border-bottom: 1px dashed #000; padding-bottom: 3px; margin-bottom: 6px;">
+                    (दाखला देणाऱ्या अधिकाऱ्याव्यतिरिक्त इतर कोणीही या दाखल्याच्या नोंदवहीत बदल अगर खाडाखोड करायची नाही. तसे करणे कायदेशीर गुन्हा असून, विद्यार्थी शाळेतून काढून टाकण्यापर्यंतच्या शिक्षेस पात्र ठरेल.)
+                </div>
+                <div class="lc-header">
+                    <span id="pInst" style="font-size: 13px;"></span><br>
+                    <span id="pSchool" style="font-size: 16px;"></span><br>
+                    <span id="pAddress" style="font-size: 12px; font-weight: normal;"></span><br>
+                    <span id="pContact" style="font-size: 12px; font-weight: normal;"></span>
+                </div>
+                <table class="lc-table">
+                    <tr>
+                        <td><strong>जनरल रजि.क्र. :</strong> <span id="outReg"></span></td>
+                        <td><strong>माध्यम :</strong> मराठी</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>विद्यार्थ्याचे पूर्ण नाव :</strong> <span id="outName" style="font-size: 15px; font-weight: bold;"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>आईचे नाव :</strong> <span id="outMother">-</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>राष्ट्रीयत्व :</strong> भारतीय</td>
+                        <td><strong>मातृभाषा :</strong> मराठी</td>
+                    </tr>
+                    <tr>
+                        <td><strong>धर्म :</strong> हिंदू</td>
+                        <td><strong>जात व उपजात :</strong> -</td>
+                    </tr>
+                    <tr>
+                        <td><strong>जन्मस्थळ (गाव/शहर) :</strong> <span id="outBirthPlace">-</span></td>
+                        <td><strong>राज्य :</strong> महाराष्ट्र | <strong>देश :</strong> भारत</td>
+                    </tr>
+                    <tr>
+                        <td><strong>जन्मदिनांक (अंकात) :</strong> <span id="outDobNum"></span></td>
+                        <td><strong>जन्मदिनांक (अक्षरी) :</strong> <span id="outDobWords" style="color: #900; font-weight: bold;"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>यापूर्वीची शाळा :</strong> -</td>
+                    </tr>
+                    <tr>
+                        <td><strong>या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> -</td>
+                        <td><strong>वर्ग :</strong> -</td>
+                    </tr>
+                    <tr>
+                        <td><strong>अभ्यासातील प्रगती :</strong> चांगली</td>
+                        <td><strong>वर्तणूक :</strong> चांगली</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>शाळा सोडल्याचे कारण व शेरा :</strong> शिक्षण पूर्ण / संतोषजनक</td>
+                    </tr>
+                </table>
+                <div style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 13px;">
+                    <div>दिनांक : <span id="currentDate"></span></div>
+                    <div style="text-align: center;">वर्गशिक्षक &nbsp;&nbsp;&nbsp;&nbsp; लेखनिक &nbsp;&nbsp;&nbsp;&nbsp; मुख्याध्यापक</div>
+                </div>
+            </div>
+        </div>
+        <button class="no-print" id="printBtn" onclick="window.print()" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ दाखला प्रिंट करा / PDF</button>
+    </div>
+
+    <!-- इतर टॅब्स -->
+    <div id="tabBonafide" class="tab-content">
+        <h3>📋 बोनाफाईड सर्टिफिकेट</h3>
+        <p style="font-size: 13px; color: #666;">येथून बोनाफाईड प्रिंट काढता येईल.</p>
+    </div>
+    <div id="tabCorrection" class="tab-content">
+        <h3>✏️ नाव दुरुस्ती व नोंद</h3>
+        <p style="font-size: 13px; color: #666;">नावातील दुरुस्तीचे पर्याय.</p>
+    </div>
+    <div id="tabIdCard" class="tab-content">
+        <h3>🪪 विद्यार्थी ओळखपत्र</h3>
+        <p style="font-size: 13px; color: #666;">ओळखपत्र जनरेट करण्याची सोय.</p>
+    </div>
+    <div id="tabRegister" class="tab-content">
+        <h3>📊 जनरल रजिस्टर PDF</h3>
+        <p style="font-size: 13px; color: #666;">जनरल रजिस्टर डाऊनलोड पर्याय.</p>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
 window.onload = function() {
     loadSavedData();
     loadSchoolInfo();
@@ -106,7 +420,20 @@ function dateToMarathi(dateVal) {
 
 let excelData = [];
 
-// नोट: तुम्ही एक्सेल फाईल अपलोड करण्यासाठी भविष्यात येथे कोड जोडू शकता किंवा बॅकएंड/लोकल फाईल लिंक करू शकता.
+// एक्सेल फाईल अपलोड किंवा बदल करण्यासाठी इव्हेंट लिसनर
+document.getElementById('excelFile').addEventListener('change', function(e) {
+    let reader = new FileReader();
+    reader.onload = function(evt) {
+        let data = new Uint8Array(evt.target.result);
+        let workbook = XLSX.read(data, {type: 'array'});
+        let firstSheet = workbook.SheetNames[0];
+        excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], {header: 1});
+        localStorage.setItem('savedExcelData', JSON.stringify(excelData));
+        alert("एक्सेल फाईलचा डेटा यशस्वीपणे सेव्ह व अपडेट झाला!");
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
+});
+
 function loadSavedData() {
     let saved = localStorage.getItem('savedExcelData');
     if(saved) {
@@ -121,7 +448,7 @@ function searchStudent() {
         return;
     }
     if(excelData.length === 0) {
-        alert("एक्सेल डेटा उपलब्ध नाही!");
+        alert("कृपया आधी वरून तुमची एक्सेल फाईल निवडा / अपलोड करा!");
         return;
     }
 
@@ -159,3 +486,7 @@ function searchStudent() {
     document.getElementById('lcCard').style.display = 'block';
     document.getElementById('printBtn').style.display = 'block';
 }
+</script>
+
+</body>
+</html>
