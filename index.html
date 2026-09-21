@@ -2,55 +2,75 @@
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <title>शाळा व्यवस्थापन व दाखला पोर्टल - डिजिटल साथीदार</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>shāḷā vyavasthapan va dākhalā poṟṭal</title>
+    <!-- Kokila/DVOT Surekh sarkhā official font support -->
+    <link href="https://fonts.googleapis.com/css2?family=Kokila:wght@400;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { 
-            font-family: 'Noto Sans Devanagari', Arial, sans-serif; 
-            background: #f0f3f4; 
+            font-family: 'Kokila', 'Noto Sans Devanagari', Arial, sans-serif; 
+            background: #eef2f3; 
             margin: 0; 
             padding: 10px; 
+            font-size: 18px;
         }
         .container { 
-            max-width: 850px; 
+            max-width: 1100px; 
             background: white; 
-            padding: 25px; 
+            padding: 20px; 
             border-radius: 10px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
             margin: auto; 
         }
-        h2 { text-align: center; color: #1b4f72; margin-bottom: 20px; border-bottom: 2px solid #ebf5fb; padding-bottom: 10px; }
+        h2 { text-align: center; color: #1b4f72; margin-top: 0; border-bottom: 2px solid #ebf5fb; padding-bottom: 8px; font-size: 24px; }
         
-        /* लॉगिन बॉक्स */
+        /* login box */
         #loginBox {
             background: #fdfefe;
             padding: 30px;
             border: 1px solid #d4efdf;
             border-radius: 8px;
             max-width: 400px;
-            margin: 50px auto;
+            margin: 80px auto;
             text-align: center;
         }
         
-        /* मुख्य डॅशबोर्ड व टॅब्स */
         #appContent { display: none; }
-        .tabs {
+        
+        /* Landscape Layout: Left menu, Right content */
+        .dashboard-layout {
             display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
+            gap: 20px;
+            margin-top: 15px;
         }
+        .sidebar {
+            width: 280px;
+            background: #f8f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #d5dbdb;
+        }
+        .main-content {
+            flex-grow: 1;
+            background: #fdfefe;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #d5dbdb;
+        }
+
         .tab-btn {
-            background: #e5e8e8;
+            display: block;
+            width: 100%;
+            background: #eaeded;
             border: none;
-            padding: 10px 15px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
-            font-family: 'Noto Sans Devanagari', sans-serif;
+            text-align: left;
+            margin-bottom: 8px;
+            font-family: 'Kokila', 'Noto Sans Devanagari', sans-serif;
+            color: #2c3e50;
         }
         .tab-btn.active {
             background: #2e86c1;
@@ -59,23 +79,22 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; color: #2c3e50; }
-        input, select, button { width: 100%; padding: 10px; font-size: 15px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 5px; font-family: 'Noto Sans Devanagari', sans-serif; }
-        button { background-color: #2e86c1; color: white; border: none; font-weight: 700; cursor: pointer; margin-top: 5px; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; color: #2c3e50; }
+        input, select, button { width: 100%; padding: 10px; font-size: 16px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 5px; font-family: 'Kokila', 'Noto Sans Devanagari', sans-serif; }
+        button { background-color: #2e86c1; color: white; border: none; font-weight: bold; cursor: pointer; }
         button:hover { background-color: #2471a3; }
 
-        /* दाखला व प्रिंट डिझाईन (शासकीय फॉरमॅट) */
+        /* dākhalā format */
         .lc-format {
             border: 2px solid #000;
-            padding: 20px;
-            margin-top: 20px;
+            padding: 15px;
+            margin-top: 10px;
             background: #fff;
-            position: relative;
         }
-        .lc-header { text-align: center; font-weight: bold; margin-bottom: 15px; }
-        .lc-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .lc-table th, .lc-table td { border: 1px solid #000; padding: 8px; font-size: 14px; text-align: left; }
+        .lc-header { text-align: center; font-weight: bold; margin-bottom: 10px; }
+        .lc-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .lc-table th, .lc-table td { border: 1px solid #000; padding: 6px; font-size: 15px; text-align: left; }
         
         @media print {
             body * { visibility: hidden; }
@@ -88,113 +107,115 @@
 <body>
 
 <div class="container">
-    <!-- १. पासवर्ड लॉगिन स्क्रीन -->
+    <!-- 1. login screen -->
     <div id="loginBox">
-        <h2>🔐 डिजिटल पोर्टल लॉगिन</h2>
+        <h2>🔐 ḍijital poṟṭal login</h2>
         <div class="form-group" style="text-align: left;">
-            <label>पासवर्ड टाका:</label>
-            <input type="password" id="passInput" placeholder="admin123 टाका">
+            <label>passwōrd ṭākā:</label>
+            <input type="password" id="passInput" placeholder="admin123 ṭākā">
         </div>
-        <button onclick="checkPassword()">प्रवेश करा</button>
+        <button onclick="checkPassword()">pravēsh karā</button>
     </div>
 
-    <!-- २. मुख्य डॅशबोर्ड (लॉगिन झाल्यावर दिसणार) -->
+    <!-- 2. main landscape dashboard -->
     <div id="appContent">
-        <h2>🏫 शाळा व्यवस्थापन व दाखला पोर्टल</h2>
+        <h2>🏫 shāḷā vyavasthapan va dākhalā poṟṭal</h2>
         
-        <!-- एक्सेल डेटा अपलोड (फक्त एकदा गरज) -->
-        <div class="form-group no-print" style="background: #e8f8f5; padding: 10px; border-radius: 5px;">
-            <label>📁 एक्सेल फाईल अपलोड करा (डेटा ब्राऊजरमध्ये सेव्ह राहील):</label>
+        <div class="form-group no-print" style="background: #e8f8f5; padding: 8px; border-radius: 5px; font-size: 15px;">
+            <label>📁 excel fāīl uplōḍ karā (data brāūzarmadhye savh rāhil):</label>
             <input type="file" id="excelFile" accept=".xlsx, .xls, .csv, .xlsm">
         </div>
 
-        <!-- टॅबचे बटन्स -->
-        <div class="tabs no-print">
-            <button class="tab-btn active" onclick="switchTab(event, 'tabDakhala')">📜 शाळा सोडल्याचा दाखला</button>
-            <button class="tab-btn" onclick="switchTab(event, 'tabBonafide')">📋 बोनाफाईड सर्टिफिकेट</button>
-            <button class="tab-btn" onclick="switchTab(event, 'tabCorrection')">✏️ नाव दुरुस्ती व नोंद</button>
-            <button class="tab-btn" onclick="switchTab(event, 'tabIdCard')">🪪 ओळखपत्र (ID Card)</button>
-            <button class="tab-btn" onclick="switchTab(event, 'tabRegister')">📊 जनरल रजिस्टर PDF</button>
-        </div>
-
-        <!-- टॅब १: शाळा सोडल्याचा दाखला (LC) -->
-        <div id="tabDakhala" class="tab-content active">
-            <div class="form-group no-print">
-                <label>🔍 जनरल रजिस्टर नंबर टाका:</label>
-                <input type="text" id="regNo" placeholder="उदा. 12533">
-                <button onclick="searchStudent()" style="margin-top: 10px; background: #27ae60;">माहिती शोधा व दाखला पहा</button>
+        <div class="dashboard-layout">
+            <!-- Left Sidebar Menu -->
+            <div class="sidebar no-print">
+                <button class="tab-btn active" onclick="switchTab(event, 'tabDakhala')">📜 shāḷā soḍalyācā dākhalā</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tabBonafide')">📋 bōnāfāīḍ saṟṭifikēṭ</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tabCorrection')">✏️ nāv durusti va nōnd</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tabIdCard')">🪪 oḷakhpatṟ (ID Card)</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tabRegister')">📊 genral rajister PDF</button>
             </div>
 
-            <!-- हुबेहूब शासकीय दाखला फॉरमॅट -->
-            <div id="printableArea">
-                <div class="lc-format" id="lcCard" style="display:none;">
-                    <div class="lc-header">
-                        <span style="font-size: 12px;">रयत शिक्षण संस्थेचे,</span><br>
-                        <span style="font-size: 18px;">श्री जिजामाता हायस्कूल व जुनियर कॉलेज</span><br>
-                        <span style="font-size: 13px; font-weight: normal;">शाळा सोडल्याचा दाखला (School Leaving Certificate)</span>
+            <!-- Right Main Content Area -->
+            <div class="main-content">
+                <!-- 1. dākhalā tab -->
+                <div id="tabDakhala" class="tab-content active">
+                    <div class="form-group no-print">
+                        <label>🔍 genral rajister nambaṟ ṭākā:</label>
+                        <input type="text" id="regNo" placeholder="udā. 12533">
+                        <button onclick="searchStudent()" style="margin-top: 8px; background: #27ae60;">māhitī shodhā va dākhalā pahā</button>
                     </div>
-                    <table class="lc-table">
-                        <tr>
-                            <td><strong>जनरल रजिस्टर नंबर:</strong> <span id="outReg"></span></td>
-                            <td><strong>विद्यार्थी आयडी / आधार:</strong> -</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><strong>१. विद्यार्थ्याचे पूर्ण नाव (आडनाव प्रथम):</strong> <span id="outName" style="font-size: 16px; font-weight: bold;"></span></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><strong>२. आईचे नाव:</strong> <span id="outMother">सौ. अनिता</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>३. जात व उपजात:</strong> <span id="outCaste">हिंदू - मराठा</span></td>
-                            <td><strong>४. जन्मस्थान:</strong> <span id="outBirthPlace">सांगली</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>५. जन्मदिनांक (अंकात):</strong> <span id="outDobNum"></span></td>
-                            <td><strong>६. जन्मदिनांक (अक्षरी):</strong> <span id="outDobWords" style="color: #900; font-weight: bold;"></span></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><strong>७. शाळा सोडल्याचे कारण:</strong> शिक्षण पूर्ण / इतर</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2"><strong>८. शेра / प्रगती:</strong> उत्तम व संतोषजनक</td>
-                        </tr>
-                    </table>
-                    <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 14px;">
-                        <div>दिनांक: <span id="currentDate"></span></div>
-                        <div style="text-align: center;">कार्यालयीन लिपिक / मुख्याध्यापक</div>
+
+                    <div id="printableArea">
+                        <div class="lc-format" id="lcCard" style="display:none;">
+                            <div class="lc-header">
+                                <span style="font-size: 14px;">rayat shikshaṇ sansthexē,</span><br>
+                                <span style="font-size: 20px;">shrī jijāmātā hāīskūl va juniaṟ kōlej</span><br>
+                                <span style="font-size: 14px; font-weight: normal;">shāḷā soḍalyācā dākhalā (School Leaving Certificate)</span>
+                            </div>
+                            <table class="lc-table">
+                                <tr>
+                                    <td><strong>genral rajister nambaṟ:</strong> <span id="outReg"></span></td>
+                                    <td><strong>vidyārthī āīḍī / ādhār:</strong> -</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><strong>१. vidyārthyācē pūrṇa nāv (āḍnāv pratham):</strong> <span id="outName" style="font-size: 18px; font-weight: bold;"></span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><strong>२. āīcē nāv:</strong> <span id="outMother">sau. anitā</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>३. jāt va upjāt:</strong> <span id="outCaste">hindū - marāṭhā</span></td>
+                                    <td><strong>४. janmasthān:</strong> <span id="outBirthPlace">sāngalī</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>५. janmadinānk (ankāt):</strong> <span id="outDobNum"></span></td>
+                                    <td><strong>६. janmadinānk (aksharī):</strong> <span id="outDobWords" style="color: #900; font-weight: bold;"></span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><strong>७. shāḷā soḍalyācē kāraṇ:</strong> shikshaṇ pūrṇa / itar</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><strong>८. sherā / pragatī:</strong> uttam va santoshjanak</td>
+                                </tr>
+                            </table>
+                            <div style="margin-top: 20px; display: flex; justify-content: space-between; font-size: 15px;">
+                                <div>dinānk: <span id="currentDate"></span></div>
+                                <div style="text-align: center;">kāryālīyin lipik / mukhyādhyāpak</div>
+                            </div>
+                        </div>
                     </div>
+                    <button class="no-print" id="printBtn" onclick="window.print()" style="display:none; background: #8e44ad; margin-top: 10px;">🖨️ dākhalā prīnt karā / PDF ḍōnloḍ karā</button>
+                </div>
+
+                <!-- 2. bonafide tab -->
+                <div id="tabBonafide" class="tab-content">
+                    <h3>📋 bōnāfāīḍ saṟṭifikēṭ geneṟaṟ</h3>
+                    <p>yethūn tumhī vidyārthyācā rajister nambaṟ ṭākun bōnāfāīḍ prīnt kāḍhū shaktā.</p>
+                    <input type="text" id="bonafideReg" placeholder="rajister nambaṟ ṭākā">
+                    <button onclick="alert('lavkarach bōnāfāīḍ format yeīl!')" style="margin-top: 8px;">bōnāfāīḍ pahā</button>
+                </div>
+
+                <!-- 3. correction tab -->
+                <div id="tabCorrection" class="tab-content">
+                    <h3>✏️ nāv durusti va navīn nōnd vyavasthapan</h3>
+                    <p>vidyārthyānchya nāvātil speling va itar māhitīmadhye badal karnyāsāṭhīcā paryāya.</p>
+                </div>
+
+                <!-- 4. id card tab -->
+                <div id="tabIdCard" class="tab-content">
+                    <h3>🪪 vidyārthī oḷakhpatṟ (ID Card)</h3>
+                    <p>ekā klikvar vidyārthyānche āīḍī kāṟḍ geneṟaṟ karā.</p>
+                </div>
+
+                <!-- 5. register pdf tab -->
+                <div id="tabRegister" class="tab-content">
+                    <h3>📊 genral rajister āṇi PDF ḍōnloḍ</h3>
+                    <p>sampūrṇa genral rajister ḍāṭhā PDF formatmadhye ḍōnloḍ karnyācī suvidhā.</p>
+                    <button onclick="alert('genral rajister PDF ḍōnloḍ surū hot āhē.')" style="background: #d35400; margin-top: 8px;">📥 sampūrṇa rajister PDF ḍōnloḍ karā</button>
                 </div>
             </div>
-            <button class="no-print" id="printBtn" onclick="window.print()" style="display:none; background: #8e44ad; margin-top: 15px;">🖨️ दाखला प्रिंट करा / PDF डाउनलोड करा</button>
         </div>
-
-        <!-- टॅब २: बोनाफाईड -->
-        <div id="tabBonafide" class="tab-content">
-            <h3>📋 बोनाफाईड सर्टिफिकेट जनरेटर</h3>
-            <p>येथून तुम्ही विद्यार्थ्याचा रजिस्टर नंबर टाकून बोनाफाईड प्रिंट काढू शकता.</p>
-            <input type="text" id="bonafideReg" placeholder="रजिस्टर नंबर टाка">
-            <button onclick="alert('लवकरच सुचवले गेलेले बोनाफाईड फॉरमॅट येईल!')">बोनाफाईड पहा</button>
-        </div>
-
-        <!-- टॅब ३: नाव दुरुस्ती / नोंद -->
-        <div id="tabCorrection" class="tab-content">
-            <h3>✏️ नाव दुरुस्ती व नवीन नोंद व्यवस्थापन</h3>
-            <p>विद्यार्थ्यांच्या नावातील स्पेलिंग किंवा इतर माहितीमध्ये बदल करण्यासाठीचा पर्याय.</p>
-        </div>
-
-        <!-- टॅब ४: ओळखपत्र -->
-        <div id="tabIdCard" class="tab-content">
-            <h3>🪪 विद्यार्थी ओळखपत्र (ID Card)</h3>
-            <p>एका क्लिकवर विद्यार्थ्यांचे आयडी कार्ड जनरेट करा.</p>
-        </div>
-
-        <!-- टॅब ५: जनरल रजिस्टर PDF -->
-        <div id="tabRegister" class="tab-content">
-            <h3>📊 जनरल रजिस्टर आणि PDF डाउनलोड</h3>
-            <p>संपूर्ण जनरल रजिस्टर डेटा PDF फॉरमॅटमध्ये डाउनलोड करण्याची सुविधा.</p>
-            <button onclick="alert('जनरल रजिस्टर PDF डाऊनलोड प्रक्रिया सुरू होत आहे.')" style="background: #d35400;">📥 संपूर्ण रजिस्टर PDF डाउनलोड करा</button>
-        </div>
-
     </div>
 </div>
 
@@ -209,7 +230,7 @@ function checkPassword() {
         document.getElementById('appContent').style.display = 'block';
         loadSavedData();
     } else {
-        alert("चुकीचा पासवर्ड!");
+        alert("chukīcā passwōrd!");
     }
 }
 
@@ -222,22 +243,21 @@ function switchTab(evt, tabName) {
     evt.currentTarget.classList.add('active');
 }
 
-// मराठी महिने व शब्द रूपे
 const marathiMonths = {
-    1: "जानेवारी", 2: "फेब्रुवारी", 3: "मार्च", 4: "एप्रिल", 
-    5: "मे", 6: "जून", 7: "जुलै", 8: "ऑगस्ट", 
-    9: "सप्टेंबर", 10: "ऑक्टोबर", 11: "नोव्हेंबर", 12: "डिसेंबर"
+    1: "jānevārī", 2: "febravarī", 3: "mārch", 4: "ēpril", 
+    5: "mē", 6: "jūn", 7: "julai", 8: "ōgaṣṭ", 
+    9: "saptembara", 10: "ōktōbaṟ", 11: "nōvembara", 12: "disembara"
 };
 
 function numberToMarathiWords(n) {
     const words = {
-        1: "पहिली", 2: "दोन", 3: "तीन", 4: "चार", 5: "पाच", 
-        6: "सहा", 7: "सात", 8: "आठ", 9: "नऊ", 10: "दहा",
-        11: "अकरा", 12: "बारा", 13: "तेरा", 14: "चौदा", 15: "पंधरा", 
-        16: "सोळा", 17: "सतरा", 18: "अठरा", 19: "एकोणीस", 20: "वीस",
-        21: "एकवीस", 22: "बावीस", 23: "तेवीस", 24: "चोवीस", 25: "पंचवीस", 
-        26: "सव्वीस", 27: "सत्तावीस", 28: "अठ्ठावीस", 29: "एकूणतीस", 30: "तीस", 
-        31: "एकतीस"
+        1: "pahilī", 2: "dōn", 3: "tīn", 4: "chār", 5: "pāch", 
+        6: "sahā", 7: "sāt", 8: "āṭh", 9: "naū", 10: "dahā",
+        11: "akarā", 12: "bārā", 13: "terā", 14: "chaudhā", 15: "pandharā", 
+        16: "soḷā", 17: "satarā", 18: "aṭharā", 19: "ekōṇīs", 20: "vīs",
+        21: "ekvīs", 22: "bāvīs", 23: "tevīs", 24: "chōvīs", 25: "panchvīs", 
+        26: "savvīs", 27: "sattāvīs", 28: "aṭṭhāvīs", 29: "ekūṇtīs", 30: "tīs", 
+        31: "ektīs"
     };
     return words[n] || n;
 }
@@ -252,13 +272,12 @@ function dateToMarathi(dateVal) {
     try {
         let d = (typeof dateVal === 'number') ? excelDateToJSDate(dateVal) : new Date(dateVal);
         if (isNaN(d)) return dateVal;
-        return `${numberToMarathiWords(d.getDate())} ${marathiMonths[d.getMonth() + 1]} सन ${d.getFullYear()}`;
+        return `${numberToMarathiWords(d.getDate())} ${marathiMonths[d.getMonth() + 1]} san ${d.getFullYear()}`;
     } catch(e) { return dateVal; }
 }
 
 let excelData = [];
 
-// फाईल अपलोड करून ब्राउझरच्या LocalStorage मध्ये सेव्ह करणे
 document.getElementById('excelFile').addEventListener('change', function(e) {
     let reader = new FileReader();
     reader.onload = function(evt) {
@@ -266,10 +285,8 @@ document.getElementById('excelFile').addEventListener('change', function(e) {
         let workbook = XLSX.read(data, {type: 'array'});
         let firstSheet = workbook.SheetNames[0];
         excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], {header: 1});
-        
-        // ब्राउझरमध्ये डेटा साठवणे जेणेकरून पुन्हा टाकावा लागणार नाही
         localStorage.setItem('savedExcelData', JSON.stringify(excelData));
-        alert("एक्सेल फाईल यशस्वीपणे सेव्ह झाली!");
+        alert("excel fāīl yashasvīpaṇe savh jhālī!");
     };
     reader.readAsArrayBuffer(e.target.files[0]);
 });
@@ -284,11 +301,11 @@ function loadSavedData() {
 function searchStudent() {
     let regNo = document.getElementById('regNo').value.trim();
     if(!regNo) {
-        alert("कृपया रजिस्टर नंबर टाका!");
+        alert("kripayā rajister nambaṟ ṭākā!");
         return;
     }
     if(excelData.length === 0) {
-        alert("कृपया आधी एक्सेल फाईल अपलोड करा!");
+        alert("kripayā ādhi excel fāīl uplōḍ karā!");
         return;
     }
 
@@ -301,22 +318,20 @@ function searchStudent() {
     }
 
     if(!foundRow) {
-        alert("या रजिस्टर नंबरची नोंद आढळली नाही.");
+        alert("yā rajister nambaṟcī nōnd āḍhalī nāhī.");
         document.getElementById('lcCard').style.display = 'none';
         document.getElementById('printBtn').style.display = 'none';
         return;
     }
 
-    // कॉलम मॅपिंग (तुमच्या एक्सेलनुसार)
     document.getElementById('outReg').innerText = regNo;
-    document.getElementById('outName').innerText = foundRow[2] || foundRow[1] || "माहित नाही";
+    document.getElementById('outName').innerText = foundRow[2] || foundRow[1] || "māhit nāhī";
     let dobRaw = foundRow[4] || foundRow[3] || "";
     document.getElementById('outDobNum').innerText = dobRaw;
     document.getElementById('outDobWords').innerText = dateToMarathi(dobRaw);
-    document.getElementById('outBirthPlace').innerText = foundRow[5] || "महाराष्ट्र";
-    document.getElementById('outCaste').innerText = foundRow[6] || "हिंदू - मराठा";
+    document.getElementById('outBirthPlace').innerText = foundRow[5] || "mahārāṣṭra";
+    document.getElementById('outCaste').innerText = foundRow[6] || "hindū - marāṭhā";
     
-    // आजची तारीख
     let today = new Date().toLocaleDateString('mr-IN');
     document.getElementById('currentDate').innerText = today;
 
