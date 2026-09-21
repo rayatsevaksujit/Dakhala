@@ -3,85 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <title>शाळा व्यवस्थापन व दाखला पोर्टल</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kokila:wght@400;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #1b4f72;
+            --secondary-color: #2980b9;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --border-color: #d5dbdb;
+        }
+
         body { 
-            font-family: 'Kokila', 'Noto Sans Devanagari', Arial, sans-serif; 
-            background: #eef2f3; 
+            font-family: 'Noto Sans Devanagari', Arial, sans-serif; 
+            background: var(--bg-color); 
             margin: 0; 
             padding: 10px; 
-            font-size: 19px;
+            color: var(--text-color);
+            font-size: 13px; /* कॉम्पॅक्ट साईझ */
         }
+
         .container { 
-            max-width: 1100px; 
-            background: white; 
-            padding: 20px; 
+            max-width: 950px; /* ९०% कॉम्पैक्ट रुंदी */
+            background: var(--card-bg); 
+            padding: 18px 22px; 
             border-radius: 10px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
             margin: auto; 
         }
-        h2 { text-align: center; color: #1b4f72; margin-top: 0; border-bottom: 2px solid #ebf5fb; padding-bottom: 8px; font-size: 26px; }
-        
-        #loginBox {
-            background: #fdfefe;
-            padding: 30px;
-            border: 1px solid #d4efdf;
-            border-radius: 8px;
-            max-width: 420px;
-            margin: 80px auto;
-            text-align: center;
-        }
-        
-        #appContent { display: none; }
-        
-        .dashboard-layout {
+
+        /* हेडर डिझाईन */
+        .app-header {
             display: flex;
-            gap: 20px;
-            margin-top: 15px;
+            align-items: center;
+            border-bottom: 2px solid #ebf5fb;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            gap: 12px;
         }
-        .sidebar {
-            width: 280px;
-            background: #f8f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #d5dbdb;
+        .app-logo {
+            background: var(--primary-color);
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
         }
-        .main-content {
-            flex-grow: 1;
-            background: #fdfefe;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #d5dbdb;
+        .app-title h2 { margin: 0; font-size: 18px; color: var(--primary-color); }
+        .app-title p { margin: 2px 0 0 0; font-size: 12px; color: #7f8c8d; }
+
+        /* एक्सेल फाईल अपलोड कार्ड */
+        .upload-card {
+            background: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            padding: 8px 14px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 13px;
         }
 
-        .tab-btn {
-            display: block;
-            width: 100%;
-            background: #eaeded;
-            border: none;
-            padding: 12px;
-            font-size: 17px;
-            font-weight: bold;
-            border-radius: 5px;
+        /* मुख्य डॅशबोर्ड कार्ड्स ग्रिड */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .tool-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 14px;
             cursor: pointer;
-            text-align: left;
-            margin-bottom: 8px;
-            font-family: 'Kokila', 'Noto Sans Devanagari', sans-serif;
-            color: #2c3e50;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        .tab-btn.active {
-            background: #2e86c1;
-            color: white;
+        .tool-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+            border-color: var(--secondary-color);
         }
-        .tab-content { display: none; }
+        .tool-icon { font-size: 22px; margin-bottom: 5px; }
+        .tool-title { font-size: 14px; font-weight: 600; color: var(--primary-color); margin-bottom: 3px; }
+        .tool-desc { font-size: 11px; color: #666; margin-bottom: 8px; line-height: 1.3; }
+        .tool-link { font-size: 12px; color: var(--secondary-color); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+        
+        .back-bar { margin-bottom: 12px; display: none; }
+        .back-btn { background: #7f8c8d; color: white; padding: 4px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; width: auto; }
+
+        .tab-content { display: none; background: #fff; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color); }
         .tab-content.active { display: block; }
 
-        .form-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 4px; font-weight: bold; color: #2c3e50; }
-        input, select, button { width: 100%; padding: 10px; font-size: 17px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 5px; font-family: 'Kokila', 'Noto Sans Devanagari', sans-serif; }
-        button { background-color: #2e86c1; color: white; border: none; font-weight: bold; cursor: pointer; }
+        .form-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 3px; font-weight: 600; color: var(--text-color); font-size: 13px; }
+        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Noto Sans Devanagari', sans-serif; }
+        input:focus { border-color: var(--secondary-color); outline: none; }
+        button { background-color: var(--secondary-color); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         button:hover { background-color: #2471a3; }
 
+        /* दाखला फॉरमॅट */
         .lc-format {
             border: 2px solid #000;
             padding: 15px;
@@ -89,8 +117,8 @@
             background: #fff;
         }
         .lc-header { text-align: center; font-weight: bold; margin-bottom: 10px; }
-        .lc-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        .lc-table th, .lc-table td { border: 1px solid #000; padding: 6px; font-size: 16px; text-align: left; }
+        .lc-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .lc-table th, .lc-table td { border: 1px solid #000; padding: 5px 8px; font-size: 12px; text-align: left; }
         
         @media print {
             body * { visibility: hidden; }
@@ -103,131 +131,234 @@
 <body>
 
 <div class="container">
-    <div id="loginBox">
-        <h2>🔐 डिजिटल पोर्टल लॉगिन</h2>
-        <div class="form-group" style="text-align: left;">
-            <label>पासवर्ड टाका:</label>
-            <input type="password" id="passInput" placeholder="admin123 टाका">
+    <!-- हेडर -->
+    <div class="app-header">
+        <div class="app-logo">🏫</div>
+        <div class="app-title">
+            <h2>शाळा व्यवस्थापन व दाखला पोर्टल</h2>
+            <p>डिजिटल साथीदार प्रशासकीय प्रणाली</p>
         </div>
-        <button onclick="checkPassword()">प्रवेश करा</button>
+    </div>
+    
+    <!-- एक्सेल फाईल अपलोड कार्ड -->
+    <div class="upload-card no-print">
+        <div>
+            <strong>📁 मुख्य एक्सेल फाईल निवडा:</strong> डेटा ब्राउझरमध्ये सुरक्षित सेव्ह राहील.
+        </div>
+        <input type="file" id="excelFile" accept=".xlsx, .xls, .csv, .xlsm" style="max-width: 250px; background: white; padding: 4px;">
     </div>
 
-    <div id="appContent">
-        <h2>🏫 शाळा व्यवस्थापन व दाखला पोर्टल</h2>
-        
-        <div class="form-group no-print" style="background: #e8f8f5; padding: 8px; border-radius: 5px; font-size: 16px;">
-            <label>📁 एक्सेल फाईल अपलोड करा (डेटा ब्राऊजरमध्ये सेव्ह राहील):</label>
-            <input type="file" id="excelFile" accept=".xlsx, .xls, .csv, .xlsm">
-        </div>
-
-        <div class="dashboard-layout">
-            <div class="sidebar no-print">
-                <button class="tab-btn active" onclick="switchTab(event, 'tabDakhala')">📜 शाळा सोडल्याचा दाखला</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tabBonafide')">📋 बोनाफाईड सर्टिफिकेट</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tabCorrection')">✏️ नाव दुरुस्ती व नोंद</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tabIdCard')">🪪 ओळखपत्र (ID Card)</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tabRegister')">📊 जनरल रजिस्टर PDF</button>
+    <!-- मुख्य डॅशबोर्ड कार्ड्स -->
+    <div id="homeDashboard" class="no-print">
+        <div class="dashboard-grid">
+            <div class="tool-card" onclick="openTab('tabSchoolInfo')">
+                <div class="tool-icon">⚙️</div>
+                <div class="tool-title">शाळेची माहिती</div>
+                <div class="tool-desc">संस्था, शाळा, पत्ता व युडायस तपशील सेट करा.</div>
+                <a class="tool-link">माहिती भरा &rarr;</a>
             </div>
-
-            <div class="main-content">
-                <div id="tabDakhala" class="tab-content active">
-                    <div class="form-group no-print">
-                        <label>🔍 जनरल रजिस्टर नंबर टाका:</label>
-                        <input type="text" id="regNo" placeholder="उदा. 12533">
-                        <button onclick="searchStudent()" style="margin-top: 8px; background: #27ae60;">माहिती शोधा व दाखला पहा</button>
-                    </div>
-
-                    <div id="printableArea">
-                        <div class="lc-format" id="lcCard" style="display:none;">
-                            <div class="lc-header">
-                                <span style="font-size: 15px;">रयत शिक्षण संस्थेचे,</span><br>
-                                <span style="font-size: 22px;">श्री जिजामाता हायस्कूल व जुनियर कॉलेज</span><br>
-                                <span style="font-size: 15px; font-weight: normal;">शाळा सोडल्याचा दाखला (School Leaving Certificate)</span>
-                            </div>
-                            <table class="lc-table">
-                                <tr>
-                                    <td><strong>जनरल रजिस्टर नंबर:</strong> <span id="outReg"></span></td>
-                                    <td><strong>विद्यार्थी आधार नंबर:</strong> -</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"><strong>१. विद्यार्थ्याचे पूर्ण नाव (आडनाव प्रथम):</strong> <span id="outName" style="font-size: 19px; font-weight: bold;"></span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"><strong>२. आईचे नाव:</strong> <span id="outMother">सौ. अनिता</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>३. जात व उपजात:</strong> <span id="outCaste">हिंदू - मराठा</span></td>
-                                    <td><strong>४. जन्मस्थान:</strong> <span id="outBirthPlace">सांगली</span></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>५. जन्मदिनांक (अंकात):</strong> <span id="outDobNum"></span></td>
-                                    <td><strong>६. जन्मदिनांक (अक्षरी):</strong> <span id="outDobWords" style="color: #900; font-weight: bold;"></span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"><strong>७. शाळा सोडल्याचे कारण:</strong> शिक्षण पूर्ण / इतर</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2"><strong>८. शेरा / प्रगती:</strong> उत्तम व संतोषजनक</td>
-                                </tr>
-                            </table>
-                            <div style="margin-top: 20px; display: flex; justify-content: space-between; font-size: 16px;">
-                                <div>दिनांक: <span id="currentDate"></span></div>
-                                <div style="text-align: center;">कार्यालयीन लिपिक / मुख्याध्यापक</div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="no-print" id="printBtn" onclick="window.print()" style="display:none; background: #8e44ad; margin-top: 10px;">🖨️ दाखला प्रिंट करा / PDF डाउनलोड करा</button>
-                </div>
-
-                <div id="tabBonafide" class="tab-content">
-                    <h3>📋 बोनाफाईड सर्टिफिकेट जनरेटर</h3>
-                    <p>येथून तुम्ही विद्यार्थ्याचा रजिस्टर नंबर टाकून बोनाफाईड प्रिंट काढू शकता.</p>
-                    <input type="text" id="bonafideReg" placeholder="रजिस्टर नंबर टाका">
-                    <button onclick="alert('लवकरच बोनाफाईड फॉरमॅट येईल!')" style="margin-top: 8px;">बोनाफाईड पहा</button>
-                </div>
-
-                <div id="tabCorrection" class="tab-content">
-                    <h3>✏️ नाव दुरुस्ती व नवीन नोंद व्यवस्थापन</h3>
-                    <p>विद्यार्थ्यांच्या नावातील स्पेलिंग किंवा इतर माहितीमध्ये बदल करण्यासाठीचा पर्याय.</p>
-                </div>
-
-                <div id="tabIdCard" class="tab-content">
-                    <h3>🪪 विद्यार्थी ओळखपत्र (ID Card)</h3>
-                    <p>एका क्लिकवर विद्यार्थ्यांचे आयडी कार्ड जनरेट करा.</p>
-                </div>
-
-                <div id="tabRegister" class="tab-content">
-                    <h3>📊 जनरल रजिस्टर आणि PDF डाउनलोड</h3>
-                    <p>संपूर्ण जनरल रजिस्टर डेटा PDF फॉरमॅटमध्ये डाउनलोड करण्याची सुविधा.</p>
-                    <button onclick="alert('जनरल रजिस्टर PDF डाऊनलोड प्रक्रिया सुरू होत आहे.')" style="background: #d35400; margin-top: 8px;">📥 संपूर्ण रजिस्टर PDF डाउनलोड करा</button>
-                </div>
+            <div class="tool-card" onclick="openTab('tabDakhala')">
+                <div class="tool-icon">📜</div>
+                <div class="tool-title">शाळा सोडल्याचा दाखला</div>
+                <div class="tool-desc">जनरल रजिस्टर नंबर टाकून एलसी (LC) जनरेट करा.</div>
+                <a class="tool-link">दाखला पहा &rarr;</a>
+            </div>
+            <div class="tool-card" onclick="openTab('tabBonafide')">
+                <div class="tool-icon">📋</div>
+                <div class="tool-title">बोनाफाईड सर्टिफिकेट</div>
+                <div class="tool-desc">विद्यार्थ्यांचे बोनाफाईड प्रमाणपत्र तयार करा.</div>
+                <a class="tool-link">सुरू करा &rarr;</a>
+            </div>
+            <div class="tool-card" onclick="openTab('tabCorrection')">
+                <div class="tool-icon">✏️</div>
+                <div class="tool-title">नाव दुरुस्ती व नोंद</div>
+                <div class="tool-desc">विद्यार्थ्यांच्या नावातील स्पेलिंग व तपशील बदल.</div>
+                <a class="tool-link">बदल करा &rarr;</a>
+            </div>
+            <div class="tool-card" onclick="openTab('tabIdCard')">
+                <div class="tool-icon">🪪</div>
+                <div class="tool-title">विद्यार्थी ओळखपत्र</div>
+                <div class="tool-desc">शाळेच्या विद्यार्थ्यांसाठी आयडी कार्ड प्रिंट करा.</div>
+                <a class="tool-link">जनरेट करा &rarr;</a>
+            </div>
+            <div class="tool-card" onclick="openTab('tabRegister')">
+                <div class="tool-icon">📊</div>
+                <div class="tool-title">जनरल रजिस्टर PDF</div>
+                <div class="tool-desc">संपूर्ण रजिस्टर डेटा सुरक्षित पीडीएफ फॉरमॅटमध्ये.</div>
+                <a class="tool-link">डाऊनलोड &rarr;</a>
             </div>
         </div>
+    </div>
+
+    <!-- मागे जाण्यासाठी बटण बार -->
+    <div class="back-bar no-print" id="backBar">
+        <button class="back-btn" onclick="goHome()">&larr; मुख्य डॅशबोर्डकडे जा</button>
+    </div>
+
+    <!-- टॅब १: शाळेची माहिती -->
+    <div id="tabSchoolInfo" class="tab-content">
+        <h3>शाळेची तपशीलवार माहिती सेट करा</h3>
+        <p style="color: #666; font-size: 12px; margin-bottom: 12px;">येथे भरलेली माहिती थेट दाखला आणि बोनाफाईडवर आपोआप प्रिंट होईल.</p>
+        <div style="max-width: 500px;">
+            <div class="form-group">
+                <label>व्यवस्थापनाचे नाव / संस्थेचे नाव:</label>
+                <input type="text" id="instName" value="संस्था नाव ">
+            </div>
+            <div class="form-group">
+                <label>शाळेचे पूर्ण नाव:</label>
+                <input type="text" id="schoolName" value="शाळेचे नाव ">
+            </div>
+            <div class="form-group">
+                <label>पत्ता, तालुका व जिल्हा:</label>
+                <input type="text" id="schoolAddress" value="गावाचे नाव तालुका व जिल्हा सहित ">
+            </div>
+            <div class="form-group">
+                <label>फोन नंबर व इ-मेल:</label>
+                <input type="text" id="schoolContact" value="फोन: 000000000 | इ-मेल: mail id">
+            </div>
+            <div class="form-group">
+                <label>माध्यम व यु-डायस क्रमांक:</label>
+                <input type="text" id="schoolExtra" value="माध्यम: मराठी | यु-डायस क्रमांक: 00000000000">
+            </div>
+            <button onclick="saveSchoolInfo()" style="background: #27ae60; margin-top: 4px; max-width: 150px;">माहिती सेव्ह करा</button>
+        </div>
+    </div>
+
+    <!-- टॅब २: शाळा सोडल्याचा दाखला -->
+    <div id="tabDakhala" class="tab-content">
+        <div class="form-group no-print" style="max-width: 350px;">
+            <label>🔍 जनरल रजिस्टर नंबर टाका:</label>
+            <input type="text" id="regNo" placeholder="उदा. 12435">
+            <button onclick="searchStudent()" style="margin-top: 6px; background: #27ae60;">माहिती शोधा व दाखला पहा</button>
+        </div>
+
+        <div id="printableArea">
+            <div class="lc-format" id="lcCard" style="display:none;">
+                <div style="font-size: 10px; border-bottom: 1px dashed #000; padding-bottom: 3px; margin-bottom: 6px;">
+                    (दाखला देणाऱ्या अधिकाऱ्याव्यतिरिक्त इतर कोणीही या दाखल्याच्या नोंदवहीत बदल अगर खाडाखोड करायची नाही. तसे करणे कायदेशीर गुन्हा असून, विद्यार्थी शाळेतून काढून टाकण्यापर्यंतच्या शिक्षेस पात्र ठरेल.)
+                </div>
+                <div class="lc-header">
+                    <span id="pInst" style="font-size: 13px;">व्यवस्थापनाचे नाव: s.</span><br>
+                    <span id="pSchool" style="font-size: 16px;">शाळेचे नाव : संस्था नाव </span><br>
+                    <span id="pAddress" style="font-size: 12px; font-weight: normal;">पत्ता :पूर्ण पत्ता  </span><br>
+                    <span id="pContact" style="font-size: 12px; font-weight: normal;">फोन नंबर : ०२३४६-२२६१६१ | इ-मेल : @gmail.com</span>
+                </div>
+                <table class="lc-table">
+                    <tr>
+                        <td><strong>जनरल रजि.क्र. :</strong> <span id="outReg"></span></td>
+                        <td><strong>माध्यम :</strong> मराठी</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>विद्यार्थ्याचे पूर्ण नाव :</strong> <span id="outName" style="font-size: 15px; font-weight: bold;"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>आईचे नाव :</strong> <span id="outMother">प्रांजल</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>राष्ट्रीयत्व :</strong> भारतीय</td>
+                        <td><strong>मातृभाषा :</strong> मराठी</td>
+                    </tr>
+                    <tr>
+                        <td><strong>धर्म :</strong> हिंदू</td>
+                        <td><strong>जात व उपजात :</strong> नाथजोगी (NT)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>जन्मस्थळ (गाव/शहर) :</strong> <span id="outBirthPlace">औरंगाबाद</span></td>
+                        <td><strong>राज्य :</strong> महाराष्ट्र | <strong>देश :</strong> भारत</td>
+                    </tr>
+                    <tr>
+                        <td><strong>जन्मदिनांक (अंकात) :</strong> <span id="outDobNum"></span></td>
+                        <td><strong>जन्मदिनांक (अक्षरी) :</strong> <span id="outDobWords" style="color: #900; font-weight: bold;"></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>यापूर्वीची शाळा :</strong> किर्लोस्कर विद्यालय, किर्लोस्करवाडी</td>
+                    </tr>
+                    <tr>
+                        <td><strong>या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> २८-०६-२०२३</td>
+                        <td><strong>वर्ग :</strong> ५ वी</td>
+                    </tr>
+                    <tr>
+                        <td><strong>अभ्यासातील प्रगती :</strong> चांगली</td>
+                        <td><strong>वर्तणूक :</strong> चांगली</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>शाळा सोडल्याचे कारण व शेरा :</strong> शिक्षण पूर्ण / संतोषजनक</td>
+                    </tr>
+                </table>
+                <div style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 13px;">
+                    <div>दिनांक : <span id="currentDate"></span></div>
+                    <div style="text-align: center;">वर्गशिक्षक &nbsp;&nbsp;&nbsp;&nbsp; लेखनिक &nbsp;&nbsp;&nbsp;&nbsp; मुख्याध्यापक</div>
+                </div>
+            </div>
+        </div>
+        <button class="no-print" id="printBtn" onclick="window.print()" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ दाखला प्रिंट करा / PDF</button>
+    </div>
+
+    <!-- इतर टॅब्स -->
+    <div id="tabBonafide" class="tab-content">
+        <h3>📋 बोनाफाईड सर्टिफिकेट</h3>
+        <p style="font-size: 13px; color: #666;">येथून बोनाफाईड प्रिंट काढता येईल.</p>
+    </div>
+    <div id="tabCorrection" class="tab-content">
+        <h3>✏️ नाव दुरुस्ती व नोंद</h3>
+        <p style="font-size: 13px; color: #666;">नावातील दुरुस्तीचे पर्याय.</p>
+    </div>
+    <div id="tabIdCard" class="tab-content">
+        <h3>🪪 विद्यार्थी ओळखपत्र</h3>
+        <p style="font-size: 13px; color: #666;">ओळखपत्र जनरेट करण्याची सोय.</p>
+    </div>
+    <div id="tabRegister" class="tab-content">
+        <h3>📊 जनरल रजिस्टर PDF</h3>
+        <p style="font-size: 13px; color: #666;">जनरल रजिस्टर डाऊनलोड पर्याय.</p>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const CORRECT_PASSWORD = "admin123";
+window.onload = function() {
+    loadSavedData();
+    loadSchoolInfo();
+};
 
-function checkPassword() {
-    let p = document.getElementById('passInput').value.trim();
-    if(p === CORRECT_PASSWORD) {
-        document.getElementById('loginBox').style.display = 'none';
-        document.getElementById('appContent').style.display = 'block';
-        loadSavedData();
-    } else {
-        alert("चुकीचा पासवर्ड!");
-    }
-}
-
-function switchTab(evt, tabName) {
+function openTab(tabName) {
     let contents = document.getElementsByClassName('tab-content');
     for(let c of contents) c.classList.remove('active');
-    let buttons = document.getElementsByClassName('tab-btn');
-    for(let b of buttons) b.classList.remove('active');
+    
     document.getElementById(tabName).classList.add('active');
-    evt.currentTarget.classList.add('active');
+    document.getElementById('homeDashboard').style.display = 'none';
+    document.getElementById('backBar').style.display = 'block';
+}
+
+function goHome() {
+    let contents = document.getElementsByClassName('tab-content');
+    for(let c of contents) c.classList.remove('active');
+    
+    document.getElementById('homeDashboard').style.display = 'block';
+    document.getElementById('backBar').style.display = 'none';
+}
+
+function saveSchoolInfo() {
+    let schoolData = {
+        inst: document.getElementById('instName').value,
+        school: document.getElementById('schoolName').value,
+        address: document.getElementById('schoolAddress').value,
+        contact: document.getElementById('schoolContact').value,
+        extra: document.getElementById('schoolExtra').value
+    };
+    localStorage.setItem('schoolProfile', JSON.stringify(schoolData));
+    alert("शाळेची माहिती यशस्वीपणे सेव्ह झाली!");
+}
+
+function loadSchoolInfo() {
+    let saved = localStorage.getItem('schoolProfile');
+    if(saved) {
+        let data = JSON.parse(saved);
+        document.getElementById('instName').value = data.inst || "";
+        document.getElementById('schoolName').value = data.school || "";
+        document.getElementById('schoolAddress').value = data.address || "";
+        document.getElementById('schoolContact').value = data.contact || "";
+        document.getElementById('schoolExtra').value = data.extra || "";
+    }
 }
 
 const marathiMonths = {
@@ -244,7 +375,7 @@ function numberToMarathiWords(n) {
         16: "सोळा", 17: "सतरा", 18: "अठरा", 19: "एकोणीस", 20: "वीस",
         21: "एकवीस", 22: "बावीस", 23: "तेवीस", 24: "चोवीस", 25: "पंचवीस", 
         26: "सव्वीस", 27: "सत्तावीस", 28: "अठ्ठावीस", 29: "एकूणतीस", 30: "तीस", 
-        31: "एकतीस"
+        31: "एकतीस", 2010: "दोन हजार दहा"
     };
     return words[n] || n;
 }
@@ -259,7 +390,7 @@ function dateToMarathi(dateVal) {
     try {
         let d = (typeof dateVal === 'number') ? excelDateToJSDate(dateVal) : new Date(dateVal);
         if (isNaN(d)) return dateVal;
-        return `${numberToMarathiWords(d.getDate())} ${marathiMonths[d.getMonth() + 1]} सन ${d.getFullYear()}`;
+        return `${numberToMarathiWords(d.getDate())} ${marathiMonths[d.getMonth() + 1]} ${numberToMarathiWords(d.getFullYear())}`;
     } catch(e) { return dateVal; }
 }
 
@@ -273,7 +404,7 @@ document.getElementById('excelFile').addEventListener('change', function(e) {
         let firstSheet = workbook.SheetNames[0];
         excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], {header: 1});
         localStorage.setItem('savedExcelData', JSON.stringify(excelData));
-        alert("एक्सेल फाईल यशस्वीपणे सेव्ह झाली!");
+        alert("एक्सेल फाईलचा डेटा यशस्वीपणे सेव्ह झाला!");
     };
     reader.readAsArrayBuffer(e.target.files[0]);
 });
@@ -288,11 +419,11 @@ function loadSavedData() {
 function searchStudent() {
     let regNo = document.getElementById('regNo').value.trim();
     if(!regNo) {
-        alert("कृपया रजिस्टर नंबर टाका!");
+        alert("कृपया जनरल रजिस्टर नंबर टाका!");
         return;
     }
     if(excelData.length === 0) {
-        alert("कृपया आधी एक्सेल फाईल अपलोड करा!");
+        alert("कृपया आधी वरून एक्सेल फाईल निवडा / अपलोड करा!");
         return;
     }
 
@@ -311,14 +442,19 @@ function searchStudent() {
         return;
     }
 
+    let savedSchool = JSON.parse(localStorage.getItem('schoolProfile')) || {};
+    document.getElementById('pInst').innerText = savedSchool.inst || "व्यवस्थापनाचे नाव: रयत शिक्षण संस्था, सातारा.";
+    document.getElementById('pSchool').innerText = "शाळेचे नाव : " + (savedSchool.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज");
+    document.getElementById('pAddress').innerText = "पत्ता : " + (savedSchool.address || "रामानंदनगर (बुर्ली)");
+    document.getElementById('pContact').innerText = savedSchool.contact || "फोन नंबर : ०२३४६-२२६१६१";
+
     document.getElementById('outReg').innerText = regNo;
     document.getElementById('outName').innerText = foundRow[2] || foundRow[1] || "माहित नाही";
     let dobRaw = foundRow[4] || foundRow[3] || "";
     document.getElementById('outDobNum').innerText = dobRaw;
     document.getElementById('outDobWords').innerText = dateToMarathi(dobRaw);
-    document.getElementById('outBirthPlace').innerText = foundRow[5] || "महाराष्ट्र";
-    document.getElementById('outCaste').innerText = foundRow[6] || "हिंदू - मराठा";
-    
+    document.getElementById('outBirthPlace').innerText = foundRow[5] || "औरंगाबाद";
+
     let today = new Date().toLocaleDateString('mr-IN');
     document.getElementById('currentDate').innerText = today;
 
