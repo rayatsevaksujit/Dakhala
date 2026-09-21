@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <title>विद्यार्थी दाखला व जनरल रजिस्टर पोर्टल</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
+        .container { max-width: 600px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0px 4px 12px rgba(0,0,0,0.1); margin: auto; }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input, button { width: 100%; padding: 12px; font-size: 16px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { background-color: #27ae60; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background-color: #219653; }
+        #result { margin-top: 20px; padding: 15px; background: #e8f8f5; border: 1px solid #a3e4d7; border-radius: 4px; white-space: pre-line; font-size: 16px; color: #0e6655; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>विद्यार्थी दाखला शोधक पोर्टल</h2>
+    
+    <div class="form-group">
+        <label>एक्सेल फाईल अपलोड करा (.xlsx किंवा .csv):</label>
+        <input type="file" id="excelFile" accept=".xlsx, .xls, .csv, .xlsm">
+    </div>
+
+    <div class="form-group">
+        <label>जनरल रजिस्टर नंबर:</label>
+        <input type="text" id="regNo" placeholder="येथे नंबर टाка">
+    </div>
+
+    <button onclick="searchStudent()">माहिती शोधा</button>
+
+    <div id="result">माहिती येथे दिसेल...</div>
+</div>
+
+<!-- एक्सेल वाचण्यासाठी लायब्ररी -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+const marathiMonths = {
+    1: "जानेवारी", 2: "फेब्रुवारी", 3: "मार्च", 4: "एप्रिल", 
+    5: "मे", 6: "जून", 7: "जुलै", 8: "ऑगस्ट", 
+    9: "सप्टेंबर", 10: "ऑक्टोबर", 11: "नोव्हेंबर", 12: "डिसेंबर"
+};
+
+function numberToMarathiWords(n) {
+    const words = {
+        1: "पहिली", 2: "दोन", 3: "तीन", 4: "चार", 5: "पाच", 
+        6: "सहा", 7: "सात", 8: "आठ", 9: "नऊ", 10: "दहा",
+        11: "अकरा", 12: "बारा", 13: "तेरा", 14: "चौदा", 15: "पंधरा", 
+        16: "सोळा", 17: "सतरा", 18: "अठरा", 19: "एकोणीस", 20: "वीस",
+        21: "एकवीस", 22: "बावीस", 23: "तेवीस", 24: "चोवीस", 25: "पंचवीस", 
+        26: "सव्वीस", 27: "सत्तावीस", 28: "अठ्ठावीस", 29: "एकूणतीस", 30: "तीस", 
+        31: "एकतीस"
+    };
+    return words[n] || n;
+}
+
+function excelDateToJSDate(serial) {
+    if (isNaN(serial)) return serial;
+    let utc_days = Math.floor(serial - 25569);
+    let utc_value = utc_days * 86400;
+    return new Date(utc_value * 1000);
+}
+
+function dateToMarathi(dateVal) {
+    try {
+        let d;
+        if (typeof dateVal === 'number') {
+            d = excelDateToJSDate(dateVal);
+        } else {
+            d = new Date(dateVal);
+        }
+        
+        if (isNaN(d)) return dateVal;
+        let day = d.getDate();
+        let month = d.getMonth() + 1;
+        let year = d.getFullYear();
+        
+        let dayWord = numberToMarathiWords(day);
+        let monthWord = marathiMonths[month] || "";
+        return `${dayWord} ${monthWord} सन ${year}`;
+    } catch(e) {
+        return dateVal;
+    }
+}
+
+let excelData = [];
+
+document.getElementById('excelFile').addEventListener('change', function(e) {
+    let reader = new FileReader();
+    reader.onload = function(evt) {
+        let data = new Uint8Array(evt.target.result);
+        let workbook = XLSX.read(data, {type: 'array'});
+        let firstSheet = workbook.SheetNames[0];
+        let worksheet = workbook.Sheets[firstSheet];
+        excelData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+        alert("एक्सेल फाईल यशस्वीपणे अपलोड झाली!");
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
+});
+
+function searchStudent() {
+    let regNo = document.getElementById('regNo').value.trim();
+    if(!regNo) {
+        alert("कृपया जनरल रजिस्टर नंबर प्रविष्ट करा!");
+        return;
+    }
+    if(excelData.length === 0) {
+        alert("कृपया आधी एक्सेल फाईल अपलोड करा!");
+        return;
+    }
+
+    let foundRow = null;
+    for(let row of excelData) {
+        let rowString = row.join(" ");
+        if(rowString.includes(regNo)) {
+            foundRow = row;
+            break;
+        }
+    }
+
+    if(!foundRow) {
+        document.getElementById('result'].innerText = "या रजिस्टर नंबरची कोणतीही नोंद आढळली नाही.";
+        return;
+    }
+
+    let name = foundRow[2] || foundRow[1] || "माहित नाही"; 
+    let dobRaw = foundRow[4] || foundRow[3] || "";
+    let dobMarathi = dateToMarathi(dobRaw);
+
+    document.getElementById('result').innerText = 
+        `विद्यार्थ्याचे नाव: ${name}\n` +
+        `जन्मदिनांक (अंकात): ${dobRaw}\n` +
+        `जन्मदिनांक (अक्षरी): ${dobMarathi}`;
+}
+</script>
+
+</body>
+</html>
