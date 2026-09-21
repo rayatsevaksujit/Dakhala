@@ -102,6 +102,7 @@
         .form-group { margin-bottom: 10px; }
         label { display: block; margin-bottom: 3px; font-weight: 600; color: var(--text-color); font-size: 13px; }
         input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Noto Sans Devanagari', sans-serif; }
+        input:disabled { background-color: #eaeded; color: #7f8c8d; cursor: not-allowed; }
         input:focus { border-color: var(--secondary-color); outline: none; }
         button { background-color: var(--secondary-color); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         button:hover { background-color: #2471a3; }
@@ -187,32 +188,36 @@
         <button class="back-btn" onclick="goHome()">&larr; मुख्य डॅशबोर्डकडे जा</button>
     </div>
 
-    <!-- टॅब १: शाळेची माहिती -->
+    <!-- टॅब १: शाळेची माहिती (ॲडमिन लॉकसह) -->
     <div id="tabSchoolInfo" class="tab-content">
         <h3>शाळेची तपशीलवार माहिती सेट करा</h3>
-        <p style="color: #666; font-size: 12px; margin-bottom: 12px;">येथे भरलेली माहिती थेट दाखला आणि बोनाफाईडवर आपोआप प्रिंट होईल.</p>
+        <p style="color: #c0392b; font-size: 12px; margin-bottom: 12px;">🔒 ही माहिती लॉक केलेली आहे. बदल करण्यासाठी खालील 'प्रशासन अनलॉक' बटणावर क्लिक करा.</p>
         <div style="max-width: 500px;">
             <div class="form-group">
                 <label>व्यवस्थापनाचे नाव / संस्थेचे नाव:</label>
-                <input type="text" id="instName" placeholder="संस्थेचे नाव टाка">
+                <input type="text" id="instName" placeholder="संस्थेचे नाव टाका" disabled>
             </div>
             <div class="form-group">
                 <label>शाळेचे पूर्ण नाव:</label>
-                <input type="text" id="schoolName" placeholder="शाळेचे नाव टाका">
+                <input type="text" id="schoolName" placeholder="शाळेचे नाव टाका" disabled>
             </div>
             <div class="form-group">
                 <label>पत्ता, तालुका व जिल्हा:</label>
-                <input type="text" id="schoolAddress" placeholder="पत्ता टाका">
+                <input type="text" id="schoolAddress" placeholder="पत्ता टाका" disabled>
             </div>
             <div class="form-group">
                 <label>फोन नंबर व इ-मेल:</label>
-                <input type="text" id="schoolContact" placeholder="फोन व इ-मेल टाका">
+                <input type="text" id="schoolContact" placeholder="फोन व इ-मेल टाका" disabled>
             </div>
             <div class="form-group">
                 <label>माध्यम व यु-डायस क्रमांक:</label>
-                <input type="text" id="schoolExtra" placeholder="माध्यम व युडायस टाका">
+                <input type="text" id="schoolExtra" placeholder="माध्यम व युडायस टाका" disabled>
             </div>
-            <button onclick="saveSchoolInfo()" style="background: #27ae60; margin-top: 4px; max-width: 150px;">माहिती सेव्ह करा</button>
+            
+            <div style="display: flex; gap: 10px; margin-top: 8px;">
+                <button type="button" onclick="requestAdminUnlock()" style="background: #e67e22; flex: 1;">🔐 प्रशासन अनलॉक (Edit)</button>
+                <button type="button" id="saveBtn" onclick="saveSchoolInfo()" style="background: #27ae60; flex: 1; display: none;">माहिती सेव्ह करा</button>
+            </div>
         </div>
     </div>
 
@@ -329,6 +334,22 @@ function goHome() {
     document.getElementById('backBar').style.display = 'none';
 }
 
+// ॲडमिन पासवर्ड टाकून माहिती एडिट करण्यासाठी अनलॉक करणे
+function requestAdminUnlock() {
+    let pass = prompt("प्रशासन पासवर्ड टाка (Admin Password):");
+    if(pass === "admin123") { // येथे तुमचा हवा असलेला पासवर्ड ठेवू शकता
+        document.getElementById('instName').disabled = false;
+        document.getElementById('schoolName').disabled = false;
+        document.getElementById('schoolAddress').disabled = false;
+        document.getElementById('schoolContact').disabled = false;
+        document.getElementById('schoolExtra').disabled = false;
+        document.getElementById('saveBtn').style.display = 'block';
+        alert("माहिती एडिट करण्यासाठी अनलॉक झाली आहे!");
+    } else if(pass !== null) {
+        alert("चुकीचा पासवर्ड!");
+    }
+}
+
 function saveSchoolInfo() {
     let schoolData = {
         inst: document.getElementById('instName').value,
@@ -338,7 +359,16 @@ function saveSchoolInfo() {
         extra: document.getElementById('schoolExtra').value
     };
     localStorage.setItem('schoolProfile', JSON.stringify(schoolData));
-    alert("शाळेची माहिती यशस्वीपणे सेव्ह झाली!");
+    
+    // सेव्ह झाल्यावर पुन्हा लॉक करणे
+    document.getElementById('instName').disabled = true;
+    document.getElementById('schoolName').disabled = true;
+    document.getElementById('schoolAddress').disabled = true;
+    document.getElementById('schoolContact').disabled = true;
+    document.getElementById('schoolExtra').disabled = true;
+    document.getElementById('saveBtn').style.display = 'none';
+    
+    alert("शाळेची माहिती यशस्वीपणे सेव्ह व लॉक झाली!");
 }
 
 function loadSchoolInfo() {
