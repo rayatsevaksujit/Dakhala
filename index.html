@@ -71,20 +71,6 @@
         .app-title h2 { margin: 0; font-size: 18px; color: var(--primary-color); }
         .app-title p { margin: 2px 0 0 0; font-size: 12px; color: #7f8c8d; }
 
-        .upload-card {
-            background: #e8f8f5;
-            border: 1px solid #a3e4d7;
-            padding: 8px 14px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
-            font-size: 13px;
-        }
-
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -128,7 +114,7 @@
         table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 12px; text-align: left; }
         table.data-table th { background: #f2f4f4; color: var(--primary-color); }
 
-        /* Professional LC Format - DVOT Yogesh Style, Optimized for single A4 page */
+        /* Professional LC Format */
         .lc-format {
             border: 2px solid #000;
             padding: 10px 15px;
@@ -190,14 +176,6 @@
             <button onclick="handleLogout()" style="background: #c0392b; color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; width: auto;">🚪 Logout</button>
         </div>
     </div>
-    
-    <!-- Excel File Upload Card -->
-    <div class="upload-card no-print" id="schoolExcelUploadCard" style="display: none;">
-        <div>
-            <strong>📁 Upload / Update School Excel File:</strong> (Student records data source)
-        </div>
-        <input type="file" id="excelFile" accept=".xlsx, .xls, .csv, .xlsm" style="max-width: 250px; background: white; padding: 4px;">
-    </div>
 
     <!-- Main Dashboard Cards -->
     <div id="homeDashboard" class="no-print">
@@ -205,35 +183,35 @@
             <div class="tool-card" id="cardSchoolMgmt" onclick="openTab('tabSchoolMgmt')" style="display:none; background: #fef9e7; border-color: #f39c12;">
                 <div class="tool-icon">🏛️</div>
                 <div class="tool-title">शाळा व्यवस्थापन</div>
-                <div class="tool-desc">नवीन शाळा व त्यांचे लॉगिन क्रेडेंशिअल्स तयार करा.</div>
+                <div class="tool-desc">नवीन शाळा, लॉगिन नाव/पासवर्ड बदल व एक्सेल डेटा मॅनेज करा.</div>
                 <a class="tool-link" style="color: #d35400;">व्यवस्थापन करा &rarr;</a>
             </div>
 
-            <div class="tool-card" onclick="openTab('tabSchoolInfo')">
+            <div class="tool-card" id="cardSchoolInfo" onclick="openTab('tabSchoolInfo')">
                 <div class="tool-icon">⚙️</div>
                 <div class="tool-title">शाळेची माहिती व सेटिंग्ज</div>
                 <div class="tool-desc">संस्था, शाळा, मान्यता, युडायस, इंडेक्स व लोगो सेट करा.</div>
                 <a class="tool-link">माहिती भरा &rarr;</a>
             </div>
-            <div class="tool-card" onclick="openTab('tabEntry')">
+            <div class="tool-card" id="cardEntry" onclick="openTab('tabEntry')">
                 <div class="tool-icon">📝</div>
                 <div class="tool-title">विद्यार्थी डेटा एन्ट्री फॉर्म</div>
                 <div class="tool-desc">विद्यार्थ्यांची माहिती थेट ऑनलाईन सेव्ह करा.</div>
                 <a class="tool-link">एन्ट्री करा &rarr;</a>
             </div>
-            <div class="tool-card" onclick="openTab('tabDakhala')">
+            <div class="tool-card" id="cardDakhala" onclick="openTab('tabDakhala')">
                 <div class="tool-icon">📜</div>
                 <div class="tool-title">शाळा सोडल्याचा दाखला</div>
                 <div class="tool-desc">रजिस्टर नंबर टाकून एलसी (LC) जनरेट करा.</div>
                 <a class="tool-link">दाखला पहा &rarr;</a>
             </div>
-            <div class="tool-card" onclick="openTab('tabBonafide')">
+            <div class="tool-card" id="cardBonafide" onclick="openTab('tabBonafide')">
                 <div class="tool-icon">📋</div>
                 <div class="tool-title">बोनाफाईड सर्टिफिकेट</div>
                 <div class="tool-desc">विद्यार्थ्यांचे बोनाफाईड प्रमाणपत्र तयार करा.</div>
                 <a class="tool-link">सुरू करा &rarr;</a>
             </div>
-            <div class="tool-card" onclick="openTab('tabIdCard')">
+            <div class="tool-card" id="cardIdCard" onclick="openTab('tabIdCard')">
                 <div class="tool-icon">🪪</div>
                 <div class="tool-title">विद्यार्थी ओळखपत्र</div>
                 <div class="tool-desc">शाळेच्या विद्यार्थ्यांसाठी आयडी कार्ड प्रिंट करा.</div>
@@ -246,10 +224,13 @@
         <button class="back-btn" onclick="goHome()">&larr; Back to Dashboard</button>
     </div>
 
-    <!-- Tab: School Management -->
+    <!-- Tab: School Management (Master Admin Only) -->
     <div id="tabSchoolMgmt" class="tab-content">
-        <h3>🏛️ शाळा व्यवस्थापन (Register New Schools)</h3>
+        <h3>🏛️ शाळा व्यवस्थापन, लॉगिन नाव बदल व एक्सेल डेटा (Master Admin Panel)</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही नवीन शाळा जोडू शकता, शाळेचे युजरनेम/पासवर्ड बदलू शकता तसेच एक्सेल फाईल थेट अपलोड करू शकता.</p>
+        
         <div style="max-width: 500px; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 20px;">
+            <h4 style="margin-top:0; color:var(--primary-color);">नवीन शाळा नोंदणी</h4>
             <div class="form-group"><label>शाळेचे नाव (School Name):</label><input type="text" id="newSchoolName" placeholder="Enter school name"></div>
             <div class="form-group"><label>युडायस कोड (UDISE Code):</label><input type="text" id="newSchoolUdise" placeholder="Enter UDISE code"></div>
             <div class="form-group"><label>अधिकृत मोबाईल नंबर (Mobile Number):</label><input type="text" id="newSchoolMobile" placeholder="Enter official mobile number"></div>
@@ -257,9 +238,19 @@
             <div class="form-group"><label>पासवर्ड (Password):</label><input type="text" id="newSchoolPass" placeholder="Enter login password"></div>
             <button onclick="registerNewSchool()" style="background: #27ae60; margin-top: 5px;">नवीन शाळा जोडा (Register School)</button>
         </div>
-        <h4>नोंदणीकृत शाळांची यादी व क्रेडेंशिअल्स</h4>
+
+        <h4>नोंदणीकृत शाळांची यादी व नियंत्रण पॅनल</h4>
         <table class="data-table">
-            <thead><tr><th>अ.क्र.</th><th>शाळेचे नाव</th><th>युडायस कोड</th><th>मोबाईल नंबर</th><th>युजरनेम</th><th>पासवर्ड</th><th>कृती</th></tr></thead>
+            <thead>
+                <tr>
+                    <th>अ.क्र.</th>
+                    <th>शाळेचे नाव</th>
+                    <th>युडायस व मोबाईल</th>
+                    <th>लॉगिन युजरनेम / पासवर्ड बदल</th>
+                    <th>एक्सेल डेटा फाईल (Excel Upload)</th>
+                    <th>कृती</th>
+                </tr>
+            </thead>
             <tbody id="schoolTableBody"></tbody>
         </table>
     </div>
@@ -351,7 +342,7 @@
 
         <div id="printableArea">
             <div class="lc-format" id="lcCard" style="display:none;">
-                <div style="font-size: 10px; border-bottom: 1px dashed #000; padding-bottom: 2px; margin-bottom: 4px; text-align: center;">
+                <div style="font-size: 11px; border-bottom: 1px dashed #000; padding-bottom: 2px; margin-bottom: 4px; text-align: center;">
                     (दाखला देणाऱ्या अधिकाऱ्याव्यतिरिक्त इतर कोणीही या दाखल्याच्या नोंदवहीत बदल अगर खाडाखोड करायची नाही. तसे करणे कायदेशीर गुन्हा असून, विद्यार्थी शाळेतून काढून टाकण्यापर्यंतच्या शिक्षेस पात्र ठरेल.)
                 </div>
                 
@@ -436,7 +427,7 @@
                     दाखला देण्यात येतो की, वरील माहिती शाळेतील जनरल रजिस्टरप्रमाणे बरोबर आहे.
                 </div>
 
-                <!-- Corrected Signatures Layout with ample space -->
+                <!-- Signatures Layout -->
                 <div style="margin-top: 35px; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; text-align: center;">
                     <div style="width: 30%;">वर्गशिक्षक</div>
                     <div style="width: 30%;">लेखनिक</div>
@@ -574,13 +565,11 @@
       if(role === 'master') {
           document.getElementById('roleSubTitle').innerText = 'डिजिटल साथीदार प्रशासकीय प्रणाली (Master Admin)';
           document.getElementById('cardSchoolMgmt').style.display = 'block';
-          document.getElementById('schoolExcelUploadCard').style.display = 'none';
           loadSchoolTable();
       } else {
           let sName = localStorage.getItem('currentSchoolName') || username;
           document.getElementById('roleSubTitle').innerText = 'शाळा लॉगिन : ' + sName;
           document.getElementById('cardSchoolMgmt').style.display = 'none';
-          document.getElementById('schoolExcelUploadCard').style.display = 'flex';
           loadSchoolInfo(username);
       }
   }
@@ -640,12 +629,84 @@
       } catch(e) { alert("Error: " + e.message); }
   }
 
+  // Load School Table in Master Admin with Edit Username/Password & Excel Upload
   function loadSchoolTable() {
       let tbody = document.getElementById('schoolTableBody');
       tbody.innerHTML = '';
+      if(registeredSchoolsList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#7f8c8d;">No schools registered yet.</td></tr>`;
+          return;
+      }
       registeredSchoolsList.forEach((s, index) => {
-          tbody.innerHTML += `<tr><td>${index+1}</td><td>${s.name}</td><td>${s.udise||'-'}</td><td>${s.mobile||'-'}</td><td>${s.username}</td><td><code>${s.password}</code></td><td><button onclick="deleteSchool(${index})" style="background:#c0392b; padding:3px; font-size:11px;">Delete</button></td></tr>`;
+          tbody.innerHTML += `
+              <tr>
+                  <td>${index+1}</td>
+                  <td><strong>${s.name}</strong></td>
+                  <td>Udise: ${s.udise||'-'}<br>Mob: ${s.mobile||'-'}</td>
+                  <td>
+                      User: <input type="text" id="editUser_${index}" value="${s.username}" style="width:100px; display:inline-block; padding:2px;"><br>
+                      Pass: <input type="text" id="editPass_${index}" value="${s.password}" style="width:100px; display:inline-block; padding:2px; margin-top:2px;"><br>
+                      <button onclick="updateSchoolCredentials(${index})" style="background:#2980b9; padding:2px 6px; font-size:10px; width:auto; margin-top:3px;">💾 Update Login</button>
+                  </td>
+                  <td>
+                      <input type="file" id="adminExcel_${s.username}" accept=".xlsx, .xls, .csv" style="font-size:11px; margin-bottom:4px;"><br>
+                      <button onclick="uploadSchoolExcel('${s.username}')" style="background:#27ae60; padding:3px 8px; font-size:11px; width:auto;">📤 Upload Excel</button>
+                  </td>
+                  <td>
+                      <button onclick="deleteSchool(${index})" style="background:#c0392b; padding:4px 8px; font-size:11px; width:auto;">Delete</button>
+                  </td>
+              </tr>`;
       });
+  }
+
+  // Update School Username & Password
+  async function updateSchoolCredentials(index) {
+      let newU = document.getElementById(`editUser_${index}`).value.trim();
+      let newP = document.getElementById(`editPass_${index}`).value.trim();
+      if(!newU || !newP) { alert("युजरनेम आणि पासवर्ड रिकामे असू शकत नाहीत!"); return; }
+
+      registeredSchoolsList[index].username = newU;
+      registeredSchoolsList[index].password = newP;
+
+      try {
+          await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
+          alert("शाळेचे लॉगिन नाव व पासवर्ड यशस्वीरित्या अपडेट झाले!");
+          loadSchoolTable();
+      } catch(e) {
+          alert("Error updating credentials: " + e.message);
+      }
+  }
+
+  // Master Admin uploading Excel for specific school
+  async function uploadSchoolExcel(targetUsername) {
+      let fileInput = document.getElementById('adminExcel_' + targetUsername);
+      if(!fileInput.files || fileInput.files.length === 0) {
+          alert("कृपया आधी फाईल निवडा!");
+          return;
+      }
+      let file = fileInput.files[0];
+      let reader = new FileReader();
+      reader.onload = async function(evt) {
+          try {
+              let data = new Uint8Array(evt.target.result);
+              let workbook = XLSX.read(data, {type: 'array'});
+              let parsedData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
+              
+              let docRef = db.collection("portalData").doc("profile_" + targetUsername);
+              let docSnap = await docRef.get();
+              let existingInfo = docSnap.exists ? (docSnap.data().info || {}) : {};
+
+              await docRef.set({
+                  info: existingInfo,
+                  excel: JSON.stringify(parsedData)
+              }, { merge: true });
+
+              alert("शाळा '" + targetUsername + "' साठी एक्सेल डेटा यशस्वीरित्या अपलोड झाला!");
+          } catch(err) {
+              alert("Error uploading: " + err.message);
+          }
+      };
+      reader.readAsArrayBuffer(file);
   }
 
   async function deleteSchool(index) {
@@ -744,7 +805,7 @@
       } catch(e) { alert("Error: " + e.message); }
   }
 
-  // Date formatter to ensure DD/MM/YYYY format
+  // Date formatter to DD/MM/YYYY format
   function formatDateDDMMYYYY(val) {
       if(!val) return "";
       if(typeof val === 'number') {
@@ -817,22 +878,10 @@
       } catch(e) { return dateStr; }
   }
 
-  document.getElementById('excelFile').addEventListener('change', function(e) {
-      let reader = new FileReader();
-      reader.onload = async function(evt) {
-          let data = new Uint8Array(evt.target.result);
-          let workbook = XLSX.read(data, {type: 'array'});
-          excelData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
-          await db.collection("portalData").doc("profile_" + (getActiveUser()||'admin')).set({ info: currentSchoolProfile||{}, excel: JSON.stringify(excelData) }, { merge: true });
-          alert("Excel file uploaded successfully!");
-      };
-      reader.readAsArrayBuffer(e.target.files[0]);
-  });
-
   function searchStudent() {
       let regNo = document.getElementById('regNo').value.trim();
       if(!regNo) { alert("कृपया रजिस्टर नंबर टाका!"); return; }
-      if(excelData.length === 0) { alert("कृपया आधी एक्सेल फाईल अपलोड करा!"); return; }
+      if(excelData.length === 0) { alert("कृपया मास्टर ॲडमिन पॅनलमधून या शाळेसाठी एक्सेल फाईल अपलोड केलेली तपासा!"); return; }
 
       let foundRow = null;
       for(let row of excelData) {
@@ -844,7 +893,6 @@
 
       if(!foundRow) { alert("रजिस्टर नंबर '" + regNo + "' सापडला नाही."); document.getElementById('lcCard').style.display = 'none'; document.getElementById('printBtn').style.display = 'none'; return; }
 
-      // Populate School Profile header details
       document.getElementById('pInst').innerText = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
       document.getElementById('pSchool').innerText = currentSchoolProfile.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)";
       document.getElementById('pAddress').innerText = "पत्ता : " + (currentSchoolProfile.address || "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली");
@@ -853,7 +901,6 @@
       document.getElementById('pRecognition').innerText = "शाळा मान्यता क्रमांक: " + (currentSchoolProfile.recognition || "S-४८ (B), Poone, 21 May 1949") + " | यु-डायस क्रमांक : " + (currentSchoolProfile.udise || "27350804005");
       document.getElementById('pIndexNums').innerText = "एस.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.sscIndex || "--") + " | एच.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.hscIndex || "--");
 
-      // Logo display
       let printLogo = document.getElementById('printLogo');
       if(schoolLogoBase64) {
           printLogo.src = schoolLogoBase64;
