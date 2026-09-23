@@ -429,12 +429,10 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  // Global Memory Cache for Cloud Data
   let registeredSchoolsList = [];
   let currentSchoolProfile = {};
   let excelData = [];
 
-  // Helper: Get Active User & Role from localStorage
   function getActiveUser() { return localStorage.getItem('activeUser'); }
   function getActiveRole() { return localStorage.getItem('activeRole'); }
 
@@ -450,10 +448,8 @@
       }
   };
 
-  // Fetch all necessary data from Firebase Firestore
   async function fetchCloudData(username, role) {
       try {
-          // 1. Fetch Registered Schools (For Master Admin)
           let schoolsDoc = await db.collection("portalData").doc("registeredSchools").get();
           if(schoolsDoc.exists) {
               registeredSchoolsList = schoolsDoc.data().list || [];
@@ -461,7 +457,6 @@
               registeredSchoolsList = [];
           }
 
-          // 2. Fetch School Profile & Excel Data
           let targetUser = (role === 'master') ? 'admin' : username;
           let profileDoc = await db.collection("portalData").doc("profile_" + targetUser).get();
           if(profileDoc.exists) {
@@ -480,7 +475,6 @@
       let u = document.getElementById('loginUser').value.trim();
       let p = document.getElementById('loginPass').value.trim();
 
-      // Fetch latest schools from Firestore before checking
       try {
           let schoolsDoc = await db.collection("portalData").doc("registeredSchools").get();
           if(schoolsDoc.exists) {
@@ -488,7 +482,6 @@
           }
       } catch(e) { console.log(e); }
 
-      // Check Master Admin
       if(u === 'admin' && p === 'admin123') {
           localStorage.setItem('activeUser', 'admin');
           localStorage.setItem('activeRole', 'master');
@@ -501,7 +494,6 @@
           return;
       }
 
-      // Check Registered Schools
       let foundSchool = registeredSchoolsList.find(s => s.username === u && s.password === p);
 
       if(foundSchool) {
@@ -570,7 +562,7 @@
       document.getElementById('backBar').style.display = 'none';
   }
 
-  // School Registration by Master Admin (Saved to Cloud Firestore)
+  // School Registration by Master Admin (Automatically sets school profile info)
   async function registerNewSchool() {
       let name = document.getElementById('newSchoolName').value.trim();
       let udise = document.getElementById('newSchoolUdise').value.trim();
@@ -586,9 +578,24 @@
       registeredSchoolsList.push({name, udise, mobile, username: user, password: pass});
 
       try {
+          // 1. Save registered schools list
           await db.collection("portalData").doc("registeredSchools").set({
               list: registeredSchoolsList
           });
+
+          // 2. Automatically create and save initial profile for this school so admin entries reflect directly
+          let initialProfile = {
+              inst: "रयत शिक्षण संस्था, सातारा", // default or blank
+              school: name,
+              address: "",
+              contact: mobile,
+              extra: udise ? "यु-डायस क्रमांक : " + udise : ""
+          };
+
+          await db.collection("portalData").doc("profile_" + user).set({
+              info: initialProfile,
+              excel: []
+          }, { merge: true });
 
           document.getElementById('newSchoolName').value = '';
           document.getElementById('newSchoolUdise').value = '';
@@ -597,7 +604,7 @@
           document.getElementById('newSchoolPass').value = '';
 
           loadSchoolTable();
-          alert("New school registered and saved to Cloud successfully!");
+          alert("New school registered and profile initialized on Cloud successfully!");
       } catch(error) {
           alert("Error saving to cloud: " + error.message);
       }
@@ -684,7 +691,6 @@
       alert("System unlocked for editing!");
   }
 
-  // Save School Info to Cloud Firestore
   async function saveSchoolInfo() {
       let user = getActiveUser() || 'admin';
       currentSchoolProfile = {
@@ -699,7 +705,7 @@
           await db.collection("portalData").doc("profile_" + user).set({
               info: currentSchoolProfile,
               excel: excelData
-          });
+          }, { merge: true });
           
           document.getElementById('instName').disabled = true;
           document.getElementById('schoolName').disabled = true;
@@ -763,7 +769,6 @@
       } catch(e) { return dateVal; }
   }
 
-  // Excel Upload & Sync to Firebase Cloud
   document.getElementById('excelFile').addEventListener('change', function(e) {
       let reader = new FileReader();
       reader.onload = async function(evt) {
