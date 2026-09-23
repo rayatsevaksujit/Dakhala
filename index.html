@@ -2,8 +2,13 @@
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <title>School Management & Certificate Portal - Master Admin</title>
+    <title>School Management & Certificate Portal - Master & School Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --primary-color: #1b4f72;
@@ -47,10 +52,10 @@
         .app-header {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             border-bottom: 2px solid #ebf5fb;
             padding-bottom: 8px;
             margin-bottom: 15px;
-            gap: 12px;
         }
         .app-logo {
             background: var(--primary-color);
@@ -107,7 +112,6 @@
         
         .back-bar { margin-bottom: 12px; display: none; display: flex; justify-content: space-between; align-items: center; }
         .back-btn { background: #7f8c8d; color: white; padding: 4px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; width: auto; }
-        .logout-btn { background: #c0392b; color: white; padding: 4px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; width: auto; }
 
         .tab-content { display: none; background: #fff; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color); }
         .tab-content.active { display: block; }
@@ -119,6 +123,10 @@
         input:focus { border-color: var(--secondary-color); outline: none; }
         button { background-color: var(--secondary-color); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         button:hover { background-color: #2471a3; }
+
+        table.data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 12px; text-align: left; }
+        table.data-table th { background: #f2f4f4; color: var(--primary-color); }
 
         .lc-format {
             border: 2px solid #000;
@@ -140,37 +148,42 @@
 </head>
 <body>
 
-<!-- Master Admin Login Screen -->
+<!-- Login Screen -->
 <div id="loginScreen" class="no-print">
     <div style="font-size: 35px; margin-bottom: 10px;">🔐</div>
-    <h3 style="color: var(--primary-color); margin-top: 0;">Master Admin Login</h3>
-    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Please enter your credentials to access the system.</p>
+    <h3 style="color: var(--primary-color); margin-top: 0;">Portal Login</h3>
+    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter Master Admin or School credentials.</p>
     
     <div class="form-group">
         <label>Username:</label>
-        <input type="text" id="adminUser" placeholder="Enter username">
+        <input type="text" id="loginUser" placeholder="Enter username">
     </div>
     <div class="form-group">
         <label>Password:</label>
-        <input type="password" id="adminPass" placeholder="Enter password">
+        <input type="password" id="loginPass" placeholder="Enter password">
     </div>
-    <button onclick="handleAdminLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
+    <button onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
 </div>
 
 <!-- Main Application Container -->
 <div class="container" id="mainAppContainer" style="display: none;">
     <div class="app-header">
-        <div class="app-logo">🏫</div>
-        <div class="app-title">
-            <h2>शाळा व्यवस्थापन व दाखला पोर्टल</h2>
-            <p>डिजिटल साथीदार प्रशासकीय प्रणाली (Master Admin)</p>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="app-logo">🏫</div>
+            <div class="app-title">
+                <h2>शाळा व्यवस्थापन व दाखला पोर्टल</h2>
+                <p id="roleSubTitle">डिजिटल साथीदार प्रशासकीय प्रणाली (Cloud Connected)</p>
+            </div>
+        </div>
+        <div>
+            <button onclick="handleLogout()" style="background: #c0392b; color: white; padding: 6px 12px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; width: auto;">🚪 Logout</button>
         </div>
     </div>
     
-    <!-- Excel File Upload / Update Card -->
-    <div class="upload-card no-print">
+    <!-- Excel File Upload Card (Only visible for School Logins) -->
+    <div class="upload-card no-print" id="schoolExcelUploadCard" style="display: none;">
         <div>
-            <strong>📁 Upload / Update Excel File:</strong> (New file will replace existing browser storage)
+            <strong>📁 Upload / Update School Excel File:</strong> (Student records data source)
         </div>
         <input type="file" id="excelFile" accept=".xlsx, .xls, .csv, .xlsm" style="max-width: 250px; background: white; padding: 4px;">
     </div>
@@ -178,6 +191,14 @@
     <!-- Main Dashboard Cards -->
     <div id="homeDashboard" class="no-print">
         <div class="dashboard-grid">
+            <!-- Master Admin Only School Management Card -->
+            <div class="tool-card" id="cardSchoolMgmt" onclick="openTab('tabSchoolMgmt')" style="display:none; background: #fef9e7; border-color: #f39c12;">
+                <div class="tool-icon">🏛️</div>
+                <div class="tool-title">शाळा व्यवस्थापन</div>
+                <div class="tool-desc">नवीन शाळा व त्यांचे लॉगिन क्रेडेंशिअल्स तयार करा.</div>
+                <a class="tool-link" style="color: #d35400;">व्यवस्थापन करा &rarr;</a>
+            </div>
+
             <div class="tool-card" onclick="openTab('tabSchoolInfo')">
                 <div class="tool-icon">⚙️</div>
                 <div class="tool-title">शाळेची माहिती</div>
@@ -219,13 +240,60 @@
 
     <div class="back-bar no-print" id="backBar">
         <button class="back-btn" onclick="goHome()">&larr; Back to Dashboard</button>
-        <button class="logout-btn" onclick="handleLogout()">🚪 Logout</button>
+    </div>
+
+    <!-- Tab: School Management (Master Admin Only) -->
+    <div id="tabSchoolMgmt" class="tab-content">
+        <h3>🏛️ शाळा व्यवस्थापन (Register New Schools)</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही नवीन शाळेसाठी मोबाईल नंबरसह स्वतंत्र युजरनेम आणि पासवर्ड तयार करू शकता.</p>
+        
+        <div style="max-width: 500px; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 20px;">
+            <div class="form-group">
+                <label>शाळेचे नाव (School Name):</label>
+                <input type="text" id="newSchoolName" placeholder="Enter school name">
+            </div>
+            <div class="form-group">
+                <label>युडायस कोड (UDISE Code):</label>
+                <input type="text" id="newSchoolUdise" placeholder="Enter UDISE code">
+            </div>
+            <div class="form-group">
+                <label>अधिकृत मोबाईल नंबर (Mobile Number):</label>
+                <input type="text" id="newSchoolMobile" placeholder="Enter official mobile number">
+            </div>
+            <div class="form-group">
+                <label>युजरनेम (Username):</label>
+                <input type="text" id="newSchoolUser" placeholder="Enter login username">
+            </div>
+            <div class="form-group">
+                <label>पासवर्ड (Password):</label>
+                <input type="text" id="newSchoolPass" placeholder="Enter login password">
+            </div>
+            <button onclick="registerNewSchool()" style="background: #27ae60; margin-top: 5px;">नवीन शाळा जोडा (Register School)</button>
+        </div>
+
+        <h4>नोंदणीकृत शाळांची यादी व क्रेडेंशिअल्स (Registered Schools List)</h4>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>अ.क्र.</th>
+                    <th>शाळेचे नाव</th>
+                    <th>युडायस कोड</th>
+                    <th>मोबाईल नंबर</th>
+                    <th>युजरनेम</th>
+                    <th>पासवर्ड</th>
+                    <th>कृती</th>
+                </tr>
+            </thead>
+            <tbody id="schoolTableBody">
+                <!-- Dynamically filled -->
+            </tbody>
+        </table>
     </div>
 
     <!-- Tab 1: School Profile Settings -->
     <div id="tabSchoolInfo" class="tab-content">
         <h3>शाळेची तपशीलवार माहिती सेट करा</h3>
-        <p style="color: #c0392b; font-size: 12px; margin-bottom: 12px;">🔒 ही माहिती लॉक केलेली आहे. बदल करण्यासाठी खालील 'प्रशासन अनलॉक' बटणावर क्लिक करा.</p>
+        <p style="color: #c0392b; font-size: 12px; margin-bottom: 12px;" id="lockNotice">🔒 ही माहिती लॉक केलेली आहे. बदल करण्यासाठी खालील 'अनलॉक' बटणावर क्लिक करा.</p>
         <div style="max-width: 500px;">
             <div class="form-group">
                 <label>व्यवस्थापनाचे नाव / संस्थेचे नाव:</label>
@@ -249,7 +317,7 @@
             </div>
             
             <div style="display: flex; gap: 10px; margin-top: 8px;">
-                <button type="button" onclick="requestAdminUnlock()" style="background: #e67e22; flex: 1;">🔐 Admin Unlock (Edit)</button>
+                <button type="button" onclick="requestUnlock()" style="background: #e67e22; flex: 1;" id="unlockBtn">🔐 Unlock & Edit</button>
                 <button type="button" id="saveBtn" onclick="saveSchoolInfo()" style="background: #27ae60; flex: 1; display: none;">Save Information</button>
             </div>
         </div>
@@ -346,205 +414,422 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-window.onload = function() {
-    let isLoggedIn = localStorage.getItem('masterAdminLoggedIn');
-    if(isLoggedIn === 'true') {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('mainAppContainer').style.display = 'block';
-        loadSavedData();
-        loadSchoolInfo();
-    }
-};
+  // Firebase Configuration (SchoolPortal)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCN270jqcwG3Jiv2AnGev2Sq305c6IfKGw",
+    authDomain: "schoolportal-da564.firebaseapp.com",
+    projectId: "schoolportal-da564",
+    storageBucket: "schoolportal-da564.appspot.com",
+    messagingSenderId: "133664185292",
+    appId: "1:133664185292:web:9b8a8296ec45ba58c8db69",
+    measurementId: "G-EN95HD2G5P"
+  };
 
-function handleAdminLogin() {
-    let u = document.getElementById('adminUser').value.trim();
-    let p = document.getElementById('adminPass').value.trim();
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-    if(u === 'admin' && p === 'admin123') {
-        localStorage.setItem('masterAdminLoggedIn', 'true');
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('mainAppContainer').style.display = 'block';
-        loadSavedData();
-        loadSchoolInfo();
-        alert("Master Admin logged in successfully!");
-    } else {
-        alert("Invalid username or password!");
-    }
-}
+  // Global Memory Cache for Cloud Data
+  let registeredSchoolsList = [];
+  let currentSchoolProfile = {};
+  let excelData = [];
 
-function handleLogout() {
-    localStorage.removeItem('masterAdminLoggedIn');
-    document.getElementById('mainAppContainer').style.display = 'none';
-    document.getElementById('loginScreen').style.display = 'block';
-    document.getElementById('adminUser').value = '';
-    document.getElementById('adminPass').value = '';
-    alert("Logged out successfully!");
-}
+  // Helper: Get Active User & Role from localStorage
+  function getActiveUser() { return localStorage.getItem('activeUser'); }
+  function getActiveRole() { return localStorage.getItem('activeRole'); }
 
-function openTab(tabName) {
-    let contents = document.getElementsByClassName('tab-content');
-    for(let c of contents) c.classList.remove('active');
-    
-    document.getElementById(tabName).classList.add('active');
-    document.getElementById('homeDashboard').style.display = 'none';
-    document.getElementById('backBar').style.display = 'flex';
-}
+  window.onload = async function() {
+      let currentUser = getActiveUser();
+      let currentRole = getActiveRole();
+      if(currentUser) {
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('mainAppContainer').style.display = 'block';
+          await fetchCloudData(currentUser, currentRole);
+          setupDashboard(currentRole, currentUser);
+          goHome();
+      }
+  };
 
-function goHome() {
-    let contents = document.getElementsByClassName('tab-content');
-    for(let c of contents) c.classList.remove('active');
-    
-    document.getElementById('homeDashboard').style.display = 'block';
-    document.getElementById('backBar').style.display = 'none';
-}
+  // Fetch all necessary data from Firebase Firestore
+  async function fetchCloudData(username, role) {
+      try {
+          // 1. Fetch Registered Schools (For Master Admin)
+          let schoolsDoc = await db.collection("portalData").doc("registeredSchools").get();
+          if(schoolsDoc.exists) {
+              registeredSchoolsList = schoolsDoc.data().list || [];
+          } else {
+              registeredSchoolsList = [];
+          }
 
-function requestAdminUnlock() {
-    let pass = prompt("Enter Admin Password:");
-    if(pass === "admin123") { 
-        document.getElementById('instName').disabled = false;
-        document.getElementById('schoolName').disabled = false;
-        document.getElementById('schoolAddress').disabled = false;
-        document.getElementById('schoolContact').disabled = false;
-        document.getElementById('schoolExtra').disabled = false;
-        document.getElementById('saveBtn').style.display = 'block';
-        alert("System unlocked for editing!");
-    } else if(pass !== null) {
-        alert("Incorrect password!");
-    }
-}
+          // 2. Fetch School Profile & Excel Data
+          let targetUser = (role === 'master') ? 'admin' : username;
+          let profileDoc = await db.collection("portalData").doc("profile_" + targetUser).get();
+          if(profileDoc.exists) {
+              currentSchoolProfile = profileDoc.data().info || {};
+              excelData = profileDoc.data().excel || [];
+          } else {
+              currentSchoolProfile = {};
+              excelData = [];
+          }
+      } catch(error) {
+          console.error("Error fetching data from Firebase: ", error);
+      }
+  }
 
-function saveSchoolInfo() {
-    let schoolData = {
-        inst: document.getElementById('instName').value,
-        school: document.getElementById('schoolName').value,
-        address: document.getElementById('schoolAddress').value,
-        contact: document.getElementById('schoolContact').value,
-        extra: document.getElementById('schoolExtra').value
-    };
-    localStorage.setItem('schoolProfile', JSON.stringify(schoolData));
-    
-    document.getElementById('instName').disabled = true;
-    document.getElementById('schoolName').disabled = true;
-    document.getElementById('schoolAddress').disabled = true;
-    document.getElementById('schoolContact').disabled = true;
-    document.getElementById('schoolExtra').disabled = true;
-    document.getElementById('saveBtn').style.display = 'none';
-    
-    alert("School information saved and locked successfully!");
-}
+  async function handleLogin() {
+      let u = document.getElementById('loginUser').value.trim();
+      let p = document.getElementById('loginPass').value.trim();
 
-function loadSchoolInfo() {
-    let saved = localStorage.getItem('schoolProfile');
-    if(saved) {
-        let data = JSON.parse(saved);
-        document.getElementById('instName').value = data.inst || "";
-        document.getElementById('schoolName').value = data.school || "";
-        document.getElementById('schoolAddress').value = data.address || "";
-        document.getElementById('schoolContact').value = data.contact || "";
-        document.getElementById('schoolExtra').value = data.extra || "";
-    }
-}
+      // Fetch latest schools from Firestore before checking
+      try {
+          let schoolsDoc = await db.collection("portalData").doc("registeredSchools").get();
+          if(schoolsDoc.exists) {
+              registeredSchoolsList = schoolsDoc.data().list || [];
+          }
+      } catch(e) { console.log(e); }
 
-const marathiMonths = {
-    1: "जानेवारी", 2: "फेब्रुवारी", 3: "मार्च", 4: "एप्रिल", 
-    5: "मे", 6: "जून", 7: "जुलै", 8: "ऑगस्ट", 
-    9: "सप्टेंबर", 10: "ऑक्टोबर", 11: "नोव्हेंबर", 12: "डिसेंबर"
-};
+      // Check Master Admin
+      if(u === 'admin' && p === 'admin123') {
+          localStorage.setItem('activeUser', 'admin');
+          localStorage.setItem('activeRole', 'master');
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('mainAppContainer').style.display = 'block';
+          await fetchCloudData('admin', 'master');
+          setupDashboard('master', 'admin');
+          goHome();
+          alert("Master Admin logged in successfully!");
+          return;
+      }
 
-function numberToMarathiWords(n) {
-    const words = {
-        1: "पहिली", 2: "दोन", 3: "तीन", 4: "चार", 5: "पाच", 
-        6: "सहा", 7: "सात", 8: "आठ", 9: "नऊ", 10: "दहा",
-        11: "अकरा", 12: "बारा", 13: "तेरा", 14: "चौदा", 15: "पंधरा", 
-        16: "सोळा", 17: "सतरा", 18: "अठरा", 19: "एकोणीस", 20: "वीस",
-        21: "एकवीस", 22: "बावीस", 23: "तेवीस", 24: "चोवीस", 25: "पंचवीस", 
-        26: "सव्वीस", 27: "सत्तावीस", 28: "अठ्ठावीस", 29: "एकूणतीस", 30: "तीस", 
-        31: "एकतीस"
-    };
-    return words[n] || n;
-}
+      // Check Registered Schools
+      let foundSchool = registeredSchoolsList.find(s => s.username === u && s.password === p);
 
-function excelDateToJSDate(serial) {
-    if (isNaN(serial)) return serial;
-    let utc_days = Math.floor(serial - 25569);
-    return new Date(utc_days * 86400 * 1000);
-}
+      if(foundSchool) {
+          localStorage.setItem('activeUser', foundSchool.username);
+          localStorage.setItem('activeRole', 'school');
+          localStorage.setItem('currentSchoolName', foundSchool.name);
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('mainAppContainer').style.display = 'block';
+          await fetchCloudData(foundSchool.username, 'school');
+          setupDashboard('school', foundSchool.username);
+          goHome();
+          alert("School logged in successfully: " + foundSchool.name);
+      } else {
+          alert("Invalid username or password!");
+      }
+  }
 
-function dateToMarathi(dateVal) {
-    try {
-        let d = (typeof dateVal === 'number') ? excelDateToJSDate(dateVal) : new Date(dateVal);
-        if (isNaN(d)) return dateVal;
-        return `${numberToMarathiWords(d.getDate())} ${marathiMonths[d.getMonth() + 1]} सन ${d.getFullYear()}`;
-    } catch(e) { return dateVal; }
-}
+  function setupDashboard(role, username) {
+      let schoolMgmtCard = document.getElementById('cardSchoolMgmt');
+      let excelUploadCard = document.getElementById('schoolExcelUploadCard');
+      
+      if(role === 'master') {
+          document.getElementById('roleSubTitle').innerText = 'डिजिटल साथीदार प्रशासकीय प्रणाली (Master Admin - Cloud)';
+          if(schoolMgmtCard) schoolMgmtCard.style.display = 'block';
+          if(excelUploadCard) excelUploadCard.style.display = 'none';
+          loadSchoolTable();
+      } else {
+          let sName = localStorage.getItem('currentSchoolName') || username;
+          document.getElementById('roleSubTitle').innerText = 'शाळा लॉगिन : ' + sName + ' (Cloud)';
+          if(schoolMgmtCard) schoolMgmtCard.style.display = 'none';
+          if(excelUploadCard) excelUploadCard.style.display = 'flex';
+          loadSchoolInfo(username);
+      }
+  }
 
-let excelData = [];
+  function handleLogout() {
+      localStorage.removeItem('activeUser');
+      localStorage.removeItem('activeRole');
+      localStorage.removeItem('currentSchoolName');
+      document.getElementById('mainAppContainer').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'block';
+      document.getElementById('loginUser').value = '';
+      document.getElementById('loginPass').value = '';
+      alert("Logged out successfully!");
+  }
 
-document.getElementById('excelFile').addEventListener('change', function(e) {
-    let reader = new FileReader();
-    reader.onload = function(evt) {
-        let data = new Uint8Array(evt.target.result);
-        let workbook = XLSX.read(data, {type: 'array'});
-        let firstSheet = workbook.SheetNames[0];
-        excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], {header: 1});
-        localStorage.setItem('savedExcelData', JSON.stringify(excelData));
-        alert("Excel file data uploaded and saved successfully!");
-    };
-    reader.readAsArrayBuffer(e.target.files[0]);
-});
+  function openTab(tabName) {
+      let contents = document.getElementsByClassName('tab-content');
+      for(let c of contents) c.classList.remove('active');
+      
+      document.getElementById(tabName).classList.add('active');
+      document.getElementById('homeDashboard').style.display = 'none';
+      document.getElementById('backBar').style.display = 'flex';
 
-function loadSavedData() {
-    let saved = localStorage.getItem('savedExcelData');
-    if(saved) {
-        excelData = JSON.parse(saved);
-    }
-}
+      if(tabName === 'tabSchoolInfo') {
+          let user = getActiveUser() || 'admin';
+          loadSchoolInfo(user);
+      }
+  }
 
-function searchStudent() {
-    let regNo = document.getElementById('regNo').value.trim();
-    if(!regNo) {
-        alert("Please enter General Register Number!");
-        return;
-    }
-    if(excelData.length === 0) {
-        alert("Please upload or select an Excel file first!");
-        return;
-    }
+  function goHome() {
+      let contents = document.getElementsByClassName('tab-content');
+      for(let c of contents) c.classList.remove('active');
+      
+      document.getElementById('homeDashboard').style.display = 'block';
+      document.getElementById('backBar').style.display = 'none';
+  }
 
-    let foundRow = null;
-    for(let row of excelData) {
-        if(row.join(" ").includes(regNo)) {
-            foundRow = row;
-            break;
-        }
-    }
+  // School Registration by Master Admin (Saved to Cloud Firestore)
+  async function registerNewSchool() {
+      let name = document.getElementById('newSchoolName').value.trim();
+      let udise = document.getElementById('newSchoolUdise').value.trim();
+      let mobile = document.getElementById('newSchoolMobile').value.trim();
+      let user = document.getElementById('newSchoolUser').value.trim();
+      let pass = document.getElementById('newSchoolPass').value.trim();
 
-    if(!foundRow) {
-        alert("Record not found for this register number.");
-        document.getElementById('lcCard').style.display = 'none';
-        document.getElementById('printBtn').style.display = 'none';
-        return;
-    }
+      if(!name || !user || !pass) {
+          alert("Please fill all required school details!");
+          return;
+      }
 
-    let savedSchool = JSON.parse(localStorage.getItem('schoolProfile')) || {};
-    document.getElementById('pInst').innerText = savedSchool.inst || "";
-    document.getElementById('pSchool').innerText = savedSchool.school ? "शाळेचे नाव : " + savedSchool.school : "";
-    document.getElementById('pAddress').innerText = savedSchool.address ? "पत्ता : " + savedSchool.address : "";
-    document.getElementById('pContact').innerText = savedSchool.contact || "";
+      registeredSchoolsList.push({name, udise, mobile, username: user, password: pass});
 
-    document.getElementById('outReg').innerText = regNo;
-    document.getElementById('outName').innerText = foundRow[2] || foundRow[1] || "";
-    let dobRaw = foundRow[4] || foundRow[3] || "";
-    document.getElementById('outDobNum').innerText = dobRaw;
-    document.getElementById('outDobWords').innerText = dateToMarathi(dobRaw);
-    document.getElementById('outBirthPlace').innerText = foundRow[5] || "";
+      try {
+          await db.collection("portalData").doc("registeredSchools").set({
+              list: registeredSchoolsList
+          });
 
-    let today = new Date().toLocaleDateString('mr-IN');
-    document.getElementById('currentDate').innerText = today;
+          document.getElementById('newSchoolName').value = '';
+          document.getElementById('newSchoolUdise').value = '';
+          document.getElementById('newSchoolMobile').value = '';
+          document.getElementById('newSchoolUser').value = '';
+          document.getElementById('newSchoolPass').value = '';
 
-    document.getElementById('lcCard').style.display = 'block';
-    document.getElementById('printBtn').style.display = 'block';
-}
+          loadSchoolTable();
+          alert("New school registered and saved to Cloud successfully!");
+      } catch(error) {
+          alert("Error saving to cloud: " + error.message);
+      }
+  }
+
+  function loadSchoolTable() {
+      let tbody = document.getElementById('schoolTableBody');
+      tbody.innerHTML = '';
+      
+      if(registeredSchoolsList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#7f8c8d;">No schools registered yet.</td></tr>`;
+          return;
+      }
+
+      registeredSchoolsList.forEach((s, index) => {
+          tbody.innerHTML += `
+              <tr>
+                  <td>${index + 1}</td>
+                  <td>${s.name}</td>
+                  <td>${s.udise || '-'}</td>
+                  <td>${s.mobile || '-'}</td>
+                  <td>${s.username}</td>
+                  <td><code>${s.password}</code></td>
+                  <td>
+                      <button onclick="changePassword(${index})" style="background: #2980b9; padding: 3px 6px; font-size: 11px; width:auto; margin-right:4px;">Change Pass</button>
+                      <button onclick="deleteSchool(${index})" style="background: #c0392b; padding: 3px 6px; font-size: 11px; width:auto;">Delete</button>
+                  </td>
+              </tr>
+          `;
+      });
+  }
+
+  async function changePassword(index) {
+      let newPass = prompt("Enter new password for " + registeredSchoolsList[index].name + ":");
+      if(newPass !== null && newPass.trim() !== "") {
+          registeredSchoolsList[index].password = newPass.trim();
+          try {
+              await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
+              loadSchoolTable();
+              alert("Password updated on Cloud successfully!");
+          } catch(e) { alert("Error updating password: " + e.message); }
+      }
+  }
+
+  async function deleteSchool(index) {
+      if(confirm("Are you sure you want to delete this school?")) {
+          registeredSchoolsList.splice(index, 1);
+          try {
+              await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
+              loadSchoolTable();
+              alert("School deleted from Cloud successfully!");
+          } catch(e) { alert("Error deleting school: " + e.message); }
+      }
+  }
+
+  function requestUnlock() {
+      let role = getActiveRole();
+      if(role === 'master') {
+          let pass = prompt("Enter Master Admin Password:");
+          if(pass === "admin123") {
+              enableSchoolForm();
+          } else if(pass !== null) {
+              alert("Incorrect password!");
+          }
+      } else {
+          let pass = prompt("Enter School Password to Edit:");
+          let user = getActiveUser();
+          let school = registeredSchoolsList.find(s => s.username === user);
+          if(school && pass === school.password) {
+              enableSchoolForm();
+          } else if(pass !== null) {
+              alert("Incorrect password!");
+          }
+      }
+  }
+
+  function enableSchoolForm() {
+      document.getElementById('instName').disabled = false;
+      document.getElementById('schoolName').disabled = false;
+      document.getElementById('schoolAddress').disabled = false;
+      document.getElementById('schoolContact').disabled = false;
+      document.getElementById('schoolExtra').disabled = false;
+      document.getElementById('saveBtn').style.display = 'block';
+      alert("System unlocked for editing!");
+  }
+
+  // Save School Info to Cloud Firestore
+  async function saveSchoolInfo() {
+      let user = getActiveUser() || 'admin';
+      currentSchoolProfile = {
+          inst: document.getElementById('instName').value,
+          school: document.getElementById('schoolName').value,
+          address: document.getElementById('schoolAddress').value,
+          contact: document.getElementById('schoolContact').value,
+          extra: document.getElementById('schoolExtra').value
+      };
+
+      try {
+          await db.collection("portalData").doc("profile_" + user).set({
+              info: currentSchoolProfile,
+              excel: excelData
+          });
+          
+          document.getElementById('instName').disabled = true;
+          document.getElementById('schoolName').disabled = true;
+          document.getElementById('schoolAddress').disabled = true;
+          document.getElementById('schoolContact').disabled = true;
+          document.getElementById('schoolExtra').disabled = true;
+          document.getElementById('saveBtn').style.display = 'none';
+          
+          alert("School information saved and locked to Cloud successfully!");
+      } catch(e) {
+          alert("Error saving school info: " + e.message);
+      }
+  }
+
+  function loadSchoolInfo(user) {
+      if(currentSchoolProfile && Object.keys(currentSchoolProfile).length > 0) {
+          document.getElementById('instName').value = currentSchoolProfile.inst || "";
+          document.getElementById('schoolName').value = currentSchoolProfile.school || "";
+          document.getElementById('schoolAddress').value = currentSchoolProfile.address || "";
+          document.getElementById('schoolContact').value = currentSchoolProfile.contact || "";
+          document.getElementById('schoolExtra').value = currentSchoolProfile.extra || "";
+      } else {
+          document.getElementById('instName').value = "";
+          document.getElementById('schoolName').value = "";
+          document.getElementById('schoolAddress').value = "";
+          document.getElementById('schoolContact').value = "";
+          document.getElementById('schoolExtra').value = "";
+      }
+  }
+
+  const marathiMonths = {
+      1: "जानेवारी", 2: "फेब्रुवारी", 3: "मार्च", 4: "एप्रिल", 
+      5: "मे", 6: "जून", 7: "जुलै", 8: "ऑगस्ट", 
+      9: "सप्टेंबर", 10: "ऑक्टोबर", 11: "नोव्हेंबर", 12: "डिसेंबर"
+  };
+
+  function numberToMarathiWords(n) {
+      const words = {
+          1: "पहिली", 2: "दोन", 3: "तीन", 4: "चार", 5: "पाच", 
+          6: "सहा", 7: "सात", 8: "आठ", 9: "नऊ", 10: "दहा",
+          11: "अकरा", 12: "बारा", 13: "तेरा", 14: "चौदा", 15: "पंधरा", 
+          16: "सोळा", 17: "सतरा", 18: "अठरा", 19: "एकोणीस", 20: "वीस",
+          21: "एकवीस", 22: "बावीस", 23: "तेवीस", 24: "चोवीस", 25: "पंचवीस", 
+          26: "सव्वीस", 27: "सत्तावीस", 28: "अठ्ठावीस", 29: "एकूणतीस", 30: "तीस", 
+          31: "एकतीस"
+      };
+      return words[n] || n;
+  }
+
+  function excelDateToJSDate(serial) {
+      if (isNaN(serial)) return serial;
+      let utc_days = Math.floor(serial - 25569);
+      return new Date(utc_days * 86400 * 1000);
+  }
+
+  function dateToMarathi(dateVal) {
+      try {
+          let d = (typeof dateVal === 'number') ? excelDateToJSDate(dateVal) : new Date(dateVal);
+          if (isNaN(d)) return dateVal;
+          return `${numberToMarathiWords(d.getDate())} ${marathiMonths[d.getMonth() + 1]} सन ${d.getFullYear()}`;
+      } catch(e) { return dateVal; }
+  }
+
+  // Excel Upload & Sync to Firebase Cloud
+  document.getElementById('excelFile').addEventListener('change', function(e) {
+      let reader = new FileReader();
+      reader.onload = async function(evt) {
+          let data = new Uint8Array(evt.target.result);
+          let workbook = XLSX.read(data, {type: 'array'});
+          let firstSheet = workbook.SheetNames[0];
+          excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], {header: 1});
+          
+          let user = getActiveUser() || 'admin';
+          try {
+              await db.collection("portalData").doc("profile_" + user).set({
+                  info: currentSchoolProfile || {},
+                  excel: excelData
+              }, { merge: true });
+              alert("Excel file data uploaded and saved to Cloud successfully!");
+          } catch(err) {
+              alert("Error saving Excel data to Cloud: " + err.message);
+          }
+      };
+      reader.readAsArrayBuffer(e.target.files[0]);
+  });
+
+  function searchStudent() {
+      let regNo = document.getElementById('regNo').value.trim();
+      if(!regNo) {
+          alert("Please enter General Register Number!");
+          return;
+      }
+      if(excelData.length === 0) {
+          alert("Please upload or select an Excel file first!");
+          return;
+      }
+
+      let foundRow = null;
+      for(let row of excelData) {
+          if(row.join(" ").includes(regNo)) {
+              foundRow = row;
+              break;
+          }
+      }
+
+      if(!foundRow) {
+          alert("Record not found for this register number.");
+          document.getElementById('lcCard').style.display = 'none';
+          document.getElementById('printBtn').style.display = 'none';
+          return;
+      }
+
+      document.getElementById('pInst').innerText = currentSchoolProfile.inst || "";
+      document.getElementById('pSchool').innerText = currentSchoolProfile.school ? "शाळेचे नाव : " + currentSchoolProfile.school : "";
+      document.getElementById('pAddress').innerText = currentSchoolProfile.address ? "पत्ता : " + currentSchoolProfile.address : "";
+      document.getElementById('pContact').innerText = currentSchoolProfile.contact || "";
+
+      document.getElementById('outReg').innerText = regNo;
+      document.getElementById('outName').innerText = foundRow[2] || foundRow[1] || "";
+      let dobRaw = foundRow[4] || foundRow[3] || "";
+      document.getElementById('outDobNum').innerText = dobRaw;
+      document.getElementById('outDobWords').innerText = dateToMarathi(dobRaw);
+      document.getElementById('outBirthPlace').innerText = foundRow[5] || "";
+
+      let today = new Date().toLocaleDateString('mr-IN');
+      document.getElementById('currentDate').innerText = today;
+
+      document.getElementById('lcCard').style.display = 'block';
+      document.getElementById('printBtn').style.display = 'block';
+  }
 </script>
 
 </body>
