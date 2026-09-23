@@ -268,7 +268,7 @@
                 <label>पासवर्ड (Password):</label>
                 <input type="text" id="newSchoolPass" placeholder="Enter login password">
             </div>
-            <button onclick="registerNewSchool()" style="background: #27ae60; margin-top: 5px;">नवीन शाळा जोडा (Register School)</button>
+            <button onclick="registerNewSchool()" style="background: #27ae60; margin-top: 5px;">नवीन शाळा جوडा (Register School)</button>
         </div>
 
         <h4>नोंदणीकृत शाळांची यादी व क्रेडेंशिअल्स (Registered Schools List)</h4>
@@ -446,6 +446,18 @@
           setupDashboard(currentRole, currentUser);
           goHome();
       }
+
+      // Add Enter key listener for login fields
+      document.getElementById('loginPass').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+              handleLogin();
+          }
+      });
+      document.getElementById('loginUser').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+              document.getElementById('loginPass').focus();
+          }
+      });
   };
 
   async function fetchCloudData(username, role) {
@@ -461,7 +473,12 @@
           let profileDoc = await db.collection("portalData").doc("profile_" + targetUser).get();
           if(profileDoc.exists) {
               currentSchoolProfile = profileDoc.data().info || {};
-              excelData = profileDoc.data().excel || [];
+              let rawExcel = profileDoc.data().excel;
+              if(typeof rawExcel === 'string') {
+                  excelData = JSON.parse(rawExcel);
+              } else {
+                  excelData = rawExcel || [];
+              }
           } else {
               currentSchoolProfile = {};
               excelData = [];
@@ -562,7 +579,6 @@
       document.getElementById('backBar').style.display = 'none';
   }
 
-  // School Registration by Master Admin (Automatically sets school profile info)
   async function registerNewSchool() {
       let name = document.getElementById('newSchoolName').value.trim();
       let udise = document.getElementById('newSchoolUdise').value.trim();
@@ -578,14 +594,12 @@
       registeredSchoolsList.push({name, udise, mobile, username: user, password: pass});
 
       try {
-          // 1. Save registered schools list
           await db.collection("portalData").doc("registeredSchools").set({
               list: registeredSchoolsList
           });
 
-          // 2. Automatically create and save initial profile for this school so admin entries reflect directly
           let initialProfile = {
-              inst: "रयत शिक्षण संस्था, सातारा", // default or blank
+              inst: "रयत शिक्षण संस्था, सातारा",
               school: name,
               address: "",
               contact: mobile,
@@ -702,9 +716,10 @@
       };
 
       try {
+          let excelString = JSON.stringify(excelData);
           await db.collection("portalData").doc("profile_" + user).set({
               info: currentSchoolProfile,
-              excel: excelData
+              excel: excelString
           }, { merge: true });
           
           document.getElementById('instName').disabled = true;
@@ -779,9 +794,10 @@
           
           let user = getActiveUser() || 'admin';
           try {
+              let excelString = JSON.stringify(excelData);
               await db.collection("portalData").doc("profile_" + user).set({
                   info: currentSchoolProfile || {},
-                  excel: excelData
+                  excel: excelString
               }, { merge: true });
               alert("Excel file data uploaded and saved to Cloud successfully!");
           } catch(err) {
