@@ -25,7 +25,7 @@
             margin: 0; 
             padding: 10px; 
             color: var(--text-color);
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .container { 
@@ -127,21 +127,22 @@
         table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 12px; text-align: left; }
         table.data-table th { background: #f2f4f4; color: var(--primary-color); }
 
-        /* Professional LC Format - Sakal Marathi Look */
+        /* Professional LC Format - Larger Sakal Marathi Font Style */
         .lc-format {
             border: 2px solid #000;
-            padding: 15px;
+            padding: 18px;
             margin-top: 10px;
             background: #fff;
-            font-size: 12px;
+            font-size: 14px;
             font-family: 'Noto Sans Devanagari', Arial, sans-serif;
+            font-weight: 500;
         }
-        .lc-header { text-align: center; font-weight: bold; margin-bottom: 8px; line-height: 1.4; }
-        .lc-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        .lc-table th, .lc-table td { border: 1px solid #000; padding: 4px 6px; font-size: 12px; text-align: left; }
-        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 12px; width: 100%; font-family: 'Noto Sans Devanagari', Arial, sans-serif; color: #000; }
+        .lc-header { text-align: center; font-weight: bold; margin-bottom: 8px; line-height: 1.5; }
+        .lc-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+        .lc-table th, .lc-table td { border: 1px solid #000; padding: 6px 8px; font-size: 14px; text-align: left; }
+        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 14px; width: 100%; font-family: 'Noto Sans Devanagari', Arial, sans-serif; color: #000; }
         /* Only reason and remark are editable */
-        .editable-field { border: 1px dashed #3498db !important; background: #f9fbfd !important; padding: 2px 4px !important; }
+        .editable-field { border: 1px dashed #3498db !important; background: #f9fbfd !important; padding: 3px 6px !important; font-size: 14px !important; }
 
         @media print {
             body * { visibility: hidden; }
@@ -346,45 +347,45 @@
 
         <div id="printableArea">
             <div class="lc-format" id="lcCard" style="display:none;">
-                <div style="font-size: 10px; border-bottom: 1px dashed #000; padding-bottom: 3px; margin-bottom: 6px; text-align: center;">
+                <div style="font-size: 11px; border-bottom: 1px dashed #000; padding-bottom: 4px; margin-bottom: 8px; text-align: center;">
                     (दाखला देणाऱ्या अधिकाऱ्याव्यतिरिक्त इतर कोणीही या दाखल्याच्या नोंदवहीत बदल अगर खाडाखोड करायची नाही. तसे करणे कायदेशीर गुन्हा असून, विद्यार्थी शाळेतून काढून टाकण्यापर्यंतच्या शिक्षेस पात्र ठरेल.)
                 </div>
                 
                 <!-- Official Header with Logo -->
                 <div style="text-align: center; margin-bottom: 5px; position: relative;">
                     <div id="logoContainer" style="margin-bottom: 4px;">
-                        <img id="printLogo" src="" alt="School Logo" style="max-height: 50px; display: none; margin: 0 auto;">
+                        <img id="printLogo" src="" alt="School Logo" style="max-height: 55px; display: none; margin: 0 auto;">
                     </div>
-                    <div style="font-size: 13px; font-weight: bold;" id="pInst">रयत शिक्षण संस्था, सातारा.</div>
-                    <div style="font-size: 15px; font-weight: bold; color: #000;" id="pSchool">स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)</div>
-                    <div style="font-size: 11px;" id="pAddress">पत्ता : रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली</div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 3px; border-bottom: 1px solid #000; padding-bottom: 4px;">
+                    <div style="font-size: 14px; font-weight: bold;" id="pInst">रयत शिक्षण संस्था, सातारा.</div>
+                    <div style="font-size: 16px; font-weight: bold; color: #000;" id="pSchool">स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)</div>
+                    <div style="font-size: 12px;" id="pAddress">पत्ता : रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 4px; border-bottom: 1px solid #000; padding-bottom: 4px;">
                         <span id="pContact">फोन नंबर : ०२३४६-२२६१६१</span>
                         <span id="pEmail">इ-मेल : ramanandnagar.srvsr@gmail.com</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 3px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 4px;">
                         <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block;"></span>
                         <span>माध्यम : <span id="outMedium">मराठी</span></span>
                         <span>अनु क्र. : <input type="text" id="outAnu" readonly style="width:50px; display:inline-block;" value="-"></span>
                     </div>
-                    <div style="font-size: 10px; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 3px;" id="pRecognition">
+                    <div style="font-size: 11px; margin-top: 3px; border-bottom: 1px solid #000; padding-bottom: 3px;" id="pRecognition">
                         शाळा मान्यता क्रमांक: S-४८ (B), Poone, 21 May 1949 | यु-डायस क्रमांक : 27350804005
                     </div>
-                    <div style="font-size: 10px; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 3px;" id="pIndexNums">
+                    <div style="font-size: 11px; margin-top: 3px; border-bottom: 1px solid #000; padding-bottom: 3px;" id="pIndexNums">
                         एस.एस.सी. इंडेक्स नंबर : -- | एच.एस.सी. इंडेक्स नंबर : --
                     </div>
                 </div>
 
-                <div style="text-align: center; font-weight: bold; font-size: 14px; margin: 6px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
+                <div style="text-align: center; font-weight: bold; font-size: 15px; margin: 8px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
                 
-                <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
-                    <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px;"></div>
-                    <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:140px; padding:1px;"></div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                    <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:140px; padding:1px;"></div>
+                    <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:150px; padding:1px;"></div>
                 </div>
 
                 <table class="lc-table">
                     <tr>
-                        <td colspan="2"><strong>विद्यार्थ्याचे पूर्ण नाव :</strong> <input type="text" id="outName" readonly style="font-weight: bold;"></td>
+                        <td colspan="2"><strong>विद्यार्थ्याचे पूर्ण नाव :</strong> <input type="text" id="outName" readonly style="font-weight: bold; font-size: 15px;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong>आईचे नाव :</strong> <input type="text" id="outMother" readonly></td>
@@ -427,21 +428,21 @@
                     </tr>
                 </table>
 
-                <div style="margin-top: 6px; font-size: 11px;">
+                <div style="margin-top: 8px; font-size: 12px;">
                     दाखला देण्यात येतो की, वरील माहिती शाळेतील जनरल रजिस्टरप्रमाणे बरोबर आहे.
                 </div>
 
-                <!-- Signatures Layout with extra vertical space: वर्गशिक्षक (Left), लेखनिक (Center), मुख्याध्यापक / प्राचार्य (Right) -->
-                <div style="margin-top: 50px; margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; text-align: center;">
+                <!-- Corrected Signatures Layout with ample vertical space: वर्गशिक्षक (Left), लेखनिक (Center), मुख्याध्यापक / प्राचार्य (Right) -->
+                <div style="margin-top: 65px; margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; text-align: center;">
                     <div style="width: 30%;">वर्गशिक्षक</div>
                     <div style="width: 30%;">लेखनिक</div>
                     <div style="width: 30%;">मुख्याध्यापक / प्राचार्य</div>
                 </div>
 
-                <div style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 11px;">
+                <div style="margin-top: 20px; display: flex; justify-content: space-between; font-size: 12px;">
                     <div>तारीख : <span id="currentDate"></span></div>
                 </div>
-                <div style="margin-top: 10px; font-size: 9px; text-align: center; border-top: 1px dashed #000; padding-top: 2px;">
+                <div style="margin-top: 12px; font-size: 10px; text-align: center; border-top: 1px dashed #000; padding-top: 3px;">
                     (टिप- शाळा सोडल्याचे दाखल्यामध्ये अनाधिकृतरित्या बदल केल्यास संबंधितावर कायदेशीर कारवाई करण्यात येईल.)
                 </div>
             </div>
@@ -739,7 +740,7 @@
       } catch(e) { alert("Error: " + e.message); }
   }
 
-  // Date formatter to DD/MM/YYYY format
+  // Date formatter to ensure DD/MM/YYYY format
   function formatDateDDMMYYYY(val) {
       if(!val) return "";
       if(typeof val === 'number') {
@@ -756,10 +757,12 @@
           let year = d.getFullYear();
           return `${day}/${month}/${year}`;
       }
-      // If already in YYYY-MM-DD format, convert to DD/MM/YYYY
       let parts = val.split('-');
       if(parts.length === 3) {
-          return `${parts[2]}/${parts[1]}/${parts[0]}`;
+          // if YYYY-MM-DD convert to DD/MM/YYYY
+          if(parts[0].length === 4) {
+              return `${parts[2]}/${parts[1]}/${parts[0]}`;
+          }
       }
       return val;
   }
@@ -795,7 +798,13 @@
           if(typeof dateStr === 'number') {
               d = new Date((dateStr - 25569) * 86400 * 1000);
           } else {
-              d = new Date(dateStr);
+              // Parse DD/MM/YYYY or YYYY-MM-DD
+              if(typeof dateStr === 'string' && dateStr.includes('/')) {
+                  let p = dateStr.split('/');
+                  d = new Date(`${p[2]}-${p[1]}-${p[0]}`);
+              } else {
+                  d = new Date(dateStr);
+              }
           }
           if (isNaN(d)) return dateStr;
 
@@ -864,7 +873,7 @@
       let casteFull = (foundRow[9] || "") + (foundRow[10] && foundRow[10] !== "-" ? " (" + foundRow[10] + ")" : "");
       document.getElementById('outCaste').value = casteFull;
       document.getElementById('outBirthPlace').value = foundRow[11] || "";
-      document.getElementById('outState').value = "महाराष्ट्र"; // Corrected spelling
+      document.getElementById('outState').value = "महाराष्ट्र";
       document.getElementById('outCountry').value = foundRow[13] || "भारत";
       
       let dobRaw = foundRow[14] || "";
