@@ -203,8 +203,8 @@
 
             <div class="tool-card" onclick="openTab('tabSchoolInfo')">
                 <div class="tool-icon">⚙️</div>
-                <div class="tool-title">शाळेची माहिती</div>
-                <div class="tool-desc">संस्था, शाळा, पत्ता व युडायस तपशील सेट करा.</div>
+                <div class="tool-title">शाळेची माहिती व सेटिंग्ज</div>
+                <div class="tool-desc">संस्था, शाळा, मान्यता, युडायस व इंडेक्स नंबर सेट करा.</div>
                 <a class="tool-link">माहिती भरा &rarr;</a>
             </div>
             <div class="tool-card" onclick="openTab('tabEntry')">
@@ -256,17 +256,29 @@
         </table>
     </div>
 
-    <!-- Tab: School Profile Settings -->
+    <!-- Tab: School Profile & Administrative Settings -->
     <div id="tabSchoolInfo" class="tab-content">
-        <h3>शाळेची तपशीलवार माहिती सेट करा</h3>
+        <h3>⚙️ शाळेची तपशीलवार माहिती व प्रशासकीय सेटिंग्ज</h3>
         <p style="color: #c0392b; font-size: 12px; margin-bottom: 12px;" id="lockNotice">🔒 ही माहिती लॉक केलेली आहे. बदल करण्यासाठी खालील 'अनलॉक' बटणावर क्लिक करा.</p>
-        <div style="max-width: 500px;">
-            <div class="form-group"><label>व्यवस्थापनाचे नाव / संस्थेचे नाव:</label><input type="text" id="instName" disabled></div>
-            <div class="form-group"><label>शाळेचे पूर्ण नाव:</label><input type="text" id="schoolName" disabled></div>
-            <div class="form-group"><label>पत्ता, तालुका व जिल्हा:</label><input type="text" id="schoolAddress" disabled></div>
-            <div class="form-group"><label>फोन नंबर व इ-मेल:</label><input type="text" id="schoolContact" disabled></div>
-            <div class="form-group"><label>माध्यम व यु-डायस क्रमांक:</label><input type="text" id="schoolExtra" disabled></div>
-            <div style="display: flex; gap: 10px; margin-top: 8px;">
+        <div style="max-width: 550px;">
+            <div class="form-group"><label>व्यवस्थापनाचे नाव :</label><input type="text" id="instName" disabled></div>
+            <div class="form-group"><label>शाळेचे नाव :</label><input type="text" id="schoolName" disabled></div>
+            <div class="form-group"><label>पत्ता (तालुका, जिल्हा) :</label><input type="text" id="schoolAddress" disabled></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group"><label>फोन नंबर :</label><input type="text" id="schoolPhone" disabled></div>
+                <div class="form-group"><label>इ-मेल :</label><input type="text" id="schoolEmail" disabled></div>
+            </div>
+            <div class="form-group"><label>शाळा मान्यता क्रमांक :</label><input type="text" id="schoolRecognition" disabled></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group"><label>युडायस नंबर (UDISE) :</label><input type="text" id="schoolUdise" disabled></div>
+                <div class="form-group"><label>माध्यम :</label><input type="text" id="schoolMedium" disabled value="मराठी"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group"><label>एस.एस.सी. इंडेक्स नंबर (SSC Index) :</label><input type="text" id="sscIndex" disabled></div>
+                <div class="form-group"><label>एच.एस.सी. इंडेक्स नंबर (HSC Index) :</label><input type="text" id="hscIndex" disabled></div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 12px;">
                 <button type="button" onclick="requestUnlock()" style="background: #e67e22; flex: 1;" id="unlockBtn">🔐 Unlock & Edit</button>
                 <button type="button" id="saveBtn" onclick="saveSchoolInfo()" style="background: #27ae60; flex: 1; display: none;">Save Information</button>
             </div>
@@ -275,28 +287,40 @@
 
     <!-- Tab: Student Data Entry Form -->
     <div id="tabEntry" class="tab-content">
-        <h3>📝 विद्यार्थी माहिती एन्ट्री फॉर्म (Manual Data Entry)</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">जर तुमच्याकडे एक्सेल फाईल नसेल, तर तुम्ही येथून एका क्लिकवर विद्यार्थ्यांची माहिती थेट क्लाउडवर सेव्ह करू शकता.</p>
+        <h3>📝 विद्यार्थी माहिती मॅन्युअल एन्ट्री फॉर्म</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही एक्सेल फाईलशिवाय थेट एका विद्यार्थ्याची माहिती क्लाउडवर सेव्ह करू शकता.</p>
         <div style="max-width: 600px; background: #fdfefe; padding: 15px; border-radius: 6px; border: 1px solid #d5dbdb;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group"><label>जनरल रजिस्टर नंबर :</label><input type="text" id="entReg" placeholder="उदा. 12435"></div>
-                <div class="form-group"><label>अनुक्रमांक (Serial No) :</label><input type="text" id="entAnu" placeholder="उदा. 64"></div>
-            </div>
-            <div class="form-group"><label>विद्यार्थ्याचे पूर्ण नाव :</label><input type="text" id="entName" placeholder="उदा. नजन तेजस्विनी नंदकिशोर"></div>
-            <div class="form-group"><label>आईचे नाव :</label><input type="text" id="entMother" placeholder="उदा. प्रांजल"></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group"><label>जन्म दिनांक (अंकात) :</label><input type="text" id="entDob" placeholder="उदा. 13-09-2010"></div>
-                <div class="form-group"><label>जन्मस्थळ (गाव/शहर) :</label><input type="text" id="entBirthPlace" placeholder="उदा. औरंगाबाद"></div>
+                <div class="form-group"><label>रजिस्टर नंबर :</label><input type="text" id="entReg" placeholder="उदा. 12718"></div>
+                <div class="form-group"><label>माध्यम :</label><input type="text" id="entMed" value="मराठी"></div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group"><label>जात व उपजात :</label><input type="text" id="entCaste" placeholder="उदा. नाथजोगी (NT)"></div>
-                <div class="form-group"><label>प्रवेश दिनांक :</label><input type="text" id="entAdmDate" placeholder="उदा. 28-06-2023"></div>
+                <div class="form-group"><label>PEN आयडी (Student ID) :</label><input type="text" id="entStudId" placeholder="PEN ID"></div>
+                <div class="form-group"><label>आधार क्रमांक :</label><input type="text" id="entAadhaar" placeholder="आधार क्रमांक"></div>
+            </div>
+            <div class="form-group"><label>विद्यार्थ्याचे पूर्ण नाव :</label><input type="text" id="entName" placeholder="उदा. आवटी शुभम परशुराम"></div>
+            <div class="form-group"><label>आईचे नाव :</label><input type="text" id="entMother" placeholder="उदा. भाग्यश्री"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group"><label>राष्ट्रीयत्व :</label><input type="text" id="entNat" value="भारतीय"></div>
+                <div class="form-group"><label>मातृभाषा :</label><input type="text" id="entLang" value="मराठी"></div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group"><label>वर्ग :</label><input type="text" id="entClass" placeholder="उदा. 5 वी"></div>
-                <div class="form-group"><label>स्टुडंट आयडी :</label><input type="text" id="entStudId" placeholder="स्टुडंट आयडी"></div>
+                <div class="form-group"><label>धर्म :</label><input type="text" id="entRel" value="हिंदू"></div>
+                <div class="form-group"><label>जात व पोटजात :</label><input type="text" id="entCaste" placeholder="उदा. लिंगायत गुरव"></div>
             </div>
-            <div class="form-group"><label>आधार क्रमांक (UID) :</label><input type="text" id="entAadhaar" placeholder="आधार क्रमांक"></div>
+            <div class="form-group"><label>जन्मस्थळ (गाव, तालुका, जिल्हा) :</label><input type="text" id="entBirthPlace" placeholder="उदा. पलूस,तालुका-पलूस,जिल्हा-सांगली"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group"><label>राज्य :</label><input type="text" id="entState" value="महाराष्ट्र"></div>
+                <div class="form-group"><label>देश :</label><input type="text" id="entCountry" value="भारत"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group"><label>जन्मदिनांक (अंकी YYYY-MM-DD) :</label><input type="text" id="entDob" placeholder="उदा. 2010-05-01"></div>
+                <div class="form-group"><label>प्रवेश दिनांक :</label><input type="text" id="entAdmDate" placeholder="उदा. 2022-07-30"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
+                <div class="form-group"><label>प्रवेश इयत्ता :</label><input type="text" id="entAdmClass" placeholder="७ वी"></div>
+                <div class="form-group"><label>यापूर्वीची शाळा :</label><input type="text" id="entPrevSchool" placeholder="मागील शाळेचे नाव"></div>
+            </div>
             <button onclick="saveManualStudent()" style="background: #27ae60; margin-top: 10px;">💾 विद्यार्थी माहिती सेव्ह करा</button>
         </div>
     </div>
@@ -304,8 +328,8 @@
     <!-- Tab: School Leaving Certificate -->
     <div id="tabDakhala" class="tab-content">
         <div class="form-group no-print" style="max-width: 350px;">
-            <label>🔍 जनरल रजिस्टर नंबर टाका:</label>
-            <input type="text" id="regNo" placeholder="Enter General Register No.">
+            <label>🔍 रजिस्टर नंबर टाका:</label>
+            <input type="text" id="regNo" placeholder="Enter Register No.">
             <button onclick="searchStudent()" style="margin-top: 6px; background: #27ae60;">Search & Generate LC</button>
         </div>
 
@@ -315,30 +339,32 @@
                     (दाखला देणाऱ्या अधिकाऱ्याव्यतिरिक्त इतर कोणीही या दाखल्याच्या नोंदवहीत बदल अगर खाडाखोड करायची नाही. तसे करणे कायदेशीर गुन्हा असून, विद्यार्थी शाळेतून काढून टाकण्यापर्यंतच्या शिक्षेस पात्र ठरेल.)
                 </div>
                 
-                <!-- Official Header with Logo Space -->
+                <!-- Official Header -->
                 <div style="text-align: center; margin-bottom: 5px;">
-                    <div style="font-size: 11px; font-weight: bold; margin-bottom: 2px;">॥ स्वामी विवेकानंद शिक्षण संस्था ॥ किंवा रयत शिक्षण संस्था</div>
                     <div style="font-size: 13px; font-weight: bold;" id="pInst">रयत शिक्षण संस्था, सातारा.</div>
                     <div style="font-size: 15px; font-weight: bold; color: #000;" id="pSchool">स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)</div>
-                    <div style="font-size: 11px;" id="pAddress">पत्ता : रामानंदनगर (बुर्ली), तालुका पलूस, जिल्हा : सांगली</div>
+                    <div style="font-size: 11px;" id="pAddress">पत्ता : रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली</div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 3px; border-bottom: 1px solid #000; padding-bottom: 4px;">
                         <span id="pContact">फोन नंबर : ०२३४६-२२६१६१</span>
                         <span id="pEmail">इ-मेल : ramanandnagar.srvsr@gmail.com</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 3px;">
-                        <span>जनरल रजि.क्र. : <input type="text" id="outReg" style="width:70px; display:inline-block;"></span>
-                        <span>माध्यम : मराठी</span>
-                        <span>अनु क्र. : <input type="text" id="outAnu" style="width:50px; display:inline-block;"></span>
+                        <span>रजिस्टर नंबर : <input type="text" id="outReg" style="width:70px; display:inline-block;"></span>
+                        <span>माध्यम : <span id="outMedium">मराठी</span></span>
+                        <span>अनु क्र. : <input type="text" id="outAnu" style="width:50px; display:inline-block;" value="-"></span>
                     </div>
-                    <div style="font-size: 10px; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 3px;">
+                    <div style="font-size: 10px; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 3px;" id="pRecognition">
                         शाळा मान्यता क्रमांक: S-४८ (B), Poone, 21 May 1949 | यु-डायस क्रमांक : 27350804005
+                    </div>
+                    <div style="font-size: 10px; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 3px;" id="pIndexNums">
+                        एस.एस.सी. इंडेक्स नंबर : -- | एच.एस.सी. इंडेक्स नंबर : --
                     </div>
                 </div>
 
                 <div style="text-align: center; font-weight: bold; font-size: 14px; margin: 6px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
                 
                 <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
-                    <div>स्टुडंट आय डी : <input type="text" id="editStudentId" style="width:130px; border:1px dashed #999; padding:1px;"></div>
+                    <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" style="width:130px; border:1px dashed #999; padding:1px;"></div>
                     <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" style="width:140px; border:1px dashed #999; padding:1px;"></div>
                 </div>
 
@@ -355,10 +381,10 @@
                     </tr>
                     <tr>
                         <td><strong>धर्म :</strong> <input type="text" id="outReligion" value="हिंदू"></td>
-                        <td><strong>जात व उपजात :</strong> <input type="text" id="outCaste"></td>
+                        <td><strong>जात व पोटजात :</strong> <input type="text" id="outCaste"></td>
                     </tr>
                     <tr>
-                        <td><strong>जन्मस्थळ (गाव/शहर) :</strong> <input type="text" id="outBirthPlace"></td>
+                        <td><strong>जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace"></td>
                         <td><strong>राज्य :</strong> <input type="text" id="outState" value="महाराष्ट्र"> | <strong>देश :</strong> <input type="text" id="outCountry" value="भारत" style="width:60px;"></td>
                     </tr>
                     <tr>
@@ -370,14 +396,14 @@
                     </tr>
                     <tr>
                         <td><strong>या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> <input type="text" id="outAdmissionDate"></td>
-                        <td><strong>वर्ग :</strong> <input type="text" id="outClass"></td>
+                        <td><strong>प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass"></td>
                     </tr>
                     <tr>
                         <td><strong>अभ्यासातील प्रगती :</strong> <input type="text" id="outProgress" value="चांगली"></td>
                         <td><strong>वर्तणूक :</strong> <input type="text" id="outConduct" value="चांगली"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong>कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" value="-"></td>
+                        <td colspan="2"><strong>कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" value="इ. १० वी, सन २०२५-२६ पासून"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong>शाळा सोडल्याचे कारण :</strong> <input type="text" id="outLeavingReason" value="शिक्षण पूर्ण / संतोषजनक"></td>
@@ -552,7 +578,18 @@
       try {
           await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
           await db.collection("portalData").doc("profile_" + user).set({
-              info: { inst: "रयत शिक्षण संस्था, सातारा.", school: name, address: "रामानंदनगर (बुर्ली), तालुका पलूस, जिल्हा : सांगली", contact: "फोन नं: ०२३४६-२२६१६१", extra: "इ-मेल : ramanandnagar.srvsr@gmail.com" },
+              info: {
+                  inst: "रयत शिक्षण संस्था, सातारा.",
+                  school: name,
+                  address: "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली",
+                  phone: "०२३४६-२२६१६१",
+                  email: "ramanandnagar.srvsr@gmail.com",
+                  recognition: "S-४८ (B), Poone, 21 May 1949",
+                  udise: udise || "27350804005",
+                  medium: "मराठी",
+                  sscIndex: "--",
+                  hscIndex: "--"
+              },
               excel: []
           }, { merge: true });
           alert("New school registered successfully!");
@@ -581,7 +618,7 @@
       let user = getActiveUser();
       let school = registeredSchoolsList.find(s => s.username === user);
       if(user === 'admin' && pass === 'admin123' || (school && pass === school.password)) {
-          ['instName', 'schoolName', 'schoolAddress', 'schoolContact', 'schoolExtra'].forEach(id => document.getElementById(id).disabled = false);
+          ['instName', 'schoolName', 'schoolAddress', 'schoolPhone', 'schoolEmail', 'schoolRecognition', 'schoolUdise', 'schoolMedium', 'sscIndex', 'hscIndex'].forEach(id => document.getElementById(id).disabled = false);
           document.getElementById('saveBtn').style.display = 'block';
           alert("Unlocked!");
       } else { alert("Incorrect password!"); }
@@ -593,41 +630,55 @@
           inst: document.getElementById('instName').value,
           school: document.getElementById('schoolName').value,
           address: document.getElementById('schoolAddress').value,
-          contact: document.getElementById('schoolContact').value,
-          extra: document.getElementById('schoolExtra').value
+          phone: document.getElementById('schoolPhone').value,
+          email: document.getElementById('schoolEmail').value,
+          recognition: document.getElementById('schoolRecognition').value,
+          udise: document.getElementById('schoolUdise').value,
+          medium: document.getElementById('schoolMedium').value,
+          sscIndex: document.getElementById('sscIndex').value,
+          hscIndex: document.getElementById('hscIndex').value
       };
       await db.collection("portalData").doc("profile_" + user).set({ info: currentSchoolProfile, excel: JSON.stringify(excelData) }, { merge: true });
-      ['instName', 'schoolName', 'schoolAddress', 'schoolContact', 'schoolExtra'].forEach(id => document.getElementById(id).disabled = true);
+      ['instName', 'schoolName', 'schoolAddress', 'schoolPhone', 'schoolEmail', 'schoolRecognition', 'schoolUdise', 'schoolMedium', 'sscIndex', 'hscIndex'].forEach(id => document.getElementById(id).disabled = true);
       document.getElementById('saveBtn').style.display = 'none';
       alert("Saved successfully!");
   }
 
   function loadSchoolInfo(user) {
-      document.getElementById('instName').value = currentSchoolProfile.inst || "";
-      document.getElementById('schoolName').value = currentSchoolProfile.school || "";
-      document.getElementById('schoolAddress').value = currentSchoolProfile.address || "";
-      document.getElementById('schoolContact').value = currentSchoolProfile.contact || "";
-      document.getElementById('schoolExtra').value = currentSchoolProfile.extra || "";
+      document.getElementById('instName').value = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
+      document.getElementById('schoolName').value = currentSchoolProfile.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)";
+      document.getElementById('schoolAddress').value = currentSchoolProfile.address || "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली";
+      document.getElementById('schoolPhone').value = currentSchoolProfile.phone || "०२३४६-२२६१६१";
+      document.getElementById('schoolEmail').value = currentSchoolProfile.email || "ramanandnagar.srvsr@gmail.com";
+      document.getElementById('schoolRecognition').value = currentSchoolProfile.recognition || "S-४८ (B), Poone, 21 May 1949";
+      document.getElementById('schoolUdise').value = currentSchoolProfile.udise || "27350804005";
+      document.getElementById('schoolMedium').value = currentSchoolProfile.medium || "मराठी";
+      document.getElementById('sscIndex').value = currentSchoolProfile.sscIndex || "--";
+      document.getElementById('hscIndex').value = currentSchoolProfile.hscIndex || "--";
   }
 
-  // Manual Data Entry function
   async function saveManualStudent() {
       let reg = document.getElementById('entReg').value.trim();
-      let anu = document.getElementById('entAnu').value.trim();
-      let name = document.getElementById('entName').value.trim();
-      let mother = document.getElementById('entMother').value.trim();
-      let dob = document.getElementById('entDob').value.trim();
-      let bp = document.getElementById('entBirthPlace').value.trim();
-      let caste = document.getElementById('entCaste').value.trim();
-      let adm = document.getElementById('entAdmDate').value.trim();
-      let cls = document.getElementById('entClass').value.trim();
+      let med = document.getElementById('entMed').value.trim();
       let studId = document.getElementById('entStudId').value.trim();
       let aadhaar = document.getElementById('entAadhaar').value.trim();
+      let name = document.getElementById('entName').value.trim();
+      let mother = document.getElementById('entMother').value.trim();
+      let nat = document.getElementById('entNat').value.trim();
+      let lang = document.getElementById('entLang').value.trim();
+      let rel = document.getElementById('entRel').value.trim();
+      let caste = document.getElementById('entCaste').value.trim();
+      let bp = document.getElementById('entBirthPlace').value.trim();
+      let state = document.getElementById('entState').value.trim();
+      let country = document.getElementById('entCountry').value.trim();
+      let dob = document.getElementById('entDob').value.trim();
+      let adm = document.getElementById('entAdmDate').value.trim();
+      let admClass = document.getElementById('entAdmClass').value.trim();
+      let prevSchool = document.getElementById('entPrevSchool').value.trim();
 
-      if(!reg || !name) { alert("कृपया किमान जनरल रजिस्टर नंबर आणि विद्यार्थ्याचे नाव भरा!"); return; }
+      if(!reg || !name) { alert("कृपया किमान रजिस्टर नंबर आणि विद्यार्थ्याचे नाव भरा!"); return; }
 
-      // Push to excelData array format
-      let newRow = [reg, anu, name, mother, dob, bp, caste, adm, cls, studId, aadhaar];
+      let newRow = [reg, med, studId, aadhaar, name, mother, nat, lang, rel, caste, "", bp, state, country, dob, "", prevSchool, adm, admClass, "१० वी", "अ"];
       excelData.push(newRow);
 
       let user = getActiveUser() || 'admin';
@@ -636,34 +687,40 @@
               info: currentSchoolProfile || {},
               excel: JSON.stringify(excelData)
           }, { merge: true });
-          alert("विद्यार्थ्याची माहिती यशस्वीरित्या क्लाउडवर सेव्ह झाली!");
-          // Clear form
-          document.getElementById('entReg').value = '';
-          document.getElementById('entAnu').value = '';
-          document.getElementById('entName').value = '';
-          document.getElementById('entMother').value = '';
-          document.getElementById('entDob').value = '';
-          document.getElementById('entBirthPlace').value = '';
-          document.getElementById('entCaste').value = '';
-          document.getElementById('entAdmDate').value = '';
-          document.getElementById('entClass').value = '';
-          document.getElementById('entStudId').value = '';
-          document.getElementById('entAadhaar').value = '';
-      } catch(e) { alert("Error saving: " + e.message); }
+          alert("विद्यार्थ्याची माहिती यशस्वीरित्या सेव्ह झाली!");
+      } catch(e) { alert("Error: " + e.message); }
   }
 
+  // Date to Marathi Words Converter
+  const marathiUnits = ["", "एक", "दोन", "तीन", "चार", "पाच", "सहा", "सात", "आठ", "नऊ", "दहा",
+      "अकरा", "बारा", "तेरा", "चौदा", "पंधरा", "सोळा", "सतरा", "अठरा", "एकोणीस", "वीस",
+      "एकवीस", "बावीस", "तेवीस", "चोवीस", "पंचवीस", "सव्वीस", "सत्तावीस", "अठ्ठावीस", "एकूणतीस", "तीस", "एकतीस"];
+
   const marathiMonths = { 1: "जानेवारी", 2: "फेब्रुवारी", 3: "मार्च", 4: "एप्रिल", 5: "मे", 6: "जून", 7: "जुलै", 8: "ऑगस्ट", 9: "सप्टेंबर", 10: "ऑक्टोबर", 11: "नोव्हेंबर", 12: "डिसेंबर" };
-  function numberToMarathiWords(n) {
-      const words = { 1: "पहिली", 2: "दोन", 3: "तीन", 4: "चार", 5: "पाच", 6: "सहा", 7: "सात", 8: "आठ", 9: "नऊ", 10: "दहा", 11: "अकरा", 12: "बारा", 13: "तेरा", 14: "चौदा", 15: "पंधरा", 16: "सोळा", 17: "सतरा", 18: "अठरा", 19: "एकोणीस", 20: "वीस", 21: "एकवीस", 22: "बावीस", 23: "तेवीस", 24: "चोवीस", 25: "पंचवीस", 26: "सव्वीस", 27: "सत्तावीस", 28: "अठ्ठावीस", 29: "एकूणतीस", 30: "तीस", 31: "एकतीस" };
-      return words[n] || n;
+
+  function yearToWords(year) {
+      if (year >= 2000 && year <= 2020) {
+          let rem = year - 2000;
+          let yMap = {
+              0: "दोन हजार", 1: "दोन हजार एक", 2: "दोन हजार दोन", 3: "दोन हजार तीन", 4: "दोन हजार चार",
+              5: "दोन हजार पाच", 6: "दोन हजार सहा", 7: "दोन हजार सात", 8: "दोन हजार आठ", 9: "दोन हजार नऊ",
+              10: "दोन हजार दहा", 11: "दोन हजार अकरा", 12: "दोन हजार बारा", 13: "दोन हजार तेरा", 14: "दोन हजार चौदा",
+              15: "दोन हजार पंधरा", 16: "दोन हजार सोळा", 17: "दोन हजार सतरा", 18: "दोन हजार अठरा", 19: "दोन हजार एकोणीस", 20: "दोन हजार वीस"
+          };
+          return yMap[rem] || year.toString();
+      }
+      return year.toString();
   }
-  function excelDateToJSDate(serial) { if (isNaN(serial)) return serial; return new Date((serial - 25569) * 86400 * 1000); }
-  function dateToMarathi(dateVal) {
+
+  function dateToMarathiWords(dateStr) {
       try {
-          let d = (typeof dateVal === 'number') ? excelDateToJSDate(dateVal) : new Date(dateVal);
-          if (isNaN(d)) return dateVal;
-          return `${numberToMarathiWords(d.getDate())} ${marathiMonths[d.getMonth() + 1]} सन ${d.getFullYear()}`;
-      } catch(e) { return dateVal; }
+          let d = new Date(dateStr);
+          if (isNaN(d)) return dateStr;
+          let dayWord = marathiUnits[d.getDate()] || d.getDate();
+          let monthWord = marathiMonths[d.getMonth() + 1] || "";
+          let yearWord = yearToWords(d.getFullYear());
+          return `${dayWord} ${monthWord} ${yearWord}`;
+      } catch(e) { return dateStr; }
   }
 
   document.getElementById('excelFile').addEventListener('change', function(e) {
@@ -680,8 +737,8 @@
 
   function searchStudent() {
       let regNo = document.getElementById('regNo').value.trim();
-      if(!regNo) { alert("कृपया जनरल रजिस्टर नंबर टाка!"); return; }
-      if(excelData.length === 0) { alert("कृपया आधी एक्सेल फाईल अपलोड करा किंवा डेटा एन्ट्री फॉर्ममधून माहिती भरा!"); return; }
+      if(!regNo) { alert("कृपया रजिस्टर नंबर टाका!"); return; }
+      if(excelData.length === 0) { alert("कृपया आधी एक्सेल फाईल अपलोड करा!"); return; }
 
       let foundRow = null;
       for(let row of excelData) {
@@ -691,28 +748,40 @@
           }
       }
 
-      if(!foundRow) { alert("रजिस्टर नंबर '" + regNo + "' साठी कोणताही रेकॉर्ड सापडला नाही."); document.getElementById('lcCard').style.display = 'none'; document.getElementById('printBtn').style.display = 'none'; return; }
+      if(!foundRow) { alert("रजिस्टर नंबर '" + regNo + "' सापडला नाही."); document.getElementById('lcCard').style.display = 'none'; document.getElementById('printBtn').style.display = 'none'; return; }
 
+      // Populate School Profile header details
       document.getElementById('pInst').innerText = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
       document.getElementById('pSchool').innerText = currentSchoolProfile.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)";
-      document.getElementById('pAddress').innerText = currentSchoolProfile.address || "पत्ता : रामानंदनगर (बुर्ली), तालुका पलूस, जिल्हा : सांगली";
-      document.getElementById('pContact').innerText = currentSchoolProfile.contact || "फोन नंबर : ०२३४६-२२६१६१";
-      document.getElementById('pEmail').innerText = currentSchoolProfile.extra || "इ-मेल : ramanandnagar.srvsr@gmail.com";
+      document.getElementById('pAddress').innerText = "पत्ता : " + (currentSchoolProfile.address || "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली");
+      document.getElementById('pContact').innerText = "फोन नंबर : " + (currentSchoolProfile.phone || "०२३४६-२२६१६१");
+      document.getElementById('pEmail').innerText = "इ-मेल : " + (currentSchoolProfile.email || "ramanandnagar.srvsr@gmail.com");
+      document.getElementById('pRecognition').innerText = "शाळा मान्यता क्रमांक: " + (currentSchoolProfile.recognition || "S-४८ (B), Poone, 21 May 1949") + " | यु-डायस क्रमांक : " + (currentSchoolProfile.udise || "27350804005");
+      document.getElementById('pIndexNums').innerText = "एस.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.sscIndex || "--") + " | एच.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.hscIndex || "--");
 
       document.getElementById('outReg').value = foundRow[0] || regNo;
-      document.getElementById('outAnu').value = foundRow[1] || "-";
-      document.getElementById('outName').value = foundRow[2] || "";
-      document.getElementById('outMother').value = foundRow[3] || "";
+      document.getElementById('outMedium').innerText = foundRow[1] || currentSchoolProfile.medium || "मराठी";
+      document.getElementById('editStudentId').value = foundRow[2] || "";
+      document.getElementById('editAadhaar').value = foundRow[3] || "";
+      document.getElementById('outName').value = foundRow[4] || "";
+      document.getElementById('outMother').value = foundRow[5] || "";
+      document.getElementById('outNationality').value = foundRow[6] || "भारतीय";
+      document.getElementById('outMotherTongue').value = foundRow[7] || "मराठी";
+      document.getElementById('outReligion').value = foundRow[8] || "हिंदू";
       
-      let dobRaw = foundRow[4] || "";
+      let casteFull = (foundRow[9] || "") + (foundRow[10] ? " (" + foundRow[10] + ")" : "");
+      document.getElementById('outCaste').value = casteFull;
+      document.getElementById('outBirthPlace').value = foundRow[11] || "";
+      document.getElementById('outState').value = foundRow[12] || "महाराष्ट्र";
+      document.getElementById('outCountry').value = foundRow[13] || "भारत";
+      
+      let dobRaw = foundRow[14] || "";
       document.getElementById('outDobNum').value = dobRaw;
-      document.getElementById('outDobWords').value = dateToMarathi(dobRaw);
-      document.getElementById('outBirthPlace').value = foundRow[5] || "";
-      document.getElementById('outCaste').value = foundRow[6] || "";
-      document.getElementById('outAdmissionDate').value = foundRow[7] || "";
-      document.getElementById('outClass').value = foundRow[8] || "";
-      document.getElementById('editStudentId').value = foundRow[9] || "";
-      document.getElementById('editAadhaar').value = foundRow[10] || "";
+      document.getElementById('outDobWords').value = dateToMarathiWords(dobRaw);
+      
+      document.getElementById('outPrevSchool').value = foundRow[16] || "-";
+      document.getElementById('outAdmissionDate').value = foundRow[17] || "";
+      document.getElementById('outAdmClass').value = foundRow[18] || "";
 
       document.getElementById('currentDate').innerText = new Date().toLocaleDateString('mr-IN');
       document.getElementById('lcCard').style.display = 'block';
