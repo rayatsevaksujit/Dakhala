@@ -37,7 +37,6 @@
             margin: auto; 
         }
 
-        /* Login Screen Styling */
         #loginScreen {
             max-width: 400px;
             margin: 50px auto;
@@ -617,10 +616,14 @@
 
       let foundRow = null;
       for(let row of excelData) {
-          if(row.join(" ").includes(regNo)) { foundRow = row; break; }
+          // Column 1 (index 0) is General Register Number
+          if(row[0] !== undefined && row[0].toString().trim() === regNo) { 
+              foundRow = row; 
+              break; 
+          }
       }
 
-      if(!foundRow) { alert("Record not found."); document.getElementById('lcCard').style.display = 'none'; document.getElementById('printBtn').style.display = 'none'; return; }
+      if(!foundRow) { alert("Record not found for Register Number: " + regNo); document.getElementById('lcCard').style.display = 'none'; document.getElementById('printBtn').style.display = 'none'; return; }
 
       document.getElementById('pInst').innerText = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
       document.getElementById('pSchool').innerText = currentSchoolProfile.school ? "शाळेचे नाव : " + currentSchoolProfile.school : "";
@@ -628,14 +631,17 @@
       document.getElementById('pContact').innerText = currentSchoolProfile.contact || "";
       document.getElementById('pEmail').innerText = currentSchoolProfile.extra || "";
 
-      document.getElementById('outReg').value = regNo;
-      document.getElementById('outName').value = foundRow[2] || foundRow[1] || "";
+      // Exact Mapping based on Excel columns
+      document.getElementById('outReg').value = foundRow[0] || regNo;
+      document.getElementById('outAnu').value = foundRow[1] || "-";
+      document.getElementById('outName').value = foundRow[2] || "";
       document.getElementById('outMother').value = foundRow[3] || "";
-      document.getElementById('outCaste').value = foundRow[6] || "";
-      document.getElementById('outBirthPlace').value = foundRow[5] || "";
+      
       let dobRaw = foundRow[4] || "";
       document.getElementById('outDobNum').value = dobRaw;
       document.getElementById('outDobWords').value = dateToMarathi(dobRaw);
+      document.getElementById('outBirthPlace').value = foundRow[5] || "";
+      document.getElementById('outCaste').value = foundRow[6] || "";
       document.getElementById('outAdmissionDate').value = foundRow[7] || "";
       document.getElementById('outClass').value = foundRow[8] || "";
       document.getElementById('editStudentId').value = foundRow[9] || "";
