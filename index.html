@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>School Management & Certificate Portal - Master & School Admin</title>
-    <!-- DVOT Yogesh / Standard Marathi Font Style -->
+    
+    <!-- Embedded Standard Marathi / DVOT Yogesh Style Web Font -->
+    <style>
+        @font-face {
+            font-family: 'DVOT Yogesh';
+            src: local('DVOT Yogesh'), local('Noto Sans Devanagari'), url('https://fonts.gstatic.com/s/notosansdevanagari/v27/o-0NIpQlx3QUlC5A4PNr4TRAbl_hAxxY.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK Scripts -->
@@ -21,7 +30,7 @@
         }
 
         body { 
-            font-family: 'Noto Sans Devanagari', Arial, sans-serif; 
+            font-family: 'DVOT Yogesh', 'Noto Sans Devanagari', Arial, sans-serif; 
             background: var(--bg-color); 
             margin: 0; 
             padding: 10px; 
@@ -104,7 +113,7 @@
 
         .form-group { margin-bottom: 10px; text-align: left; }
         label { display: block; margin-bottom: 3px; font-weight: 600; color: var(--text-color); font-size: 13px; }
-        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Noto Sans Devanagari', Arial, sans-serif; }
+        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'DVOT Yogesh', 'Noto Sans Devanagari', Arial, sans-serif; }
         input:disabled { background-color: #fcfcfc; color: #333; cursor: default; border: none; }
         input:focus { border-color: var(--secondary-color); outline: none; }
         button { background-color: var(--secondary-color); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
@@ -121,7 +130,7 @@
             margin-top: 10px;
             background: #fff;
             font-size: 13px;
-            font-family: 'Noto Sans Devanagari', Arial, sans-serif;
+            font-family: 'DVOT Yogesh', 'Noto Sans Devanagari', Arial, sans-serif;
             font-weight: 600;
             max-width: 800px;
             margin-left: auto;
@@ -130,7 +139,7 @@
         .lc-header { text-align: center; font-weight: bold; margin-bottom: 4px; line-height: 1.3; }
         .lc-table { width: 100%; border-collapse: collapse; margin-top: 3px; }
         .lc-table th, .lc-table td { border: 1px solid #000; padding: 3px 6px; font-size: 13px; text-align: left; }
-        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 13px; width: 100%; font-family: 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 600; }
+        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 13px; width: 100%; font-family: 'DVOT Yogesh', 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 600; }
         .editable-field { border: 1px dashed #3498db !important; background: #f9fbfd !important; padding: 2px 4px !important; font-size: 13px !important; }
 
         @media print {
