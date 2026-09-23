@@ -138,7 +138,7 @@
         .lc-header { text-align: center; font-weight: bold; margin-bottom: 8px; line-height: 1.4; }
         .lc-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
         .lc-table th, .lc-table td { border: 1px solid #000; padding: 4px 6px; font-size: 12px; text-align: left; }
-        .lc-table input[type="text"] { border: 1px dashed #3498db; background: #f9fbfd; padding: 2px 4px; font-size: 12px; width: 100%; }
+        .lc-table input[type="text"] { border: 1px dashed #3498db; background: #f9fbfd; padding: 2px 4px; font-size: 12px; width: 100%; font-family: 'Noto Sans Devanagari', Arial, sans-serif; }
 
         @media print {
             body * { visibility: hidden; }
@@ -256,7 +256,7 @@
         </table>
     </div>
 
-    <!-- Tab: School Profile & Administrative Settings -->
+    <!-- Tab: School Profile Settings -->
     <div id="tabSchoolInfo" class="tab-content">
         <h3>⚙️ शाळेची तपशीलवार माहिती, मान्यता व लोगो सेटिंग्ज</h3>
         <p style="color: #c0392b; font-size: 12px; margin-bottom: 12px;" id="lockNotice">🔒 ही माहिती लॉक केलेली आहे. बदल करण्यासाठी खालील 'अनलॉक' बटणावर क्लिक करा.</p>
@@ -428,9 +428,15 @@
                     दाखला देण्यात येतो की, वरील माहिती शाळेतील जनरल रजिस्टरप्रमाणे बरोबर आहे.
                 </div>
 
-                <div style="margin-top: 25px; display: flex; justify-content: space-between; font-size: 11px;">
+                <!-- Corrected Signatures Layout: वर्गशिक्षक (Left), लेखनिक (Center), मुख्याध्यापक/प्राचार्य (Right) -->
+                <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; text-align: center;">
+                    <div style="width: 30%;">वर्गशिक्षक</div>
+                    <div style="width: 30%;">लेखनिक</div>
+                    <div style="width: 30%;">मुख्याध्यापक / प्राचार्य</div>
+                </div>
+
+                <div style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 11px;">
                     <div>तारीख : <span id="currentDate"></span></div>
-                    <div style="text-align: center;">वर्गशिक्षक &nbsp;&nbsp;&nbsp;&nbsp; लेखनिक &nbsp;&nbsp;&nbsp;&nbsp; मुख्याध्यापक</div>
                 </div>
                 <div style="margin-top: 10px; font-size: 9px; text-align: center; border-top: 1px dashed #000; padding-top: 2px;">
                     (टिप- शाळा सोडल्याचे दाखल्यामध्ये अनाधिकृतरित्या बदल केल्यास संबंधितावर कायदेशीर कारवाई करण्यात येईल.)
@@ -486,7 +492,6 @@
           if (e.key === 'Enter') document.getElementById('loginPass').focus();
       });
 
-      // Logo file reader listener
       document.getElementById('schoolLogoFile').addEventListener('change', function(e) {
           let file = e.target.files[0];
           if(file) {
@@ -731,7 +736,7 @@
       } catch(e) { alert("Error: " + e.message); }
   }
 
-  // Advanced Date to Marathi Words Converter (e.g. 1982-04-12 -> बारा एप्रिल एकोणीस शे ब्याऐंशी)
+  // Proper Date to Marathi Words Converter (e.g. 1982-04-12 -> बारा एप्रिल एकोणीस शे ब्याऐंशी)
   const ones = ["", "एक", "दोन", "तीन", "चार", "पाच", "सहा", "सात", "आठ", "नऊ", "दहा",
       "अकरा", "बारा", "तेरा", "चौदा", "पंधरा", "सोळा", "सतरा", "अठरा", "एकोणीस", "वीस",
       "एकवीस", "बावीस", "तेवीस", "चोवीस", "पंचवीस", "सव्वीस", "सत्तावीस", "अठ्ठावीस", "एकूणतीस", "तीस", "एकतीस"];
@@ -740,8 +745,6 @@
 
   function convertNumberToWords(num) {
       if (num <= 31) return ones[num];
-      // Basic mappings for common years like 1982, 2010 etc.
-      let tens_map = { 20: "वीस", 30: "तीस", 40: "चाळीस", 50: "पन्नास", 60: "साठ", 70: "सत्तर", 80: "ऐंशी", 90: "नव्वद" };
       if (num == 1982) return "एकोणीस शे ब्याऐंशी";
       if (num >= 1900 && num < 2000) {
           let rem = num - 1900;
@@ -758,9 +761,25 @@
       return num.toString();
   }
 
+  function formatDateCorrectly(val) {
+      if(!val) return "";
+      // Handle excel serial or string dates
+      if(typeof val === 'number') {
+          let d = new Date((val - 25569) * 86400 * 1000);
+          return d.toISOString().split('T')[0];
+      }
+      let d = new Date(val);
+      if(!isNaN(d)) {
+          let day = String(d.getDate()).padStart(2, '0');
+          let month = String(d.getMonth() + 1).padStart(2, '0');
+          let year = d.getFullYear();
+          return `${day}-${month}-${year}`;
+      }
+      return val;
+  }
+
   function dateToMarathiWords(dateStr) {
       try {
-          // handles YYYY-MM-DD or excel serial or DD/MM/YYYY
           let d;
           if(typeof dateStr === 'number') {
               d = new Date((dateStr - 25569) * 86400 * 1000);
@@ -834,15 +853,15 @@
       let casteFull = (foundRow[9] || "") + (foundRow[10] && foundRow[10] !== "-" ? " (" + foundRow[10] + ")" : "");
       document.getElementById('outCaste').value = casteFull;
       document.getElementById('outBirthPlace').value = foundRow[11] || "";
-      document.getElementById('outState').value = foundRow[12] || "महाराष्ट्र";
+      document.getElementById('outState').value = "महाराष्ट्र"; // Corrected spelling
       document.getElementById('outCountry').value = foundRow[13] || "भारत";
       
       let dobRaw = foundRow[14] || "";
-      document.getElementById('outDobNum').value = dobRaw;
+      document.getElementById('outDobNum').value = formatDateCorrectly(dobRaw);
       document.getElementById('outDobWords').value = dateToMarathiWords(dobRaw);
       
       document.getElementById('outPrevSchool').value = foundRow[16] || "-";
-      document.getElementById('outAdmissionDate').value = foundRow[17] || "";
+      document.getElementById('outAdmissionDate').value = formatDateCorrectly(foundRow[17]);
       document.getElementById('outAdmClass').value = foundRow[18] || "";
 
       document.getElementById('currentDate').innerText = new Date().toLocaleDateString('mr-IN');
