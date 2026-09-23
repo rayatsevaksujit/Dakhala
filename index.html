@@ -2,7 +2,7 @@
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <title>शाळा व्यवस्थापन व दाखला पोर्टल - मास्टर ॲडमिन</title>
+    <title>School Management & Certificate Portal - Master Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -32,7 +32,7 @@
             margin: auto; 
         }
 
-        /* लॉगिन स्क्रीन स्टाईल */
+        /* Login Screen Styling */
         #loginScreen {
             max-width: 400px;
             margin: 50px auto;
@@ -140,42 +140,42 @@
 </head>
 <body>
 
-<!-- मास्टर ॲडमिन लॉगिन स्क्रीन -->
+<!-- Master Admin Login Screen -->
 <div id="loginScreen" class="no-print">
     <div style="font-size: 35px; margin-bottom: 10px;">🔐</div>
-    <h3 style="color: var(--primary-color); margin-top: 0;">मास्टर ॲडमिन लॉगिन</h3>
-    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">प्रवेश करण्यासाठी युजरनेम आणि पासवर्ड टाка.</p>
+    <h3 style="color: var(--primary-color); margin-top: 0;">Master Admin Login</h3>
+    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Please enter your credentials to access the system.</p>
     
     <div class="form-group">
-        <label>युजरनेम (Username):</label>
-        <input type="text" id="adminUser" placeholder="admin टाка">
+        <label>Username:</label>
+        <input type="text" id="adminUser" placeholder="Enter username">
     </div>
     <div class="form-group">
-        <label>पासवर्ड (Password):</label>
-        <input type="password" id="adminPass" placeholder="admin123 टाका">
+        <label>Password:</label>
+        <input type="password" id="adminPass" placeholder="Enter password">
     </div>
-    <button onclick="handleAdminLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">लॉगिन करा</button>
+    <button onclick="handleAdminLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
 </div>
 
-<!-- मुख्य डॅशबोर्ड कंटेनर (लॉगिन झाल्यावर दिसेल) -->
+<!-- Main Application Container -->
 <div class="container" id="mainAppContainer" style="display: none;">
     <div class="app-header">
         <div class="app-logo">🏫</div>
         <div class="app-title">
             <h2>शाळा व्यवस्थापन व दाखला पोर्टल</h2>
-            <p>डिजिटल साथीदार प्रशासकीय प्रणाली (मास्टर ॲडमिन)</p>
+            <p>डिजिटल साथीदार प्रशासकीय प्रणाली (Master Admin)</p>
         </div>
     </div>
     
-    <!-- एक्सेल फाईल अपलोड/बदल करण्यासाठी सोयीचे कार्ड -->
+    <!-- Excel File Upload / Update Card -->
     <div class="upload-card no-print">
         <div>
-            <strong>📁 एक्सेल फाईल अपलोड / अपडेट करा:</strong> (नवीन फाईल टाकल्यास जुनी अपडेट होईल)
+            <strong>📁 Upload / Update Excel File:</strong> (New file will replace existing browser storage)
         </div>
         <input type="file" id="excelFile" accept=".xlsx, .xls, .csv, .xlsm" style="max-width: 250px; background: white; padding: 4px;">
     </div>
 
-    <!-- मुख्य डॅशबोर्ड कार्ड्स -->
+    <!-- Main Dashboard Cards -->
     <div id="homeDashboard" class="no-print">
         <div class="dashboard-grid">
             <div class="tool-card" onclick="openTab('tabSchoolInfo')">
@@ -218,49 +218,49 @@
     </div>
 
     <div class="back-bar no-print" id="backBar">
-        <button class="back-btn" onclick="goHome()">&larr; मुख्य डॅशबोर्डकडे जा</button>
-        <button class="logout-btn" onclick="handleLogout()">🚪 लॉग आउट (Logout)</button>
+        <button class="back-btn" onclick="goHome()">&larr; Back to Dashboard</button>
+        <button class="logout-btn" onclick="handleLogout()">🚪 Logout</button>
     </div>
 
-    <!-- टॅब १: शाळेची माहिती (ॲडमिन लॉकसह) -->
+    <!-- Tab 1: School Profile Settings -->
     <div id="tabSchoolInfo" class="tab-content">
         <h3>शाळेची तपशीलवार माहिती सेट करा</h3>
         <p style="color: #c0392b; font-size: 12px; margin-bottom: 12px;">🔒 ही माहिती लॉक केलेली आहे. बदल करण्यासाठी खालील 'प्रशासन अनलॉक' बटणावर क्लिक करा.</p>
         <div style="max-width: 500px;">
             <div class="form-group">
                 <label>व्यवस्थापनाचे नाव / संस्थेचे नाव:</label>
-                <input type="text" id="instName" placeholder="संस्थेचे नाव टाका" disabled>
+                <input type="text" id="instName" placeholder="Enter institution name" disabled>
             </div>
             <div class="form-group">
                 <label>शाळेचे पूर्ण नाव:</label>
-                <input type="text" id="schoolName" placeholder="शाळेचे नाव टाका" disabled>
+                <input type="text" id="schoolName" placeholder="Enter school name" disabled>
             </div>
             <div class="form-group">
                 <label>पत्ता, तालुका व जिल्हा:</label>
-                <input type="text" id="schoolAddress" placeholder="पत्ता टाका" disabled>
+                <input type="text" id="schoolAddress" placeholder="Enter address, taluka, district" disabled>
             </div>
             <div class="form-group">
                 <label>फोन नंबर व इ-मेल:</label>
-                <input type="text" id="schoolContact" placeholder="फोन व इ-मेल टाका" disabled>
+                <input type="text" id="schoolContact" placeholder="Enter phone & email" disabled>
             </div>
             <div class="form-group">
                 <label>माध्यम व यु-डायस क्रमांक:</label>
-                <input type="text" id="schoolExtra" placeholder="माध्यम व युडायस टाका" disabled>
+                <input type="text" id="schoolExtra" placeholder="Enter medium & UDISE code" disabled>
             </div>
             
             <div style="display: flex; gap: 10px; margin-top: 8px;">
-                <button type="button" onclick="requestAdminUnlock()" style="background: #e67e22; flex: 1;">🔐 प्रशासन अनलॉक (Edit)</button>
-                <button type="button" id="saveBtn" onclick="saveSchoolInfo()" style="background: #27ae60; flex: 1; display: none;">माहिती सेव्ह करा</button>
+                <button type="button" onclick="requestAdminUnlock()" style="background: #e67e22; flex: 1;">🔐 Admin Unlock (Edit)</button>
+                <button type="button" id="saveBtn" onclick="saveSchoolInfo()" style="background: #27ae60; flex: 1; display: none;">Save Information</button>
             </div>
         </div>
     </div>
 
-    <!-- टॅब २: शाळा सोडल्याचा दाखला -->
+    <!-- Tab 2: School Leaving Certificate -->
     <div id="tabDakhala" class="tab-content">
         <div class="form-group no-print" style="max-width: 350px;">
             <label>🔍 जनरल रजिस्टर नंबर टाका:</label>
-            <input type="text" id="regNo" placeholder="उदा. 12435">
-            <button onclick="searchStudent()" style="margin-top: 6px; background: #27ae60;">माहिती शोधा व दाखला पहा</button>
+            <input type="text" id="regNo" placeholder="Enter General Register No.">
+            <button onclick="searchStudent()" style="margin-top: 6px; background: #27ae60;">Search & Generate LC</button>
         </div>
 
         <div id="printableArea">
@@ -322,10 +322,10 @@
                 </div>
             </div>
         </div>
-        <button class="no-print" id="printBtn" onclick="window.print()" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ दाखला प्रिंट करा / PDF</button>
+        <button class="no-print" id="printBtn" onclick="window.print()" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ Print / PDF</button>
     </div>
 
-    <!-- इतर टॅब्स -->
+    <!-- Other Tabs -->
     <div id="tabBonafide" class="tab-content">
         <h3>📋 बोनाफाईड सर्टिफिकेट</h3>
         <p style="font-size: 13px; color: #666;">येथून बोनाफाईड प्रिंट काढता येईल.</p>
@@ -347,7 +347,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 window.onload = function() {
-    // तपासा की आधीपासून मास्टर ॲडमिन लॉगइन आहे का
     let isLoggedIn = localStorage.getItem('masterAdminLoggedIn');
     if(isLoggedIn === 'true') {
         document.getElementById('loginScreen').style.display = 'none';
@@ -361,16 +360,15 @@ function handleAdminLogin() {
     let u = document.getElementById('adminUser').value.trim();
     let p = document.getElementById('adminPass').value.trim();
 
-    // येथे तुमचे मास्टर युजरनेम आणि पासवर्ड सेट आहेत
     if(u === 'admin' && p === 'admin123') {
         localStorage.setItem('masterAdminLoggedIn', 'true');
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('mainAppContainer').style.display = 'block';
         loadSavedData();
         loadSchoolInfo();
-        alert("मास्टर ॲडमिन यशस्वीपणे लॉगिन झाले!");
+        alert("Master Admin logged in successfully!");
     } else {
-        alert("चुकीचे युजरनेम किंवा पासवर्ड!");
+        alert("Invalid username or password!");
     }
 }
 
@@ -380,7 +378,7 @@ function handleLogout() {
     document.getElementById('loginScreen').style.display = 'block';
     document.getElementById('adminUser').value = '';
     document.getElementById('adminPass').value = '';
-    alert("सफलतापूर्वक लॉग आउट झाले!");
+    alert("Logged out successfully!");
 }
 
 function openTab(tabName) {
@@ -400,9 +398,8 @@ function goHome() {
     document.getElementById('backBar').style.display = 'none';
 }
 
-// शाळेची माहिती एडिट करण्यासाठी अनलॉक करणे
 function requestAdminUnlock() {
-    let pass = prompt("प्रशासन पासवर्ड टाका (Admin Password):");
+    let pass = prompt("Enter Admin Password:");
     if(pass === "admin123") { 
         document.getElementById('instName').disabled = false;
         document.getElementById('schoolName').disabled = false;
@@ -410,9 +407,9 @@ function requestAdminUnlock() {
         document.getElementById('schoolContact').disabled = false;
         document.getElementById('schoolExtra').disabled = false;
         document.getElementById('saveBtn').style.display = 'block';
-        alert("माहिती एडिट करण्यासाठी अनलॉक झाली आहे!");
+        alert("System unlocked for editing!");
     } else if(pass !== null) {
-        alert("चुकीचा पासवर्ड!");
+        alert("Incorrect password!");
     }
 }
 
@@ -433,7 +430,7 @@ function saveSchoolInfo() {
     document.getElementById('schoolExtra').disabled = true;
     document.getElementById('saveBtn').style.display = 'none';
     
-    alert("शाळेची माहिती यशस्वीपणे सेव्ह व लॉक झाली!");
+    alert("School information saved and locked successfully!");
 }
 
 function loadSchoolInfo() {
@@ -491,7 +488,7 @@ document.getElementById('excelFile').addEventListener('change', function(e) {
         let firstSheet = workbook.SheetNames[0];
         excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], {header: 1});
         localStorage.setItem('savedExcelData', JSON.stringify(excelData));
-        alert("एक्सेल फाईलचा डेटा यशस्वीपणे सेव्ह व अपडेट झाला!");
+        alert("Excel file data uploaded and saved successfully!");
     };
     reader.readAsArrayBuffer(e.target.files[0]);
 });
@@ -506,11 +503,11 @@ function loadSavedData() {
 function searchStudent() {
     let regNo = document.getElementById('regNo').value.trim();
     if(!regNo) {
-        alert("कृपया जनरल रजिस्टर नंबर टाका!");
+        alert("Please enter General Register Number!");
         return;
     }
     if(excelData.length === 0) {
-        alert("कृपया आधी वरून तुमची एक्सेल फाईल निवडा / अपलोड करा!");
+        alert("Please upload or select an Excel file first!");
         return;
     }
 
@@ -523,7 +520,7 @@ function searchStudent() {
     }
 
     if(!foundRow) {
-        alert("या रजिस्टर नंबरची नोंद आढळली नाही.");
+        alert("Record not found for this register number.");
         document.getElementById('lcCard').style.display = 'none';
         document.getElementById('printBtn').style.display = 'none';
         return;
