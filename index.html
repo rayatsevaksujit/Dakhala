@@ -117,8 +117,8 @@
 
         .form-group { margin-bottom: 10px; text-align: left; }
         label { display: block; margin-bottom: 3px; font-weight: 600; color: var(--text-color); font-size: 13px; }
-        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Noto Sans Devanagari', sans-serif; }
-        input:disabled { background-color: #eaeded; color: #7f8c8d; cursor: not-allowed; }
+        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Noto Sans Devanagari', Arial, sans-serif; }
+        input:disabled { background-color: #fcfcfc; color: #333; cursor: default; border: none; }
         input:focus { border-color: var(--secondary-color); outline: none; }
         button { background-color: var(--secondary-color); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         button:hover { background-color: #2471a3; }
@@ -127,25 +127,28 @@
         table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 12px; text-align: left; }
         table.data-table th { background: #f2f4f4; color: var(--primary-color); }
 
-        /* Professional LC Format */
+        /* Professional LC Format - Sakal Marathi Look */
         .lc-format {
             border: 2px solid #000;
             padding: 15px;
             margin-top: 10px;
             background: #fff;
             font-size: 12px;
+            font-family: 'Noto Sans Devanagari', Arial, sans-serif;
         }
         .lc-header { text-align: center; font-weight: bold; margin-bottom: 8px; line-height: 1.4; }
         .lc-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
         .lc-table th, .lc-table td { border: 1px solid #000; padding: 4px 6px; font-size: 12px; text-align: left; }
-        .lc-table input[type="text"] { border: 1px dashed #3498db; background: #f9fbfd; padding: 2px 4px; font-size: 12px; width: 100%; font-family: 'Noto Sans Devanagari', Arial, sans-serif; }
+        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 12px; width: 100%; font-family: 'Noto Sans Devanagari', Arial, sans-serif; color: #000; }
+        /* Only reason and remark are editable */
+        .editable-field { border: 1px dashed #3498db !important; background: #f9fbfd !important; padding: 2px 4px !important; }
 
         @media print {
             body * { visibility: hidden; }
             #printableArea, #printableArea * { visibility: visible; }
             #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
             .no-print { display: none; }
-            .lc-table input[type="text"] { border: none; background: transparent; padding: 0; }
+            .editable-field { border: none !important; background: transparent !important; padding: 0 !important; }
         }
     </style>
 </head>
@@ -360,9 +363,9 @@
                         <span id="pEmail">इ-मेल : ramanandnagar.srvsr@gmail.com</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 3px;">
-                        <span>रजिस्टर नंबर : <input type="text" id="outReg" style="width:70px; display:inline-block;"></span>
+                        <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block;"></span>
                         <span>माध्यम : <span id="outMedium">मराठी</span></span>
-                        <span>अनु क्र. : <input type="text" id="outAnu" style="width:50px; display:inline-block;" value="-"></span>
+                        <span>अनु क्र. : <input type="text" id="outAnu" readonly style="width:50px; display:inline-block;" value="-"></span>
                     </div>
                     <div style="font-size: 10px; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 3px;" id="pRecognition">
                         शाळा मान्यता क्रमांक: S-४८ (B), Poone, 21 May 1949 | यु-डायस क्रमांक : 27350804005
@@ -375,52 +378,52 @@
                 <div style="text-align: center; font-weight: bold; font-size: 14px; margin: 6px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
                 
                 <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
-                    <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" style="width:130px; border:1px dashed #999; padding:1px;"></div>
-                    <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" style="width:140px; border:1px dashed #999; padding:1px;"></div>
+                    <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px;"></div>
+                    <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:140px; padding:1px;"></div>
                 </div>
 
                 <table class="lc-table">
                     <tr>
-                        <td colspan="2"><strong>विद्यार्थ्याचे पूर्ण नाव :</strong> <input type="text" id="outName" style="font-weight: bold;"></td>
+                        <td colspan="2"><strong>विद्यार्थ्याचे पूर्ण नाव :</strong> <input type="text" id="outName" readonly style="font-weight: bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong>आईचे नाव :</strong> <input type="text" id="outMother"></td>
+                        <td colspan="2"><strong>आईचे नाव :</strong> <input type="text" id="outMother" readonly></td>
                     </tr>
                     <tr>
-                        <td><strong>राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" value="भारतीय"></td>
-                        <td><strong>मातृभाषा :</strong> <input type="text" id="outMotherTongue" value="मराठी"></td>
+                        <td><strong>राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" readonly value="भारतीय"></td>
+                        <td><strong>मातृभाषा :</strong> <input type="text" id="outMotherTongue" readonly value="मराठी"></td>
                     </tr>
                     <tr>
-                        <td><strong>धर्म :</strong> <input type="text" id="outReligion" value="हिंदू"></td>
-                        <td><strong>जात व उपजात :</strong> <input type="text" id="outCaste"></td>
+                        <td><strong>धर्म :</strong> <input type="text" id="outReligion" readonly value="हिंदू"></td>
+                        <td><strong>जात व उपजात :</strong> <input type="text" id="outCaste" readonly></td>
                     </tr>
                     <tr>
-                        <td><strong>जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace"></td>
-                        <td><strong>राज्य :</strong> <input type="text" id="outState" value="महाराष्ट्र"> | <strong>देश :</strong> <input type="text" id="outCountry" value="भारत" style="width:60px;"></td>
+                        <td><strong>जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace" readonly></td>
+                        <td><strong>राज्य :</strong> <input type="text" id="outState" readonly value="महाराष्ट्र"> | <strong>देश :</strong> <input type="text" id="outCountry" readonly value="भारत" style="width:60px;"></td>
                     </tr>
                     <tr>
-                        <td><strong>जन्मदिनांक (अंकात) :</strong> <input type="text" id="outDobNum"></td>
-                        <td><strong>जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" style="color: #900; font-weight: bold;"></td>
+                        <td><strong>जन्मदिनांक (अंकात) :</strong> <input type="text" id="outDobNum" readonly></td>
+                        <td><strong>जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" readonly style="color: #900; font-weight: bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong>यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" value="-"></td>
+                        <td colspan="2"><strong>यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly value="-"></td>
                     </tr>
                     <tr>
-                        <td><strong>या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> <input type="text" id="outAdmissionDate"></td>
-                        <td><strong>प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass"></td>
+                        <td><strong>या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> <input type="text" id="outAdmissionDate" readonly></td>
+                        <td><strong>प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass" readonly></td>
                     </tr>
                     <tr>
-                        <td><strong>अभ्यासातील प्रगती :</strong> <input type="text" id="outProgress" value="चांगली"></td>
-                        <td><strong>वर्तणूक :</strong> <input type="text" id="outConduct" value="चांगली"></td>
+                        <td><strong>अभ्यासातील प्रगती :</strong> <input type="text" id="outProgress" readonly value="चांगली"></td>
+                        <td><strong>वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong>कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" value="इ. १० वी, सन २०२५-२६ पासून"></td>
+                        <td colspan="2"><strong>कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong>शाळा सोडल्याचे कारण :</strong> <input type="text" id="outLeavingReason" value="शिक्षण पूर्ण / संतोषजनक"></td>
+                        <td colspan="2"><strong>शाळा सोडल्याचे कारण :</strong> <input type="text" id="outLeavingReason" class="editable-field" value="शिक्षण पूर्ण / संतोषजनक"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong>शेरा :</strong> <input type="text" id="outRemark" value="-"></td>
+                        <td colspan="2"><strong>शेरा :</strong> <input type="text" id="outRemark" class="editable-field" value="-"></td>
                     </tr>
                 </table>
 
@@ -428,8 +431,8 @@
                     दाखला देण्यात येतो की, वरील माहिती शाळेतील जनरल रजिस्टरप्रमाणे बरोबर आहे.
                 </div>
 
-                <!-- Corrected Signatures Layout: वर्गशिक्षक (Left), लेखनिक (Center), मुख्याध्यापक/प्राचार्य (Right) -->
-                <div style="margin-top: 30px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; text-align: center;">
+                <!-- Signatures Layout with extra vertical space: वर्गशिक्षक (Left), लेखनिक (Center), मुख्याध्यापक / प्राचार्य (Right) -->
+                <div style="margin-top: 50px; margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; text-align: center;">
                     <div style="width: 30%;">वर्गशिक्षक</div>
                     <div style="width: 30%;">लेखनिक</div>
                     <div style="width: 30%;">मुख्याध्यापक / प्राचार्य</div>
@@ -736,7 +739,32 @@
       } catch(e) { alert("Error: " + e.message); }
   }
 
-  // Proper Date to Marathi Words Converter (e.g. 1982-04-12 -> बारा एप्रिल एकोणीस शे ब्याऐंशी)
+  // Date formatter to DD/MM/YYYY format
+  function formatDateDDMMYYYY(val) {
+      if(!val) return "";
+      if(typeof val === 'number') {
+          let d = new Date((val - 25569) * 86400 * 1000);
+          let day = String(d.getDate()).padStart(2, '0');
+          let month = String(d.getMonth() + 1).padStart(2, '0');
+          let year = d.getFullYear();
+          return `${day}/${month}/${year}`;
+      }
+      let d = new Date(val);
+      if(!isNaN(d)) {
+          let day = String(d.getDate()).padStart(2, '0');
+          let month = String(d.getMonth() + 1).padStart(2, '0');
+          let year = d.getFullYear();
+          return `${day}/${month}/${year}`;
+      }
+      // If already in YYYY-MM-DD format, convert to DD/MM/YYYY
+      let parts = val.split('-');
+      if(parts.length === 3) {
+          return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return val;
+  }
+
+  // Date to Marathi Words Converter
   const ones = ["", "एक", "दोन", "तीन", "चार", "पाच", "सहा", "सात", "आठ", "नऊ", "दहा",
       "अकरा", "बारा", "तेरा", "चौदा", "पंधरा", "सोळा", "सतरा", "अठरा", "एकोणीस", "वीस",
       "एकवीस", "बावीस", "तेवीस", "चोवीस", "पंचवीस", "सव्वीस", "सत्तावीस", "अठ्ठावीस", "एकूणतीस", "तीस", "एकतीस"];
@@ -759,23 +787,6 @@
           return century + convertNumberToWords(rem);
       }
       return num.toString();
-  }
-
-  function formatDateCorrectly(val) {
-      if(!val) return "";
-      // Handle excel serial or string dates
-      if(typeof val === 'number') {
-          let d = new Date((val - 25569) * 86400 * 1000);
-          return d.toISOString().split('T')[0];
-      }
-      let d = new Date(val);
-      if(!isNaN(d)) {
-          let day = String(d.getDate()).padStart(2, '0');
-          let month = String(d.getMonth() + 1).padStart(2, '0');
-          let year = d.getFullYear();
-          return `${day}-${month}-${year}`;
-      }
-      return val;
   }
 
   function dateToMarathiWords(dateStr) {
@@ -857,11 +868,11 @@
       document.getElementById('outCountry').value = foundRow[13] || "भारत";
       
       let dobRaw = foundRow[14] || "";
-      document.getElementById('outDobNum').value = formatDateCorrectly(dobRaw);
+      document.getElementById('outDobNum').value = formatDateDDMMYYYY(dobRaw);
       document.getElementById('outDobWords').value = dateToMarathiWords(dobRaw);
       
       document.getElementById('outPrevSchool').value = foundRow[16] || "-";
-      document.getElementById('outAdmissionDate').value = formatDateCorrectly(foundRow[17]);
+      document.getElementById('outAdmissionDate').value = formatDateDDMMYYYY(foundRow[17]);
       document.getElementById('outAdmClass').value = foundRow[18] || "";
 
       document.getElementById('currentDate').innerText = new Date().toLocaleDateString('mr-IN');
