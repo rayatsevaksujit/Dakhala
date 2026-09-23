@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>School Management & Certificate Portal - Master & School Admin</title>
-    <!-- DVOT Yogesh / Standard Marathi Font Style -->
+    
+    <!-- DVOT Yogesh / Standard Marathi Web Font -->
+    <style>
+        @font-face {
+            font-family: 'DVOT Yogesh';
+            src: local('DVOT Yogesh'), local('Noto Sans Devanagari'), url('https://fonts.gstatic.com/s/notosansdevanagari/v27/o-0NIpQlx3QUlC5A4PNr4TRAbl_hAxxY.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK Scripts -->
@@ -21,7 +30,7 @@
         }
 
         body { 
-            font-family: 'Noto Sans Devanagari', Arial, sans-serif; 
+            font-family: 'DVOT Yogesh', 'Noto Sans Devanagari', Arial, sans-serif; 
             background: var(--bg-color); 
             margin: 0; 
             padding: 10px; 
@@ -104,7 +113,7 @@
 
         .form-group { margin-bottom: 10px; text-align: left; }
         label { display: block; margin-bottom: 3px; font-weight: 600; color: var(--text-color); font-size: 13px; }
-        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Noto Sans Devanagari', Arial, sans-serif; }
+        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'DVOT Yogesh', 'Noto Sans Devanagari', Arial, sans-serif; }
         input:disabled { background-color: #fcfcfc; color: #333; cursor: default; border: none; }
         input:focus { border-color: var(--secondary-color); outline: none; }
         button { background-color: var(--secondary-color); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
@@ -114,14 +123,14 @@
         table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 12px; text-align: left; }
         table.data-table th { background: #f2f4f4; color: var(--primary-color); }
 
-        /* Professional LC Format - Single A4 Page Fit & Clean Print */
+        /* Professional LC Format */
         .lc-format {
             border: 2px solid #000;
             padding: 10px 15px;
             margin-top: 10px;
             background: #fff;
             font-size: 12px;
-            font-family: 'Noto Sans Devanagari', Arial, sans-serif;
+            font-family: 'DVOT Yogesh', 'Noto Sans Devanagari', Arial, sans-serif;
             font-weight: 600;
             max-width: 800px;
             margin-left: auto;
@@ -130,7 +139,7 @@
         .lc-header { text-align: center; font-weight: bold; margin-bottom: 4px; line-height: 1.3; }
         .lc-table { width: 100%; border-collapse: collapse; margin-top: 3px; }
         .lc-table th, .lc-table td { border: 1px solid #000; padding: 3px 6px; font-size: 12px; text-align: left; }
-        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 12px; width: 100%; font-family: 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 600; }
+        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 12px; width: 100%; font-family: 'DVOT Yogesh', 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 600; }
         .editable-field { border: 1px dashed #3498db !important; background: #f9fbfd !important; padding: 2px 4px !important; font-size: 12px !important; }
 
         @media print {
@@ -256,9 +265,13 @@
         </table>
     </div>
 
-    <!-- Tab: School Profile Settings (Protected for Admin) -->
+    <!-- Tab: School Profile Settings -->
     <div id="tabSchoolInfo" class="tab-content">
         <h3>⚙️ शाळेची तपशीलवार माहिती, मान्यता व लोगो सेटिंग्ज</h3>
+        <div id="adminSchoolSelectorDiv" class="no-print" style="margin-bottom: 12px; display:none; background:#eaf2f8; padding:10px; border-radius:5px;">
+            <label style="color:var(--primary-color);">📌 कोणती शाळा एडिट करायची आहे ती निवडा:</label>
+            <select id="adminSchoolSelect" onchange="onAdminSelectSchool()" style="font-weight:bold;"></select>
+        </div>
         <p style="color: #c0392b; font-size: 12px; margin-bottom: 12px;" id="lockNotice">🔒 ही माहिती लॉक केलेली आहे. बदल करण्यासाठी खालील 'अनलॉक' बटणावर क्लिक करा (केवळ ॲडमिन पासवर्ड आवश्यक).</p>
         <div style="max-width: 550px;">
             <div class="form-group"><label>व्यवस्थापनाचे नाव :</label><input type="text" id="instName" disabled></div>
@@ -376,7 +389,7 @@
                 
                 <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
                     <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px;"></div>
-                    <div>यु.आय.डिज. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px;"></div>
+                    <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px;"></div>
                 </div>
 
                 <table class="lc-table">
@@ -387,23 +400,23 @@
                         <td colspan="2"><strong>आईचे नाव :</strong> <input type="text" id="outMother" readonly></td>
                     </tr>
                     <tr>
-                        <td><strong>राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" readonly value="भारतीय"></td>
-                        <td><strong>मातृभाषा :</strong> <input type="text" id="outMotherTongue" readonly value="मराठी"></td>
+                        <td><strong>राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" readonly></td>
+                        <td><strong>मातृभाषा :</strong> <input type="text" id="outMotherTongue" readonly></td>
                     </tr>
                     <tr>
-                        <td><strong>धर्म :</strong> <input type="text" id="outReligion" readonly value="हिंदू"></td>
+                        <td><strong>धर्म :</strong> <input type="text" id="outReligion" readonly></td>
                         <td><strong>जात व उपजात :</strong> <input type="text" id="outCaste" readonly></td>
                     </tr>
                     <tr>
                         <td><strong>जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace" readonly></td>
-                        <td><strong>राज्य :</strong> <input type="text" id="outState" readonly value="महाराष्ट्र"> | <strong>देश :</strong> <input type="text" id="outCountry" readonly value="भारत" style="width:45px;"></td>
+                        <td><strong>राज्य :</strong> <input type="text" id="outState" readonly style="width:110px; display:inline-block;"> | <strong>देश :</strong> <input type="text" id="outCountry" readonly style="width:45px; display:inline-block;"></td>
                     </tr>
                     <tr>
                         <td><strong>जन्मदिनांक (अंकात) :</strong> <input type="text" id="outDobNum" readonly></td>
                         <td><strong>जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" readonly style="color: #000; font-weight: bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong>यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly value="-"></td>
+                        <td colspan="2"><strong>यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly></td>
                     </tr>
                     <tr>
                         <td><strong>या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> <input type="text" id="outAdmissionDate" readonly></td>
@@ -581,13 +594,53 @@
       document.getElementById('loginScreen').style.display = 'block';
   }
 
-  function openTab(tabName) {
+  async function openTab(tabName) {
       let contents = document.getElementsByClassName('tab-content');
       for(let c of contents) c.classList.remove('active');
       document.getElementById(tabName).classList.add('active');
       document.getElementById('homeDashboard').style.display = 'none';
       document.getElementById('backBar').style.display = 'flex';
-      if(tabName === 'tabSchoolInfo') loadSchoolInfo(getActiveUser() || 'admin');
+      
+      if(tabName === 'tabSchoolInfo') {
+          let role = getActiveRole();
+          if(role === 'master') {
+              let selDiv = document.getElementById('adminSchoolSelectorDiv');
+              let sel = document.getElementById('adminSchoolSelect');
+              sel.innerHTML = '';
+              registeredSchoolsList.forEach(s => {
+                  sel.innerHTML += `<option value="${s.username}">${s.name} (${s.username})</option>`;
+              });
+              selDiv.style.display = 'block';
+              if(registeredSchoolsList.length > 0) {
+                  await loadAdminSelectedSchoolProfile(registeredSchoolsList[0].username);
+              }
+          } else {
+              document.getElementById('adminSchoolSelectorDiv').style.display = 'none';
+              loadSchoolInfo(getActiveUser());
+          }
+      }
+  }
+
+  async function onAdminSelectSchool() {
+      let selUser = document.getElementById('adminSchoolSelect').value;
+      await loadAdminSelectedSchoolProfile(selUser);
+  }
+
+  async function loadAdminSelectedSchoolProfile(username) {
+      let profileDoc = await db.collection("portalData").doc("profile_" + username).get();
+      if(profileDoc.exists) {
+          let data = profileDoc.data();
+          currentSchoolProfile = data.info || {};
+          schoolLogoBase64 = currentSchoolProfile.logo || "";
+          let rawExcel = data.excel;
+          excelData = (typeof rawExcel === 'string') ? JSON.parse(rawExcel) : (rawExcel || []);
+      } else {
+          currentSchoolProfile = {};
+          schoolLogoBase64 = "";
+          excelData = [];
+      }
+      window.adminEditingTarget = username;
+      loadSchoolInfo(username);
   }
 
   function goHome() {
@@ -725,7 +778,9 @@
   }
 
   async function saveSchoolInfo() {
-      let user = getActiveUser() || 'admin';
+      let role = getActiveRole();
+      let targetUser = (role === 'master' && window.adminEditingTarget) ? window.adminEditingTarget : getActiveUser();
+
       currentSchoolProfile = {
           inst: document.getElementById('instName').value,
           school: document.getElementById('schoolName').value,
@@ -739,7 +794,7 @@
           hscIndex: document.getElementById('hscIndex').value,
           logo: schoolLogoBase64
       };
-      await db.collection("portalData").doc("profile_" + user).set({ info: currentSchoolProfile, excel: JSON.stringify(excelData) }, { merge: true });
+      await db.collection("portalData").doc("profile_" + targetUser).set({ info: currentSchoolProfile, excel: JSON.stringify(excelData) }, { merge: true });
       ['instName', 'schoolName', 'schoolAddress', 'schoolPhone', 'schoolEmail', 'schoolRecognition', 'schoolUdise', 'schoolMedium', 'sscIndex', 'hscIndex', 'schoolLogoFile'].forEach(id => document.getElementById(id).disabled = true);
       document.getElementById('saveBtn').style.display = 'none';
       alert("Saved successfully!");
@@ -909,14 +964,14 @@
       document.getElementById('editAadhaar').value = foundRow[3] || "";
       document.getElementById('outName').value = foundRow[4] || "";
       document.getElementById('outMother').value = foundRow[5] || "";
-      document.getElementById('outNationality').value = foundRow[6] || "भारतीय";
-      document.getElementById('outMotherTongue').value = foundRow[7] || "मराठी";
-      document.getElementById('outReligion').value = foundRow[8] || "हिंदू";
+      document.getElementById('outNationality').value = foundRow[6] || "";
+      document.getElementById('outMotherTongue').value = foundRow[7] || "";
+      document.getElementById('outReligion').value = foundRow[8] || "";
       
       let casteFull = (foundRow[9] || "") + (foundRow[10] && foundRow[10] !== "-" ? " (" + foundRow[10] + ")" : "");
       document.getElementById('outCaste').value = casteFull;
       document.getElementById('outBirthPlace').value = foundRow[11] || "";
-      document.getElementById('outState').value = "महाराष्ट्र";
+      document.getElementById('outState').value = foundRow[12] || ""; // Exact state from Excel (e.g. कर्नाटक or महाराष्ट्र)
       document.getElementById('outCountry').value = foundRow[13] || "भारत";
       
       let dobRaw = foundRow[14] || "";
@@ -931,7 +986,6 @@
       document.getElementById('lcCard').style.display = 'block';
       document.getElementById('printBtn').style.display = 'block';
       
-      // Scroll directly to LC card smoothly without extra empty pages
       document.getElementById('lcCard').scrollIntoView({ behavior: 'smooth' });
   }
 </script>
