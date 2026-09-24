@@ -149,7 +149,7 @@
 
         /* ===== A4 PRINT ===== */
         @media print {
-            @page { size: A4 portrait; margin: 8mm; }
+            @page { size: A4 portrait; margin: 18mm 8mm 8mm 8mm; }   /* वर 18mm, बाकी 8mm */
             html, body { background: #fff !important; margin: 0; padding: 0; }
 
             /* दाखल्याशिवाय बाकी सर्व लपवा (display:none => दुसरे रिकामे पान येत नाही) */
@@ -161,7 +161,7 @@
             #tabDakhala { display: block !important; border: none; padding: 0; }
             #printableArea { position: static; width: 100%; }
 
-            /* A4 उपयुक्त रुंदी = 210mm - 16mm मार्जिन = 194mm */
+            /* A4 उपयुक्त रुंदी = 210mm - 16mm = 194mm ; उंची = 297mm - 26mm = 271mm */
             #lcCard {
                 width: 194mm !important;
                 max-width: 194mm !important;
@@ -463,7 +463,7 @@
                 </div>
 
                 <!-- Signatures Layout -->
-                <div style="margin-top: 25px; margin-bottom: 4px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; text-align: center;">
+                <div id="sigRow" style="margin-top: 25px; margin-bottom: 4px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; text-align: center;">
                     <div style="width: 30%;">वर्गशिक्षक</div>
                     <div style="width: 30%;">लेखनिक</div>
                     <div style="width: 30%;">मुख्याध्यापक / प्राचार्य</div>
@@ -1025,17 +1025,36 @@
   function fitLcToA4() {
       const card = document.getElementById('lcCard');
       if (!card || card.style.display === 'none') return;
-      card.style.zoom = 1;
+      const maxH = (271 / 25.4) * 96 - 6;          // A4 उपयुक्त उंची (px)
+      resetLcFit();
       card.style.width = '194mm';
-      const maxH = (281 / 25.4) * 96;              // A4 उंची 297mm - 16mm मार्जिन (px)
-      const h = card.getBoundingClientRect().height;
-      if (h > maxH) card.style.zoom = (maxH / h) * 0.98;
+      let h = card.getBoundingClientRect().height;
+
+      if (h > maxH) {
+          // पानापेक्षा मोठा झाला तर लहान करा
+          card.style.zoom = (maxH / h) * 0.98;
+      } else {
+          // जागा उरली तर ओळींमधील अंतर वाढवून पान भरा
+          const trs = card.querySelectorAll('.lc-table tr');
+          let extra = Math.min(((maxH - h) / trs.length) / 2, 9);
+          trs.forEach(tr => tr.querySelectorAll('td').forEach(td => {
+              td.style.paddingTop = (2 + extra) + 'px';
+              td.style.paddingBottom = (2 + extra) + 'px';
+          }));
+          h = card.getBoundingClientRect().height;
+          const rem = maxH - h;
+          const sig = document.getElementById('sigRow');
+          if (rem > 0 && sig) sig.style.marginTop = (25 + rem) + 'px';
+      }
   }
   function resetLcFit() {
       const card = document.getElementById('lcCard');
       if (!card) return;
       card.style.zoom = '';
       card.style.width = '';
+      card.querySelectorAll('.lc-table td').forEach(td => { td.style.paddingTop = ''; td.style.paddingBottom = ''; });
+      const sig = document.getElementById('sigRow');
+      if (sig) sig.style.marginTop = '';
   }
   window.addEventListener('beforeprint', fitLcToA4);
   window.addEventListener('afterprint', resetLcFit);
