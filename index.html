@@ -2,19 +2,23 @@
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>School Management & Certificate Portal - Master & School Admin</title>
-    
-    <!-- DVOT Surekh / Standard Marathi Web Font Style -->
+
+    <!-- Sakal Marathi: 'fonts' फोल्डरमध्ये SakalMarathi.ttf फाईल अपलोड करा -->
     <style>
         @font-face {
-            font-family: 'DVOT Surekh';
-            src: local('DVOT Surekh'), local('Noto Sans Devanagari'), url('https://fonts.gstatic.com/s/notosansdevanagari/v27/o-0NIpQlx3QUlC5A4PNr4TRAbl_hAxxY.woff2') format('woff2');
+            font-family: 'Sakal Marathi';
+            src: local('Sakal Marathi'), local('Sakal Marathi Normal'),
+                 url('fonts/SakalMarathi.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
+            font-display: swap;
         }
     </style>
+    <!-- फॉलबॅक फॉन्ट -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -29,22 +33,22 @@
             --border-color: #d5dbdb;
         }
 
-        body { 
-            font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif; 
-            background: var(--bg-color); 
-            margin: 0; 
-            padding: 10px; 
+        body {
+            font-family: 'Sakal Marathi', 'Noto Sans Devanagari', Arial, sans-serif;
+            background: var(--bg-color);
+            margin: 0;
+            padding: 10px;
             color: var(--text-color);
             font-size: 13px;
         }
 
-        .container { 
-            max-width: 950px; 
-            background: var(--card-bg); 
-            padding: 15px 20px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
-            margin: auto; 
+        .container {
+            max-width: 950px;
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            margin: auto;
         }
 
         #loginScreen {
@@ -104,8 +108,8 @@
         .tool-title { font-size: 14px; font-weight: 600; color: var(--primary-color); margin-bottom: 3px; }
         .tool-desc { font-size: 11px; color: #666; margin-bottom: 8px; line-height: 1.3; }
         .tool-link { font-size: 12px; color: var(--secondary-color); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
-        
-        .back-bar { margin-bottom: 12px; display: none; display: flex; justify-content: space-between; align-items: center; }
+
+        .back-bar { margin-bottom: 12px; display: none; justify-content: space-between; align-items: center; }
         .back-btn { background: #7f8c8d; color: white; padding: 4px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; width: auto; }
 
         .tab-content { display: none; background: #fff; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color); }
@@ -113,7 +117,7 @@
 
         .form-group { margin-bottom: 10px; text-align: left; }
         label { display: block; margin-bottom: 3px; font-weight: 600; color: var(--text-color); font-size: 13px; }
-        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif; }
+        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Sakal Marathi', 'Noto Sans Devanagari', Arial, sans-serif; }
         input:disabled { background-color: #fcfcfc; color: #333; cursor: default; border: none; }
         input:focus { border-color: var(--secondary-color); outline: none; }
         button { background-color: var(--secondary-color); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
@@ -123,32 +127,49 @@
         table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 12px; text-align: left; }
         table.data-table th { background: #f2f4f4; color: var(--primary-color); }
 
-        /* Professional LC Format - Strict Single A4 Page Fit & Bold Large Text */
+        /* LC Format */
         .lc-format {
             border: 2px solid #000;
             padding: 8px 12px;
             margin-top: 5px;
             background: #fff;
             font-size: 13px;
-            font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif;
+            font-family: 'Sakal Marathi', 'Noto Sans Devanagari', Arial, sans-serif;
             font-weight: 700;
             max-width: 780px;
             margin-left: auto;
             margin-right: auto;
+            box-sizing: border-box;
         }
         .lc-header { text-align: center; font-weight: bold; margin-bottom: 3px; line-height: 1.2; }
         .lc-table { width: 100%; border-collapse: collapse; margin-top: 2px; }
         .lc-table th, .lc-table td { border: 1px solid #000; padding: 2px 5px; font-size: 13px; text-align: left; font-weight: 700; }
-        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 13px; width: 100%; font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 700; }
+        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 13px; width: 100%; font-family: 'Sakal Marathi', 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 700; }
         .editable-field { border: 1px dashed #3498db !important; background: #f9fbfd !important; padding: 2px 4px !important; font-size: 13px !important; font-weight: 700 !important; }
 
+        /* ===== A4 PRINT ===== */
         @media print {
-            @page { size: A4 portrait; margin: 4mm; }
-            body { background: #fff; padding: 0; }
-            body * { visibility: hidden; }
-            #printableArea, #printableArea * { visibility: visible; }
-            #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
-            .no-print { display: none; }
+            @page { size: A4 portrait; margin: 8mm; }
+            html, body { background: #fff !important; margin: 0; padding: 0; }
+
+            /* दाखल्याशिवाय बाकी सर्व लपवा (display:none => दुसरे रिकामे पान येत नाही) */
+            body > *:not(#mainAppContainer) { display: none !important; }
+            .no-print, .app-header, #homeDashboard, #backBar,
+            .tab-content:not(#tabDakhala) { display: none !important; }
+
+            #mainAppContainer { display: block !important; box-shadow: none; padding: 0; margin: 0; max-width: none; border-radius: 0; }
+            #tabDakhala { display: block !important; border: none; padding: 0; }
+            #printableArea { position: static; width: 100%; }
+
+            /* A4 उपयुक्त रुंदी = 210mm - 16mm मार्जिन = 194mm */
+            #lcCard {
+                width: 194mm !important;
+                max-width: 194mm !important;
+                margin: 0 auto;
+                box-sizing: border-box;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
             .editable-field { border: none !important; background: transparent !important; padding: 0 !important; }
         }
     </style>
@@ -160,7 +181,7 @@
     <div style="font-size: 35px; margin-bottom: 10px;">🔐</div>
     <h3 style="color: var(--primary-color); margin-top: 0;">Portal Login</h3>
     <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter Master Admin or School credentials.</p>
-    
+
     <div class="form-group">
         <label>Username:</label>
         <input type="text" id="loginUser" placeholder="Enter username">
@@ -238,7 +259,7 @@
     <div id="tabSchoolMgmt" class="tab-content">
         <h3>🏛️ शाळा व्यवस्थापन, लॉगिन नाव बदल व एक्सेल डेटा (Master Admin Panel)</h3>
         <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही नवीन शाळा जोडू शकता, शाळेचे युजरनेम/पासवर्ड बदलू शकता तसेच एक्सेल फाईल थेट अपलोड करू शकता.</p>
-        
+
         <div style="max-width: 500px; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 20px;">
             <h4 style="margin-top:0; color:var(--primary-color);">नवीन शाळा नोंदणी</h4>
             <div class="form-group"><label>शाळेचे नाव (School Name):</label><input type="text" id="newSchoolName" placeholder="Enter school name"></div>
@@ -290,7 +311,7 @@
                 <div class="form-group"><label>एस.एस.सी. इंडेक्स नंबर (SSC Index) :</label><input type="text" id="sscIndex" disabled></div>
                 <div class="form-group"><label>एच.एस.सी. इंडेक्स नंबर (HSC Index) :</label><input type="text" id="hscIndex" disabled></div>
             </div>
-            
+
             <div class="form-group">
                 <label>शाळेचा लोगो (School Logo Image):</label>
                 <input type="file" id="schoolLogoFile" accept="image/*" disabled style="background:#fff;">
@@ -359,8 +380,8 @@
                 <div style="font-size: 10px; border-bottom: 1px dashed #000; padding-bottom: 2px; margin-bottom: 3px; text-align: center;">
                     (दाखला देणाऱ्या अधिकाऱ्याव्यतिरिक्त इतर कोणीही या दाखल्याच्या नोंदवहीत बदल अगर खाडाखोड करायची नाही. तसे करणे कायदेशीर गुन्हा असून, विद्यार्थी शाळेतून काढून टाकण्यापर्यंतच्या शिक्षेस पात्र ठरेल.)
                 </div>
-                
-                <!-- Official Header with Large Bold School Name & Logo -->
+
+                <!-- Official Header -->
                 <div style="text-align: center; margin-bottom: 2px; position: relative;">
                     <div id="logoContainer" style="margin-bottom: 2px;">
                         <img id="printLogo" src="" alt="School Logo" style="max-height: 50px; display: none; margin: 0 auto;">
@@ -386,7 +407,7 @@
                 </div>
 
                 <div style="text-align: center; font-weight: bold; font-size: 14px; margin: 3px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
-                
+
                 <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 2px;">
                     <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
                     <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
@@ -456,7 +477,7 @@
                 </div>
             </div>
         </div>
-        <button class="no-print" id="printBtn" onclick="window.print()" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ Print / PDF</button>
+        <button class="no-print" id="printBtn" onclick="document.fonts.ready.then(function(){ window.print(); })" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ Print / PDF</button>
     </div>
 </div>
 
@@ -597,10 +618,11 @@
   async function openTab(tabName) {
       let contents = document.getElementsByClassName('tab-content');
       for(let c of contents) c.classList.remove('active');
-      document.getElementById(tabName).classList.add('active');
+      let tabEl = document.getElementById(tabName);
+      if(tabEl) tabEl.classList.add('active');
       document.getElementById('homeDashboard').style.display = 'none';
       document.getElementById('backBar').style.display = 'flex';
-      
+
       if(tabName === 'tabSchoolInfo') {
           let role = getActiveRole();
           if(role === 'master') {
@@ -742,7 +764,7 @@
               let data = new Uint8Array(evt.target.result);
               let workbook = XLSX.read(data, {type: 'array'});
               let parsedData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
-              
+
               let docRef = db.collection("portalData").doc("profile_" + targetUsername);
               let docSnap = await docRef.get();
               let existingInfo = docSnap.exists ? (docSnap.data().info || {}) : {};
@@ -811,7 +833,7 @@
       document.getElementById('schoolMedium').value = currentSchoolProfile.medium || "मराठी";
       document.getElementById('sscIndex').value = currentSchoolProfile.sscIndex || "--";
       document.getElementById('hscIndex').value = currentSchoolProfile.hscIndex || "--";
-      
+
       schoolLogoBase64 = currentSchoolProfile.logo || "";
       let prev = document.getElementById('logoPreview');
       if(schoolLogoBase64) {
@@ -944,9 +966,9 @@
 
       let foundRow = null;
       for(let row of excelData) {
-          if(row[0] !== undefined && row[0].toString().trim() === regNo) { 
-              foundRow = row; 
-              break; 
+          if(row[0] !== undefined && row[0].toString().trim() === regNo) {
+              foundRow = row;
+              break;
           }
       }
 
@@ -977,17 +999,17 @@
       document.getElementById('outNationality').value = foundRow[6] || "";
       document.getElementById('outMotherTongue').value = foundRow[7] || "";
       document.getElementById('outReligion').value = foundRow[8] || "";
-      
+
       let casteFull = (foundRow[9] || "") + (foundRow[10] && foundRow[10] !== "-" ? " (" + foundRow[10] + ")" : "");
       document.getElementById('outCaste').value = casteFull;
       document.getElementById('outBirthPlace').value = foundRow[11] || "";
       document.getElementById('outState').value = foundRow[12] || "";
       document.getElementById('outCountry').value = foundRow[13] || "भारत";
-      
+
       let dobRaw = foundRow[14] || "";
       document.getElementById('outDobNum').value = formatDateDDMMYYYY(dobRaw);
       document.getElementById('outDobWords').value = dateToMarathiWords(dobRaw);
-      
+
       document.getElementById('outPrevSchool').value = foundRow[16] || "-";
       document.getElementById('outAdmissionDate').value = formatDateDDMMYYYY(foundRow[17]);
       document.getElementById('outAdmClass').value = foundRow[18] || "";
@@ -995,9 +1017,28 @@
       document.getElementById('currentDate').innerText = toMarathiDigits(new Date().toLocaleDateString('mr-IN'));
       document.getElementById('lcCard').style.display = 'block';
       document.getElementById('printBtn').style.display = 'block';
-      
+
       document.getElementById('lcCard').scrollIntoView({ behavior: 'smooth' });
   }
+
+  // ===== प्रिंट करताना दाखला एका A4 पानात बसवतो =====
+  function fitLcToA4() {
+      const card = document.getElementById('lcCard');
+      if (!card || card.style.display === 'none') return;
+      card.style.zoom = 1;
+      card.style.width = '194mm';
+      const maxH = (281 / 25.4) * 96;              // A4 उंची 297mm - 16mm मार्जिन (px)
+      const h = card.getBoundingClientRect().height;
+      if (h > maxH) card.style.zoom = (maxH / h) * 0.98;
+  }
+  function resetLcFit() {
+      const card = document.getElementById('lcCard');
+      if (!card) return;
+      card.style.zoom = '';
+      card.style.width = '';
+  }
+  window.addEventListener('beforeprint', fitLcToA4);
+  window.addEventListener('afterprint', resetLcFit);
 </script>
 
 </body>
