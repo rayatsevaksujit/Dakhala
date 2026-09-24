@@ -159,7 +159,7 @@
 
             #mainAppContainer { display: block !important; box-shadow: none; padding: 0; margin: 0; max-width: none; border-radius: 0; }
             #tabDakhala { display: block !important; border: none; padding: 0; }
-            #printableArea { position: static; width: 100%; }
+            #printableArea { position: static; width: 100%; height: 264mm; overflow: hidden; }
 
             /* A4 उपयुक्त रुंदी = 210mm - 16mm = 194mm ; उंची = 297mm - 26mm = 271mm */
             #lcCard {
@@ -1025,14 +1025,16 @@
   function fitLcToA4() {
       const card = document.getElementById('lcCard');
       if (!card || card.style.display === 'none') return;
-      const maxH = (271 / 25.4) * 96 - 6;          // A4 उपयुक्त उंची (px)
+      const maxH = (255 / 25.4) * 96;              // सुरक्षित उंची: 255mm (px)
       resetLcFit();
       card.style.width = '194mm';
       let h = card.getBoundingClientRect().height;
 
       if (h > maxH) {
           // पानापेक्षा मोठा झाला तर लहान करा
-          card.style.zoom = (maxH / h) * 0.98;
+          const z = maxH / h;
+          card.style.zoom = z;
+          card.style.width = (194 / z) + 'mm';
       } else {
           // जागा उरली तर ओळींमधील अंतर वाढवून पान भरा
           const trs = card.querySelectorAll('.lc-table tr');
@@ -1057,6 +1059,9 @@
       if (sig) sig.style.marginTop = '';
   }
   window.addEventListener('beforeprint', fitLcToA4);
+  const printMQ = window.matchMedia('print');
+  const onPrintMQ = e => { if (e.matches) fitLcToA4(); else resetLcFit(); };
+  if (printMQ.addEventListener) printMQ.addEventListener('change', onPrintMQ); else printMQ.addListener(onPrintMQ);
   window.addEventListener('afterprint', resetLcFit);
 </script>
 
