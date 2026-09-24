@@ -123,24 +123,24 @@
         table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 12px; text-align: left; }
         table.data-table th { background: #f2f4f4; color: var(--primary-color); }
 
-        /* Professional LC Format - Strict Single A4 Page Fit */
+        /* Professional LC Format - Strict Single A4 Page Fit & Bold Large Text */
         .lc-format {
             border: 2px solid #000;
             padding: 8px 12px;
             margin-top: 5px;
             background: #fff;
-            font-size: 12px;
+            font-size: 13px;
             font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif;
-            font-weight: 600;
+            font-weight: 700;
             max-width: 780px;
             margin-left: auto;
             margin-right: auto;
         }
         .lc-header { text-align: center; font-weight: bold; margin-bottom: 3px; line-height: 1.2; }
         .lc-table { width: 100%; border-collapse: collapse; margin-top: 2px; }
-        .lc-table th, .lc-table td { border: 1px solid #000; padding: 2px 5px; font-size: 12px; text-align: left; }
-        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 12px; width: 100%; font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 600; }
-        .editable-field { border: 1px dashed #3498db !important; background: #f9fbfd !important; padding: 2px 4px !important; font-size: 12px !important; }
+        .lc-table th, .lc-table td { border: 1px solid #000; padding: 2px 5px; font-size: 13px; text-align: left; font-weight: 700; }
+        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 13px; width: 100%; font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 700; }
+        .editable-field { border: 1px dashed #3498db !important; background: #f9fbfd !important; padding: 2px 4px !important; font-size: 13px !important; font-weight: 700 !important; }
 
         @media print {
             @page { size: A4 portrait; margin: 4mm; }
@@ -360,74 +360,74 @@
                     (दाखला देणाऱ्या अधिकाऱ्याव्यतिरिक्त इतर कोणीही या दाखल्याच्या नोंदवहीत बदल अगर खाडाखोड करायची नाही. तसे करणे कायदेशीर गुन्हा असून, विद्यार्थी शाळेतून काढून टाकण्यापर्यंतच्या शिक्षेस पात्र ठरेल.)
                 </div>
                 
-                <!-- Official Header with Logo -->
+                <!-- Official Header with Large Bold School Name & Logo -->
                 <div style="text-align: center; margin-bottom: 2px; position: relative;">
                     <div id="logoContainer" style="margin-bottom: 2px;">
-                        <img id="printLogo" src="" alt="School Logo" style="max-height: 40px; display: none; margin: 0 auto;">
+                        <img id="printLogo" src="" alt="School Logo" style="max-height: 50px; display: none; margin: 0 auto;">
                     </div>
-                    <div style="font-size: 12px; font-weight: bold;" id="pInst">रयत शिक्षण संस्था, सातारा.</div>
-                    <div style="font-size: 14px; font-weight: bold; color: #000;" id="pSchool">स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)</div>
-                    <div style="font-size: 11px;" id="pAddress">पत्ता : रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली</div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 2px;">
+                    <div style="font-size: 13px; font-weight: bold;" id="pInst">रयत शिक्षण संस्था, सातारा.</div>
+                    <div style="font-size: 16px; font-weight: bold; color: #000;" id="pSchool">स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)</div>
+                    <div style="font-size: 11px; font-weight: bold;" id="pAddress">पत्ता : रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 2px;">
                         <span id="pContact">फोन नंबर : ०२३४६-२२६१६१</span>
                         <span id="pEmail">इ-मेल : ramanandnagar.srvsr@gmail.com</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 2px;">
-                        <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block;"></span>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-top: 2px;">
+                        <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block; font-weight:bold;"></span>
                         <span>माध्यम : <span id="outMedium">मराठी</span></span>
-                        <span>अनु क्र. : <input type="text" id="outAnu" readonly style="width:50px; display:inline-block;" value="-"></span>
+                        <span>अनु क्र. : <input type="text" id="outAnu" readonly style="width:50px; display:inline-block; font-weight:bold;" value="-"></span>
                     </div>
-                    <div style="font-size: 10px; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 2px;" id="pRecognition">
-                        शाळा मान्यता क्रमांक: S-४८ (B), Poone, 21 May 1949 | यु-डायस क्रमांक : 27350804005
+                    <div style="font-size: 10px; font-weight: bold; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 2px;" id="pRecognition">
+                        शाळा मान्यता क्रमांक: S-४८ (B), Poone, 21 May 1949 | यु-डायस क्रमांक : २७३५०८०४००५
                     </div>
-                    <div style="font-size: 10px; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 2px;" id="pIndexNums">
+                    <div style="font-size: 10px; font-weight: bold; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 2px;" id="pIndexNums">
                         एस.एस.सी. इंडेक्स नंबर : -- | एच.एस.सी. इंडेक्स नंबर : --
                     </div>
                 </div>
 
-                <div style="text-align: center; font-weight: bold; font-size: 13px; margin: 3px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
+                <div style="text-align: center; font-weight: bold; font-size: 14px; margin: 3px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
                 
-                <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 2px;">
-                    <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px;"></div>
-                    <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px;"></div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 2px;">
+                    <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
+                    <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
                 </div>
 
                 <table class="lc-table">
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:130px;">विद्यार्थ्याचे पूर्ण नाव :</strong> <input type="text" id="outName" readonly style="font-weight: bold; font-size: 13px; display:inline-block; width:calc(100% - 135px);"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:135px;">विद्यार्थ्याचे पूर्ण नाव :</strong> <input type="text" id="outName" readonly style="font-weight: bold; font-size: 14px; display:inline-block; width:calc(100% - 140px);"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:130px;">आईचे नाव :</strong> <input type="text" id="outMother" readonly style="display:inline-block; width:calc(100% - 135px);"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:135px;">आईचे नाव :</strong> <input type="text" id="outMother" readonly style="display:inline-block; width:calc(100% - 140px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:80px;">राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" readonly style="display:inline-block; width:calc(100% - 85px);"></td>
-                        <td><strong style="display:inline-block; width:80px;">मातृभाषा :</strong> <input type="text" id="outMotherTongue" readonly style="display:inline-block; width:calc(100% - 85px);"></td>
+                        <td><strong style="display:inline-block; width:80px;">राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:80px;">मातृभाषा :</strong> <input type="text" id="outMotherTongue" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:80px;">धर्म :</strong> <input type="text" id="outReligion" readonly style="display:inline-block; width:calc(100% - 85px);"></td>
-                        <td><strong style="display:inline-block; width:100px;">जात व उपजात :</strong> <input type="text" id="outCaste" readonly style="display:inline-block; width:calc(100% - 105px);"></td>
+                        <td><strong style="display:inline-block; width:80px;">धर्म :</strong> <input type="text" id="outReligion" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:100px;">जात व उपजात :</strong> <input type="text" id="outCaste" readonly style="display:inline-block; width:calc(100% - 105px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:130px;">जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace" readonly style="display:inline-block; width:calc(100% - 135px);"></td>
-                        <td><strong style="display:inline-block; width:50px;">राज्य :</strong> <input type="text" id="outState" readonly style="width:90px; display:inline-block;"> | <strong>देश :</strong> <input type="text" id="outCountry" readonly style="width:45px; display:inline-block;"></td>
+                        <td><strong style="display:inline-block; width:135px;">जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace" readonly style="display:inline-block; width:calc(100% - 140px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:50px;">राज्य :</strong> <input type="text" id="outState" readonly style="width:90px; display:inline-block; font-weight:bold;"> | <strong>देश :</strong> <input type="text" id="outCountry" readonly style="width:45px; display:inline-block; font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:120px;">जन्मदिनांक (अंकात) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:calc(100% - 125px);"></td>
-                        <td><strong style="display:inline-block; width:130px;">जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" readonly style="color: #000; font-weight: bold; display:inline-block; width:calc(100% - 135px);"></td>
+                        <td><strong style="display:inline-block; width:120px;">जन्मदिनांक (अंकात) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:135px;">जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" readonly style="color: #000; font-weight: bold; display:inline-block; width:calc(100% - 140px);"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:110px;">यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly style="display:inline-block; width:calc(100% - 115px);"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:110px;">यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly style="display:inline-block; width:calc(100% - 115px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:180px;">या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:calc(100% - 185px);"></td>
-                        <td><strong style="display:inline-block; width:80px;">प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass" readonly style="display:inline-block; width:calc(100% - 85px);"></td>
+                        <td><strong style="display:inline-block; width:190px;">या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:calc(100% - 195px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:80px;">प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:120px;">अभ्यासातील प्रगती :</strong> <input type="text" id="outProgress" readonly value="चांगली" style="display:inline-block; width:calc(100% - 125px);"></td>
-                        <td><strong style="display:inline-block; width:70px;">वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली" style="display:inline-block; width:calc(100% - 75px);"></td>
+                        <td><strong style="display:inline-block; width:120px;">अभ्यासातील प्रगती :</strong> <input type="text" id="outProgress" readonly value="चांगली" style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:70px;">वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली" style="display:inline-block; width:calc(100% - 75px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:220px;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block; width:calc(100% - 225px);"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:220px;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block; width:calc(100% - 225px); font-weight:bold;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:140px;">शाळा सोडल्याचे कारण :</strong> <input type="text" id="outLeavingReason" class="editable-field" value="शिक्षण पूर्ण / संतोषजनक" style="display:inline-block; width:calc(100% - 145px);"></td>
@@ -437,21 +437,21 @@
                     </tr>
                 </table>
 
-                <div style="margin-top: 3px; font-size: 11px;">
+                <div style="margin-top: 3px; font-size: 11px; font-weight: bold;">
                     दाखला देण्यात येतो की, वरील माहिती शाळेतील जनरल रजिस्टरप्रमाणे बरोबर आहे.
                 </div>
 
                 <!-- Signatures Layout -->
-                <div style="margin-top: 25px; margin-bottom: 4px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; text-align: center;">
+                <div style="margin-top: 25px; margin-bottom: 4px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; text-align: center;">
                     <div style="width: 30%;">वर्गशिक्षक</div>
                     <div style="width: 30%;">लेखनिक</div>
                     <div style="width: 30%;">मुख्याध्यापक / प्राचार्य</div>
                 </div>
 
-                <div style="margin-top: 5px; display: flex; justify-content: space-between; font-size: 11px;">
+                <div style="margin-top: 5px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold;">
                     <div>तारीख : <span id="currentDate"></span></div>
                 </div>
-                <div style="margin-top: 4px; font-size: 9px; text-align: center; border-top: 1px dashed #000; padding-top: 2px;">
+                <div style="margin-top: 4px; font-size: 9px; font-weight: bold; text-align: center; border-top: 1px dashed #000; padding-top: 2px;">
                     (टिप- शाळा सोडल्याचे दाखल्यामध्ये अनाधिकृतरित्या बदल केल्यास संबंधितावर कायदेशीर कारवाई करण्यात येईल.)
                 </div>
             </div>
@@ -856,29 +856,39 @@
       } catch(e) { alert("Error: " + e.message); }
   }
 
+  // Convert English digits to Marathi digits (e.g. 123 -> १२३)
+  function toMarathiDigits(str) {
+      if(!str) return "";
+      const englishToMarathi = { '0': '०', '1': '१', '2': '२', '3': '३', '4': '४', '5': '५', '6': '६', '7': '७', '8': '८', '9': '९' };
+      return str.toString().replace(/[0-9]/g, function(w) { return englishToMarathi[w]; });
+  }
+
   function formatDateDDMMYYYY(val) {
       if(!val) return "";
+      let formatted = "";
       if(typeof val === 'number') {
           let d = new Date((val - 25569) * 86400 * 1000);
           let day = String(d.getDate()).padStart(2, '0');
           let month = String(d.getMonth() + 1).padStart(2, '0');
           let year = d.getFullYear();
-          return `${day}/${month}/${year}`;
-      }
-      let d = new Date(val);
-      if(!isNaN(d)) {
-          let day = String(d.getDate()).padStart(2, '0');
-          let month = String(d.getMonth() + 1).padStart(2, '0');
-          let year = d.getFullYear();
-          return `${day}/${month}/${year}`;
-      }
-      let parts = val.split('-');
-      if(parts.length === 3) {
-          if(parts[0].length === 4) {
-              return `${parts[2]}/${parts[1]}/${parts[0]}`;
+          formatted = `${day}/${month}/${year}`;
+      } else {
+          let d = new Date(val);
+          if(!isNaN(d)) {
+              let day = String(d.getDate()).padStart(2, '0');
+              let month = String(d.getMonth() + 1).padStart(2, '0');
+              let year = d.getFullYear();
+              formatted = `${day}/${month}/${year}`;
+          } else {
+              let parts = val.split('-');
+              if(parts.length === 3 && parts[0].length === 4) {
+                  formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+              } else {
+                  formatted = val;
+              }
           }
       }
-      return val;
+      return toMarathiDigits(formatted);
   }
 
   const ones = ["", "एक", "दोन", "तीन", "चार", "पाच", "सहा", "सात", "आठ", "नऊ", "दहा",
@@ -947,7 +957,7 @@
       document.getElementById('pAddress').innerText = "पत्ता : " + (currentSchoolProfile.address || "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली");
       document.getElementById('pContact').innerText = "फोन नंबर : " + (currentSchoolProfile.phone || "०२३४६-२२६१६१");
       document.getElementById('pEmail').innerText = "इ-मेल : " + (currentSchoolProfile.email || "ramanandnagar.srvsr@gmail.com");
-      document.getElementById('pRecognition').innerText = "शाळा मान्यता क्रमांक: " + (currentSchoolProfile.recognition || "S-४८ (B), Poone, 21 May 1949") + " | यु-डायस क्रमांक : " + (currentSchoolProfile.udise || "27350804005");
+      document.getElementById('pRecognition').innerText = "शाळा मान्यता क्रमांक: " + (currentSchoolProfile.recognition || "S-४८ (B), Poone, 21 May 1949") + " | यु-डायस क्रमांक : २७३५०८०४००५";
       document.getElementById('pIndexNums').innerText = "एस.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.sscIndex || "--") + " | एच.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.hscIndex || "--");
 
       let printLogo = document.getElementById('printLogo');
@@ -958,10 +968,10 @@
           printLogo.style.display = 'none';
       }
 
-      document.getElementById('outReg').value = foundRow[0] || regNo;
+      document.getElementById('outReg').value = toMarathiDigits(foundRow[0] || regNo);
       document.getElementById('outMedium').innerText = foundRow[1] || currentSchoolProfile.medium || "मराठी";
-      document.getElementById('editStudentId').value = foundRow[2] || "";
-      document.getElementById('editAadhaar').value = foundRow[3] || "";
+      document.getElementById('editStudentId').value = toMarathiDigits(foundRow[2] || "");
+      document.getElementById('editAadhaar').value = toMarathiDigits(foundRow[3] || "");
       document.getElementById('outName').value = foundRow[4] || "";
       document.getElementById('outMother').value = foundRow[5] || "";
       document.getElementById('outNationality').value = foundRow[6] || "";
@@ -982,7 +992,7 @@
       document.getElementById('outAdmissionDate').value = formatDateDDMMYYYY(foundRow[17]);
       document.getElementById('outAdmClass').value = foundRow[18] || "";
 
-      document.getElementById('currentDate').innerText = new Date().toLocaleDateString('mr-IN');
+      document.getElementById('currentDate').innerText = toMarathiDigits(new Date().toLocaleDateString('mr-IN'));
       document.getElementById('lcCard').style.display = 'block';
       document.getElementById('printBtn').style.display = 'block';
       
