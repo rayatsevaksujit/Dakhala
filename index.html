@@ -1016,7 +1016,7 @@
               sessionStorage.setItem('activeRole', 'master');
               sessionStorage.setItem('loginAt', String(Date.now()));
               document.getElementById('loginScreen').style.display = 'none';
-              document.getElementById('mainAppContainer').style.display = 'block');
+              document.getElementById('mainAppContainer').style.display = 'block';
               await fetchCloudData('admin', 'master');
               setupDashboard('master', 'admin');
               goHome();
