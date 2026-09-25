@@ -120,8 +120,9 @@
         button:hover { background-color: #2471a3; }
 
         table.data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 12px; text-align: left; }
+        table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 13px; text-align: left; }
         table.data-table th { background: #f2f4f4; color: var(--primary-color); }
+        table.data-table input { font-size: 13px !important; font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif !important; }
 
         /* Professional LC Format */
         .lc-format {
@@ -376,12 +377,12 @@
 
     <!-- Tab: General Register, Passing & Bulk Print (Combined) -->
     <div id="tabGenRegister" class="tab-content">
-        <h3>📖 जनरल रजिस्टर, पासिंग व बल्क दाखले प्रिंट</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही जनरल रजिस्टर तपासू शकता, ऑनलाईन एडिट करू शकता, वर्गनिहाय 'ऑल पास / प्रमोट' करू शकता किंवा एकाच वेळी सर्व दाखले प्रिंट करू शकता.</p>
+        <h3>📖 जनरल रजिस्टर, ऑल पास व बल्क दाखले प्रिंट</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही जनरल रजिस्टर तपासू शकता, ऑनलाईन एडिट करू शकता, वर्गनिहाय 'ALL PASS' करू शकता किंवा एकाच वेळी सर्व दाखले प्रिंट करू शकता.</p>
         
         <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; flex-wrap: wrap;">
             <button onclick="switchGenSubTab('verify')" id="subBtnVerify" style="width: auto; background: var(--primary-color);">🔍 जनरल रजिस्टर तपसणी व एडिट</button>
-            <button onclick="switchGenSubTab('promote')" id="subBtnPromote" style="width: auto; background: #7f8c8d;">🎓 वर्गनिहाय ऑल पास / प्रमोट</button>
+            <button onclick="switchGenSubTab('promote')" id="subBtnPromote" style="width: auto; background: #7f8c8d;">🎓 वर्गनिहाय ALL PASS</button>
             <button onclick="switchGenSubTab('bulk')" id="subBtnBulk" style="width: auto; background: #7f8c8d;">🖨️ वर्गनिहाय बल्क दाखले प्रिंट</button>
         </div>
 
@@ -399,12 +400,24 @@
             </div>
         </div>
 
-        <!-- SubTab 2: Class Promote & Pass -->
+        <!-- SubTab 2: Class ALL PASS -->
         <div id="genSubPromote" style="display:none;">
             <div class="form-group" style="max-width:350px;">
                 <label>वर्ग निवडा (Select Class):</label>
                 <select id="promoteClassSelect" onchange="loadClassStudentsForPromotion()">
                     <option value="">-- वर्ग निवडा --</option>
+                    <option value="१ ली">१ ली</option>
+                    <option value="२ री">२ री</option>
+                    <option value="३ री">३ री</option>
+                    <option value="४ थी">४ थी</option>
+                    <option value="५ वी">५ वी</option>
+                    <option value="६ वी">६ वी</option>
+                    <option value="७ वी">७ वी</option>
+                    <option value="८ वी">८ वी</option>
+                    <option value="९ वी">९ वी</option>
+                    <option value="१० वी">१० वी</option>
+                    <option value="११ वी">११ वी</option>
+                    <option value="१२ वी">१२ वी</option>
                 </select>
             </div>
 
@@ -414,7 +427,7 @@
                         <input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)" style="width:auto; display:inline-block;" checked>
                         <label for="selectAllCheckbox" style="display:inline-block; font-weight:bold; cursor:pointer;">सर्व निवड करा (Select All Pass)</label>
                     </div>
-                    <button onclick="executePromotion()" style="background:#8e44ad; width:auto; padding:8px 16px;">🎓 निवडक विद्यार्थ्यांना पुढच्या इयत्तेत प्रमोट करा (Promote)</button>
+                    <button onclick="executePromotion()" style="background:#8e44ad; width:auto; padding:8px 16px;">🎓 निवडक विद्यार्थ्यांना ALL PASS करून पुढच्या वर्गात प्रमोट करा</button>
                 </div>
                 <table class="data-table">
                     <thead>
@@ -753,7 +766,7 @@
       }
   }
 
-  // ===== General Register Sub-Tab Switcher (Verify, Promote, Bulk) =====
+  // ===== General Register Sub-Tab Switcher =====
   function switchGenSubTab(sub) {
       let btnV = document.getElementById('subBtnVerify');
       let btnP = document.getElementById('subBtnPromote');
@@ -762,24 +775,23 @@
       let divP = document.getElementById('genSubPromote');
       let divB = document.getElementById('genSubBulk');
 
-      btnV.style.background = '#7f8c8d';
-      btnP.style.background = '#7f8c8d';
-      btnB.style.background = '#7f8c8d';
-      divV.style.display = 'none';
-      divP.style.display = 'none';
-      divB.style.display = 'none';
+      if(btnV) btnV.style.background = '#7f8c8d';
+      if(btnP) btnP.style.background = '#7f8c8d';
+      if(btnB) btnB.style.background = '#7f8c8d';
+      if(divV) divV.style.display = 'none';
+      if(divP) divP.style.display = 'none';
+      if(divB) divB.style.display = 'none';
 
       if(sub === 'verify') {
-          btnV.style.background = 'var(--primary-color)';
-          divV.style.display = 'block';
+          if(btnV) btnV.style.background = 'var(--primary-color)';
+          if(divV) divV.style.display = 'block';
           loadGenRegisterTable();
       } else if(sub === 'promote') {
-          btnP.style.background = 'var(--primary-color)';
-          divP.style.display = 'block';
-          loadPromoteClassDropdown();
+          if(btnP) btnP.style.background = 'var(--primary-color)';
+          if(divP) divP.style.display = 'block';
       } else if(sub === 'bulk') {
-          btnB.style.background = 'var(--primary-color)';
-          divB.style.display = 'block';
+          if(btnB) btnB.style.background = 'var(--primary-color)';
+          if(divB) divB.style.display = 'block';
       }
   }
 
@@ -787,6 +799,7 @@
   function loadGenRegisterTable() {
       let thead = document.getElementById('genTableHead');
       let tbody = document.getElementById('genTableBody');
+      if(!thead || !tbody) return;
       thead.innerHTML = '';
       tbody.innerHTML = '';
 
@@ -807,6 +820,7 @@
 
   function renderGenTableRows(rows) {
       let tbody = document.getElementById('genTableBody');
+      if(!tbody) return;
       tbody.innerHTML = '';
       rows.forEach((row, rIdx) => {
           let trHtml = `<td>${rIdx + 1}</td>`;
@@ -852,27 +866,11 @@
       }
   }
 
-  // ===== Promote & Pass Functions =====
-  function loadPromoteClassDropdown() {
-      let sel = document.getElementById('promoteClassSelect');
-      sel.innerHTML = '<option value="">-- वर्ग निवडा --</option>';
-      if(excelData.length <= 1) return;
-
-      let classesSet = new Set();
-      for(let i = 1; i < excelData.length; i++) {
-          let cls = excelData[i][18];
-          if(cls) classesSet.add(cls.toString().trim());
-      }
-
-      classesSet.forEach(cls => {
-          sel.innerHTML += `<option value="${cls}">${cls}</option>`;
-      });
-      document.getElementById('promoteListWrap').style.display = 'none';
-  }
-
+  // ===== Class ALL PASS Functions =====
   function loadClassStudentsForPromotion() {
       let selectedClass = document.getElementById('promoteClassSelect').value;
       let tbody = document.getElementById('promoteTableBody');
+      if(!tbody) return;
       tbody.innerHTML = '';
       if(!selectedClass) {
           document.getElementById('promoteListWrap').style.display = 'none';
@@ -902,13 +900,17 @@
   }
 
   function getNextClassName(curr) {
-      if(curr.includes('५')) return '६ वी';
-      if(curr.includes('६')) return '७ वी';
-      if(curr.includes('७')) return '८ वी';
-      if(curr.includes('८')) return '९ वी';
-      if(curr.includes('९')) return '१० वी';
-      if(curr.includes('१०')) return '११ वी';
-      if(curr.includes('११')) return '१२ वी';
+      if(curr.includes('१ ली')) return '२ री';
+      if(curr.includes('२ री')) return '३ री';
+      if(curr.includes('३ री')) return '४ थी';
+      if(curr.includes('४ थी')) return '५ वी';
+      if(curr.includes('५ वी')) return '६ वी';
+      if(curr.includes('६ वी')) return '७ वी';
+      if(curr.includes('७ वी')) return '८ वी';
+      if(curr.includes('८ वी')) return '९ वी';
+      if(curr.includes('९ वी')) return '१० वी';
+      if(curr.includes('१० वी')) return '११ वी';
+      if(curr.includes('११ वी')) return '१२ वी';
       return curr;
   }
 
@@ -934,7 +936,7 @@
       });
 
       await saveGenTableToFirebase();
-      alert(promotedCount + " विद्यार्थ्यांची इयत्ता यशस्वीरित्या अपडेट (Promote) करण्यात आली!");
+      alert(promotedCount + " विद्यार्थ्यांची इयत्ता यशस्वीरित्या ALL PASS करून प्रमोट करण्यात आली!");
       loadClassStudentsForPromotion();
   }
 
@@ -958,6 +960,7 @@
       window._bulkRows = rows;
 
       let tbody = document.getElementById('bulkTableBody');
+      if(!tbody) return;
       tbody.innerHTML = '';
       if (rows.length === 0) {
           tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#7f8c8d;">कोणतेही विद्यार्थी सापडले नाहीत.</td></tr>`;
