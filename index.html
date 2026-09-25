@@ -362,6 +362,14 @@
     }
 }
 </style>
+<style id="dakhala-prelogin-guide">
+.pre-login-guide{margin-top:14px;text-align:left;border:1px solid rgba(21,94,239,.14);background:linear-gradient(135deg,rgba(246,248,255,.98),rgba(255,255,255,.98));border-radius:16px;padding:12px;box-shadow:0 8px 22px rgba(15,23,42,.07);animation:dkFadeUp .7s ease both}
+.pre-login-guide-head{display:flex;align-items:center;gap:8px;color:#173b68;font-size:14px;margin-bottom:9px}.pre-login-guide-head span{font-size:19px}
+.pre-login-guide-body{display:grid;gap:6px;color:#475569;font-size:11px;line-height:1.45}
+.pre-login-help{margin-top:11px;padding-top:9px;border-top:1px dashed rgba(21,94,239,.18);display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;color:#64748b}
+.pre-login-help a{font-weight:700;color:#155eef;text-decoration:none;white-space:nowrap}.pre-login-help a:hover{text-decoration:underline}
+@media(max-width:520px){.pre-login-guide{padding:10px}.pre-login-help{align-items:flex-start;flex-direction:column}}
+</style>
 <style id="dakhala-modern-ui">
 /* ===== DAKHALA MODERN UI / CLICK ANIMATIONS ===== */
 :root{
@@ -518,6 +526,19 @@ input:focus,select:focus{
         <input type="password" id="loginPass" placeholder="Enter password" inputmode="latin" autocomplete="current-password" oninput="forceEnglishCredential(this)">
     </div>
     <button type="button" onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
+
+    <div id="preLoginGuide" class="pre-login-guide">
+        <div class="pre-login-guide-head"><span>📘</span><strong>Entry करण्यापूर्वी मार्गदर्शक</strong></div>
+        <div class="pre-login-guide-body">
+            <div>1️⃣ <b>Login</b> — Username आणि Password English मध्ये भरा.</div>
+            <div>2️⃣ <b>Student Entry</b> — विद्यार्थ्याची माहिती अचूक भरून Save करा.</div>
+            <div>3️⃣ <b>Dakhala / Bonafide</b> — आवश्यक विद्यार्थी निवडून प्रमाणपत्र तयार करा.</div>
+            <div>4️⃣ <b>Photo</b> — फोटो उपलब्ध असल्यासच फोटो दिसेल.</div>
+            <div>5️⃣ <b>Print</b> — Print करताना योग्य paper setting तपासा.</div>
+            <div>6️⃣ <b>Print Report</b> — कोणत्या विद्यार्थ्याचा Dakhala किंवा Bonafide print झाला हे रिपोर्टमध्ये पाहता येईल.</div>
+        </div>
+        <div class="pre-login-help"><span>❓ अडचण असल्यास संपर्क करा:</span><a href="tel:9333411111">📞 ९३३३४१११११</a></div>
+    </div>
 </div>
 
 <!-- Main Application Container -->
