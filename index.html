@@ -362,6 +362,144 @@
     }
 }
 </style>
+<style id="dakhala-modern-ui">
+/* ===== DAKHALA MODERN UI / CLICK ANIMATIONS ===== */
+:root{
+  --ui-primary:#155eef;
+  --ui-primary2:#7c3aed;
+  --ui-surface:#ffffff;
+  --ui-soft:#f6f8ff;
+  --ui-text:#172033;
+  --ui-muted:#64748b;
+  --ui-shadow:0 12px 30px rgba(30,41,59,.10);
+}
+body{
+  background:
+    radial-gradient(circle at 10% 0%,rgba(124,58,237,.10),transparent 28%),
+    radial-gradient(circle at 95% 5%,rgba(21,94,239,.10),transparent 30%),
+    #f5f7fb !important;
+}
+#loginScreen{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.8) !important;
+  border-radius:24px !important;
+  box-shadow:0 22px 55px rgba(15,23,42,.16) !important;
+  animation:dkFadeUp .55s ease both;
+}
+#loginScreen:before{
+  content:"";
+  position:absolute; width:180px; height:180px; border-radius:50%;
+  background:linear-gradient(135deg,rgba(21,94,239,.13),rgba(124,58,237,.08));
+  top:-90px; right:-70px; pointer-events:none;
+}
+.app-header{
+  position:relative;
+  border-bottom:0 !important;
+  padding:14px 16px !important;
+  margin:-5px -5px 18px !important;
+  border-radius:18px;
+  color:#fff;
+  background:linear-gradient(135deg,#123c78,#155eef 55%,#7c3aed);
+  box-shadow:0 12px 28px rgba(21,94,239,.20);
+  overflow:hidden;
+}
+.app-header:after{
+  content:""; position:absolute; inset:-80px auto auto 55%;
+  width:180px; height:180px; border-radius:50%;
+  background:rgba(255,255,255,.10); pointer-events:none;
+}
+.app-title h2,.app-title p{color:#fff !important}
+.app-logo{
+  background:rgba(255,255,255,.18) !important;
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:12px !important;
+}
+.dashboard-grid{gap:16px !important}
+.tool-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(148,163,184,.22) !important;
+  border-radius:18px !important;
+  padding:18px !important;
+  background:rgba(255,255,255,.92) !important;
+  box-shadow:0 5px 18px rgba(15,23,42,.06) !important;
+  transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s,border-color .22s !important;
+  animation:dkFadeUp .5s ease both;
+}
+.tool-card:before{
+  content:""; position:absolute; left:0; top:0; width:100%; height:3px;
+  background:linear-gradient(90deg,var(--ui-primary),var(--ui-primary2));
+  transform:scaleX(0); transform-origin:left; transition:transform .25s ease;
+}
+.tool-card:hover{
+  transform:translateY(-6px) scale(1.01) !important;
+  box-shadow:var(--ui-shadow) !important;
+  border-color:rgba(21,94,239,.35) !important;
+}
+.tool-card:hover:before{transform:scaleX(1)}
+.tool-icon{
+  width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+  border-radius:14px;background:var(--ui-soft);font-size:23px !important;
+  transition:transform .25s ease;
+}
+.tool-card:hover .tool-icon{transform:translateY(-2px) rotate(-3deg) scale(1.06)}
+.tool-title{font-size:15px !important;color:#173b72 !important}
+.tool-desc{color:var(--ui-muted) !important}
+button,.tool-card,.back-btn,.tool-link{ -webkit-tap-highlight-color:transparent; }
+button{
+  border-radius:11px !important;
+  transition:transform .12s ease,box-shadow .2s ease,filter .2s ease !important;
+  box-shadow:0 5px 12px rgba(15,23,42,.08);
+}
+button:hover{filter:brightness(1.04);box-shadow:0 8px 18px rgba(15,23,42,.13)}
+button:active,.tool-card:active{transform:scale(.97) !important}
+input,select{
+  border-radius:10px !important;
+  transition:border-color .2s,box-shadow .2s,transform .15s;
+}
+input:focus,select:focus{
+  border-color:var(--ui-primary) !important;
+  box-shadow:0 0 0 4px rgba(21,94,239,.10);
+  transform:translateY(-1px);
+}
+.tab-content{
+  border:0 !important;
+  border-radius:18px !important;
+  box-shadow:0 8px 26px rgba(15,23,42,.06);
+  animation:dkFadeUp .28s ease both;
+}
+#backBar{
+  padding:6px 0;
+}
+.back-btn{border-radius:10px !important}
+.dk-ripple{
+  position:absolute;border-radius:50%;pointer-events:none;
+  width:12px;height:12px;background:rgba(21,94,239,.20);
+  transform:translate(-50%,-50%) scale(0);
+  animation:dkRipple .55s ease-out forwards;
+}
+@keyframes dkRipple{to{transform:translate(-50%,-50%) scale(18);opacity:0}}
+@keyframes dkFadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:700px){
+  body{padding:7px !important}
+  .container{padding:10px !important;border-radius:16px !important}
+  .app-header{margin:-2px -2px 14px !important;padding:12px !important;border-radius:15px !important}
+  .dashboard-grid{grid-template-columns:1fr 1fr !important;gap:10px !important}
+  .tool-card{padding:13px !important;min-height:118px}
+  .tool-icon{width:40px;height:40px;font-size:20px !important}
+  .tool-title{font-size:13px !important}
+  .tool-desc{font-size:10.5px !important}
+}
+@media(max-width:430px){
+  .dashboard-grid{grid-template-columns:1fr !important}
+}
+@media print{
+  .tool-card,.tab-content,#loginScreen,.app-header{animation:none !important}
+  .dk-ripple{display:none !important}
+}
+</style>
 </head>
 <body>
 
@@ -2347,7 +2485,21 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
         '<title>Bonafide Print</title>' +
         '<style>' + printCss + '</style>' +
         '</head>' +
-        '<body></body>' +
+        '<body><script>
+/* Catchy click/ripple feedback */
+(function(){
+  document.addEventListener('click',function(e){
+    const target=e.target.closest('button,.tool-card,.back-btn');
+    if(!target || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if(getComputedStyle(target).position==='static') target.style.position='relative';
+    const r=document.createElement('span'); r.className='dk-ripple';
+    const rect=target.getBoundingClientRect();
+    r.style.left=(e.clientX-rect.left)+'px'; r.style.top=(e.clientY-rect.top)+'px';
+    target.appendChild(r); setTimeout(()=>r.remove(),650);
+  },{passive:true});
+})();
+</script>
+</body>' +
         '</html>'
       );
       printWindow.document.close();
