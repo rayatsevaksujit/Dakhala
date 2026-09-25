@@ -2,23 +2,19 @@
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>School Management & Certificate Portal - Master & School Admin</title>
-
-    <!-- Sakal Marathi: 'fonts' फोल्डरमध्ये SakalMarathi.ttf फाईल अपलोड करा -->
+    
+    <!-- DVOT Surekh / Standard Marathi Web Font Style -->
     <style>
         @font-face {
-            font-family: 'Sakal Marathi';
-            src: local('Sakal Marathi'), local('Sakal Marathi Normal'),
-                 url('fonts/SakalMarathi.ttf') format('truetype');
+            font-family: 'DVOT Surekh';
+            src: local('DVOT Surekh'), local('Noto Sans Devanagari'), url('https://fonts.gstatic.com/s/notosansdevanagari/v27/o-0NIpQlx3QUlC5A4PNr4TRAbl_hAxxY.woff2') format('woff2');
             font-weight: normal;
             font-style: normal;
-            font-display: swap;
         }
     </style>
-    <!-- फॉलबॅक फॉन्ट -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -33,22 +29,22 @@
             --border-color: #d5dbdb;
         }
 
-        body {
-            font-family: 'Sakal Marathi', 'Noto Sans Devanagari', Arial, sans-serif;
-            background: var(--bg-color);
-            margin: 0;
-            padding: 10px;
+        body { 
+            font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif; 
+            background: var(--bg-color); 
+            margin: 0; 
+            padding: 10px; 
             color: var(--text-color);
             font-size: 13px;
         }
 
-        .container {
-            max-width: 950px;
-            background: var(--card-bg);
-            padding: 15px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            margin: auto;
+        .container { 
+            max-width: 950px; 
+            background: var(--card-bg); 
+            padding: 15px 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
+            margin: auto; 
         }
 
         #loginScreen {
@@ -108,8 +104,8 @@
         .tool-title { font-size: 14px; font-weight: 600; color: var(--primary-color); margin-bottom: 3px; }
         .tool-desc { font-size: 11px; color: #666; margin-bottom: 8px; line-height: 1.3; }
         .tool-link { font-size: 12px; color: var(--secondary-color); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
-
-        .back-bar { margin-bottom: 12px; display: none; justify-content: space-between; align-items: center; }
+        
+        .back-bar { margin-bottom: 12px; display: none; display: flex; justify-content: space-between; align-items: center; }
         .back-btn { background: #7f8c8d; color: white; padding: 4px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; width: auto; }
 
         .tab-content { display: none; background: #fff; padding: 15px; border-radius: 6px; border: 1px solid var(--border-color); }
@@ -117,7 +113,7 @@
 
         .form-group { margin-bottom: 10px; text-align: left; }
         label { display: block; margin-bottom: 3px; font-weight: 600; color: var(--text-color); font-size: 13px; }
-        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'Sakal Marathi', 'Noto Sans Devanagari', Arial, sans-serif; }
+        input, select, button { width: 100%; padding: 7px 10px; font-size: 13px; box-sizing: border-box; border: 1px solid #bdc3c7; border-radius: 4px; font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif; }
         input:disabled { background-color: #fcfcfc; color: #333; cursor: default; border: none; }
         input:focus { border-color: var(--secondary-color); outline: none; }
         button { background-color: var(--secondary-color); color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
@@ -127,14 +123,14 @@
         table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 12px; text-align: left; }
         table.data-table th { background: #f2f4f4; color: var(--primary-color); }
 
-        /* LC Format */
+        /* Professional LC Format */
         .lc-format {
             border: 2px solid #000;
             padding: 8px 12px;
             margin-top: 5px;
             background: #fff;
             font-size: 13px;
-            font-family: 'Sakal Marathi', 'Noto Sans Devanagari', Arial, sans-serif;
+            font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif;
             font-weight: 700;
             max-width: 780px;
             margin-left: auto;
@@ -144,25 +140,28 @@
         .lc-header { text-align: center; font-weight: bold; margin-bottom: 3px; line-height: 1.2; }
         .lc-table { width: 100%; border-collapse: collapse; margin-top: 2px; }
         .lc-table th, .lc-table td { border: 1px solid #000; padding: 2px 5px; font-size: 13px; text-align: left; font-weight: 700; }
-        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 13px; width: 100%; font-family: 'Sakal Marathi', 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 700; }
+        .lc-table input[type="text"] { border: none; background: transparent; padding: 0; font-size: 13px; width: 100%; font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif; color: #000; font-weight: 700; }
         .editable-field { border: 1px dashed #3498db !important; background: #f9fbfd !important; padding: 2px 4px !important; font-size: 13px !important; font-weight: 700 !important; }
 
         /* ===== A4 PRINT ===== */
         @media print {
-            @page { size: A4 portrait; margin: 18mm 8mm 8mm 8mm; }   /* वर 18mm, बाकी 8mm */
+            @page { size: A4 portrait; margin: 18mm 8mm 8mm 8mm; }
             html, body { background: #fff !important; margin: 0; padding: 0; }
 
-            /* दाखल्याशिवाय बाकी सर्व लपवा (display:none => दुसरे रिकामे पान येत नाही) */
             body > *:not(#mainAppContainer) { display: none !important; }
             .no-print, .app-header, #homeDashboard, #backBar,
             .tab-content:not(#tabDakhala) { display: none !important; }
 
             #mainAppContainer { display: block !important; box-shadow: none; padding: 0; margin: 0; max-width: none; border-radius: 0; }
             #tabDakhala { display: block !important; border: none; padding: 0; }
-            #printableArea { position: static; width: 100%; height: 264mm; overflow: hidden; }
+            #printableArea { position: static; width: 100%; max-height: 271mm; overflow: visible; }
+            #bulkPrintArea { display: none !important; }
 
-            /* A4 उपयुक्त रुंदी = 210mm - 16mm = 194mm ; उंची = 297mm - 26mm = 271mm */
-            #lcCard {
+            body.bulk-print-mode .tab-content:not(#tabBulkPrint) { display: none !important; }
+            body.bulk-print-mode #tabBulkPrint { display: block !important; border: none; padding: 0; }
+            body.bulk-print-mode #bulkPrintArea { display: block !important; }
+
+            #lcCard, .bulk-lc-copy {
                 width: 194mm !important;
                 max-width: 194mm !important;
                 margin: 0 auto;
@@ -170,6 +169,8 @@
                 break-inside: avoid;
                 page-break-inside: avoid;
             }
+            .bulk-lc-copy { page-break-after: always; }
+            .bulk-lc-copy:last-child { page-break-after: auto; }
             .editable-field { border: none !important; background: transparent !important; padding: 0 !important; }
         }
     </style>
@@ -181,7 +182,7 @@
     <div style="font-size: 35px; margin-bottom: 10px;">🔐</div>
     <h3 style="color: var(--primary-color); margin-top: 0;">Portal Login</h3>
     <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter Master Admin or School credentials.</p>
-
+    
     <div class="form-group">
         <label>Username:</label>
         <input type="text" id="loginUser" placeholder="Enter username">
@@ -236,6 +237,12 @@
                 <div class="tool-desc">रजिस्टर नंबर टाकून एलसी (LC) जनरेट करा.</div>
                 <a class="tool-link">दाखला पहा &rarr;</a>
             </div>
+            <div class="tool-card" id="cardGenRegister" onclick="openTab('tabGenRegister')" style="background: #f4ecf7; border-color: #8e44ad;">
+                <div class="tool-icon">📖</div>
+                <div class="tool-title">जनरल रजिस्टर व पासिंग</div>
+                <div class="tool-desc">जनरल रजिस्टर तपसा, ऑनलाईन एडिट, ऑल पास व बल्क प्रिंट करा.</div>
+                <a class="tool-link" style="color: #6c3483;">तपासा &rarr;</a>
+            </div>
             <div class="tool-card" id="cardBonafide" onclick="openTab('tabBonafide')" style="display:none;">
                 <div class="tool-icon">📋</div>
                 <div class="tool-title">बोनाफाईड सर्टिफिकेट</div>
@@ -259,7 +266,7 @@
     <div id="tabSchoolMgmt" class="tab-content">
         <h3>🏛️ शाळा व्यवस्थापन, लॉगिन नाव बदल व एक्सेल डेटा (Master Admin Panel)</h3>
         <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही नवीन शाळा जोडू शकता, शाळेचे युजरनेम/पासवर्ड बदलू शकता तसेच एक्सेल फाईल थेट अपलोड करू शकता.</p>
-
+        
         <div style="max-width: 500px; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 20px;">
             <h4 style="margin-top:0; color:var(--primary-color);">नवीन शाळा नोंदणी</h4>
             <div class="form-group"><label>शाळेचे नाव (School Name):</label><input type="text" id="newSchoolName" placeholder="Enter school name"></div>
@@ -311,7 +318,7 @@
                 <div class="form-group"><label>एस.एस.सी. इंडेक्स नंबर (SSC Index) :</label><input type="text" id="sscIndex" disabled></div>
                 <div class="form-group"><label>एच.एस.सी. इंडेक्स नंबर (HSC Index) :</label><input type="text" id="hscIndex" disabled></div>
             </div>
-
+            
             <div class="form-group">
                 <label>शाळेचा लोगो (School Logo Image):</label>
                 <input type="file" id="schoolLogoFile" accept="image/*" disabled style="background:#fff;">
@@ -367,12 +374,110 @@
         </div>
     </div>
 
+    <!-- Tab: General Register, Passing & Bulk Print (Combined) -->
+    <div id="tabGenRegister" class="tab-content">
+        <h3>📖 जनरल रजिस्टर, पासिंग व बल्क दाखले प्रिंट</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही जनरल रजिस्टर तपासू शकता, ऑनलाईन एडिट करू शकता, वर्गनिहाय 'ऑल पास / प्रमोट' करू शकता किंवा एकाच वेळी सर्व दाखले प्रिंट करू शकता.</p>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; flex-wrap: wrap;">
+            <button onclick="switchGenSubTab('verify')" id="subBtnVerify" style="width: auto; background: var(--primary-color);">🔍 जनरल रजिस्टर तपसणी व एडिट</button>
+            <button onclick="switchGenSubTab('promote')" id="subBtnPromote" style="width: auto; background: #7f8c8d;">🎓 वर्गनिहाय ऑल पास / प्रमोट</button>
+            <button onclick="switchGenSubTab('bulk')" id="subBtnBulk" style="width: auto; background: #7f8c8d;">🖨️ वर्गनिहाय बल्क दाखले प्रिंट</button>
+        </div>
+
+        <!-- SubTab 1: Verify & Edit -->
+        <div id="genSubVerify">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                <input type="text" id="genSearchBox" placeholder="🔍 नाव किंवा रजिस्टर नंबर शोधण्यासाठी टाईप करा..." oninput="filterGenTable()" style="max-width:300px;">
+                <button onclick="saveGenTableToFirebase()" style="background:#27ae60; width:auto; padding:6px 14px;">💾 सर्व बदल क्लाउडवर सेव्ह करा</button>
+            </div>
+            <div style="max-height:450px; overflow-y:auto; border:1px solid #bdc3c7;">
+                <table class="data-table" id="genRegisterTable" style="margin-top:0;">
+                    <thead><tr id="genTableHead"></tr></thead>
+                    <tbody id="genTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SubTab 2: Class Promote & Pass -->
+        <div id="genSubPromote" style="display:none;">
+            <div class="form-group" style="max-width:350px;">
+                <label>वर्ग निवडा (Select Class):</label>
+                <select id="promoteClassSelect" onchange="loadClassStudentsForPromotion()">
+                    <option value="">-- वर्ग निवडा --</option>
+                </select>
+            </div>
+
+            <div id="promoteListWrap" style="display:none; margin-top:15px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                    <div>
+                        <input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)" style="width:auto; display:inline-block;" checked>
+                        <label for="selectAllCheckbox" style="display:inline-block; font-weight:bold; cursor:pointer;">सर्व निवड करा (Select All Pass)</label>
+                    </div>
+                    <button onclick="executePromotion()" style="background:#8e44ad; width:auto; padding:8px 16px;">🎓 निवडक विद्यार्थ्यांना पुढच्या इयत्तेत प्रमोट करा (Promote)</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">पास / टिक</th>
+                            <th>रजिस्टर नंबर</th>
+                            <th>विद्यार्थ्याचे नाव</th>
+                            <th>सध्याची इयत्ता</th>
+                            <th>पुढील इयत्ता (Target Class)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="promoteTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SubTab 3: Bulk Print -->
+        <div id="genSubBulk" style="display:none;">
+            <div class="form-group" style="max-width: 400px;">
+                <label>इयत्ता टाका (रिकामे ठेवल्यास सर्व विद्यार्थी दिसतील):</label>
+                <input type="text" id="bulkClassFilter" placeholder="उदा. १० वी">
+                <button onclick="loadBulkList()" style="margin-top: 6px; background: #2980b9;">यादी दाखवा</button>
+            </div>
+
+            <div id="bulkListWrap" style="display:none; margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin: 10px 0;">
+                    <div id="bulkCount" style="font-weight:600; color: var(--primary-color);"></div>
+                    <button onclick="printAllBulk()" style="background:#8e44ad; width:auto; padding:9px 18px;">🖨️ सर्व दाखले एकत्र प्रिंट करा</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>अ.क्र.</th>
+                            <th>रजिस्टर नंबर</th>
+                            <th>विद्यार्थ्याचे नाव</th>
+                            <th>इयत्ता</th>
+                            <th>कृती</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bulkTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- Tab: School Leaving Certificate -->
     <div id="tabDakhala" class="tab-content">
         <div class="form-group no-print" style="max-width: 350px;">
-            <label>🔍 रजिस्टर नंबर टाका:</label>
-            <input type="text" id="regNo" placeholder="Enter Register No.">
-            <button onclick="searchStudent()" style="margin-top: 6px; background: #27ae60;">Search & Generate LC</button>
+            <label>🔍 शोध पद्धत निवडा (Search By):</label>
+            <select id="searchMode" onchange="updateSearchUI()" style="margin-bottom: 8px;">
+                <option value="reg">रजिस्टर नंबर (Register No.)</option>
+                <option value="name">विद्यार्थ्याचे नाव (Student Name)</option>
+                <option value="class">इयत्ता (Class - उदा. ७ वी)</option>
+            </select>
+            <label id="searchLabel">रजिस्टर नंबर टाका:</label>
+            <input type="text" id="regNo" placeholder="Enter Register No." oninput="onSearchTyping()" autocomplete="off">
+            <div id="liveSuggestions" style="display:none; border:1px solid #bdc3c7; border-top:none; max-height:180px; overflow-y:auto; background:#fff; border-radius:0 0 4px 4px;"></div>
+            <button onclick="performSearch()" style="margin-top: 6px; background: #27ae60;">Search & Generate LC</button>
+
+            <div id="searchResultsWrap" style="display:none; margin-top: 10px;">
+                <label>🔽 जुळणारे विद्यार्थी निवडा (Select Student):</label>
+                <select id="searchResultsSelect" onchange="onPickSearchResult()"></select>
+            </div>
         </div>
 
         <div id="printableArea">
@@ -380,8 +485,8 @@
                 <div style="font-size: 10px; border-bottom: 1px dashed #000; padding-bottom: 2px; margin-bottom: 3px; text-align: center;">
                     (दाखला देणाऱ्या अधिकाऱ्याव्यतिरिक्त इतर कोणीही या दाखल्याच्या नोंदवहीत बदल अगर खाडाखोड करायची नाही. तसे करणे कायदेशीर गुन्हा असून, विद्यार्थी शाळेतून काढून टाकण्यापर्यंतच्या शिक्षेस पात्र ठरेल.)
                 </div>
-
-                <!-- Official Header -->
+                
+                <!-- Official Header with Large Bold School Name & Logo -->
                 <div style="text-align: center; margin-bottom: 2px; position: relative;">
                     <div id="logoContainer" style="margin-bottom: 2px;">
                         <img id="printLogo" src="" alt="School Logo" style="max-height: 50px; display: none; margin: 0 auto;">
@@ -407,7 +512,7 @@
                 </div>
 
                 <div style="text-align: center; font-weight: bold; font-size: 14px; margin: 3px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
-
+                
                 <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 2px;">
                     <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
                     <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
@@ -463,7 +568,7 @@
                 </div>
 
                 <!-- Signatures Layout -->
-                <div id="sigRow" style="margin-top: 25px; margin-bottom: 4px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; text-align: center;">
+                <div style="margin-top: 25px; margin-bottom: 4px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; text-align: center;">
                     <div style="width: 30%;">वर्गशिक्षक</div>
                     <div style="width: 30%;">लेखनिक</div>
                     <div style="width: 30%;">मुख्याध्यापक / प्राचार्य</div>
@@ -477,9 +582,12 @@
                 </div>
             </div>
         </div>
-        <button class="no-print" id="printBtn" onclick="document.fonts.ready.then(function(){ window.print(); })" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ Print / PDF</button>
+        <button class="no-print" id="printBtn" onclick="window.print()" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ Print / PDF</button>
     </div>
 </div>
+
+<!-- बल्क प्रिंटसाठी येथे प्रत्येक विद्यार्थ्याची दाखला-प्रत तयार होते -->
+<div id="bulkPrintArea" style="display:none;"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -618,11 +726,11 @@
   async function openTab(tabName) {
       let contents = document.getElementsByClassName('tab-content');
       for(let c of contents) c.classList.remove('active');
-      let tabEl = document.getElementById(tabName);
-      if(tabEl) tabEl.classList.add('active');
+      let targetTab = document.getElementById(tabName);
+      if(targetTab) targetTab.classList.add('active');
       document.getElementById('homeDashboard').style.display = 'none';
       document.getElementById('backBar').style.display = 'flex';
-
+      
       if(tabName === 'tabSchoolInfo') {
           let role = getActiveRole();
           if(role === 'master') {
@@ -640,7 +748,457 @@
               document.getElementById('adminSchoolSelectorDiv').style.display = 'none';
               loadSchoolInfo(getActiveUser());
           }
+      } else if(tabName === 'tabGenRegister') {
+          switchGenSubTab('verify');
       }
+  }
+
+  // ===== General Register Sub-Tab Switcher (Verify, Promote, Bulk) =====
+  function switchGenSubTab(sub) {
+      let btnV = document.getElementById('subBtnVerify');
+      let btnP = document.getElementById('subBtnPromote');
+      let btnB = document.getElementById('subBtnBulk');
+      let divV = document.getElementById('genSubVerify');
+      let divP = document.getElementById('genSubPromote');
+      let divB = document.getElementById('genSubBulk');
+
+      btnV.style.background = '#7f8c8d';
+      btnP.style.background = '#7f8c8d';
+      btnB.style.background = '#7f8c8d';
+      divV.style.display = 'none';
+      divP.style.display = 'none';
+      divB.style.display = 'none';
+
+      if(sub === 'verify') {
+          btnV.style.background = 'var(--primary-color)';
+          divV.style.display = 'block';
+          loadGenRegisterTable();
+      } else if(sub === 'promote') {
+          btnP.style.background = 'var(--primary-color)';
+          divP.style.display = 'block';
+          loadPromoteClassDropdown();
+      } else if(sub === 'bulk') {
+          btnB.style.background = 'var(--primary-color)';
+          divB.style.display = 'block';
+      }
+  }
+
+  // Load General Register Table for Verification & Editing
+  function loadGenRegisterTable() {
+      let thead = document.getElementById('genTableHead');
+      let tbody = document.getElementById('genTableBody');
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+
+      if(excelData.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#7f8c8d;">कोणताही डेटा उपलब्ध नाही. कृपया ॲडमिन पॅनलमधून एक्सेल फाईल अपलोड करा.</td></tr>`;
+          return;
+      }
+
+      let headers = excelData[0] || [];
+      let headHtml = '<th>अ.क्र.</th>';
+      for(let h of headers) {
+          headHtml += `<th>${h || 'कॉलम'}</th>`;
+      }
+      thead.innerHTML = headHtml;
+
+      renderGenTableRows(excelData.slice(1));
+  }
+
+  function renderGenTableRows(rows) {
+      let tbody = document.getElementById('genTableBody');
+      tbody.innerHTML = '';
+      rows.forEach((row, rIdx) => {
+          let trHtml = `<td>${rIdx + 1}</td>`;
+          for(let cIdx = 0; cIdx < (excelData[0] || []).length; cIdx++) {
+              let val = row[cIdx] !== undefined ? row[cIdx] : '';
+              trHtml += `<td><input type="text" value="${val}" onchange="updateGenCell(${rIdx + 1}, ${cIdx}, this.value)" style="border:none; background:transparent; width:100%;"></td>`;
+          }
+          tbody.innerHTML += `<tr>${trHtml}</tr>`;
+      });
+  }
+
+  function updateGenCell(rowIdx, colIdx, val) {
+      if(excelData[rowIdx]) {
+          excelData[rowIdx][colIdx] = val;
+      }
+  }
+
+  function filterGenTable() {
+      let q = normalizeSearchText(document.getElementById('genSearchBox').value);
+      if(!q || excelData.length <= 1) {
+          renderGenTableRows(excelData.slice(1));
+          return;
+      }
+      let filtered = excelData.slice(1).filter(row => {
+          return row.some(cell => normalizeSearchText(cell).includes(q));
+      });
+      renderGenTableRows(filtered);
+  }
+
+  async function saveGenTableToFirebase() {
+      let user = getActiveUser() || 'admin';
+      let role = getActiveRole();
+      let targetUser = (role === 'master' && window.adminEditingTarget) ? window.adminEditingTarget : user;
+
+      try {
+          await db.collection("portalData").doc("profile_" + targetUser).set({
+              info: currentSchoolProfile || {},
+              excel: JSON.stringify(excelData)
+          }, { merge: true });
+          alert("जनरल रजिस्टरमधील बदल यशस्वीरित्या क्लाउडवर सेव्ह झाले!");
+      } catch(e) {
+          alert("Error saving: " + e.message);
+      }
+  }
+
+  // ===== Promote & Pass Functions =====
+  function loadPromoteClassDropdown() {
+      let sel = document.getElementById('promoteClassSelect');
+      sel.innerHTML = '<option value="">-- वर्ग निवडा --</option>';
+      if(excelData.length <= 1) return;
+
+      let classesSet = new Set();
+      for(let i = 1; i < excelData.length; i++) {
+          let cls = excelData[i][18];
+          if(cls) classesSet.add(cls.toString().trim());
+      }
+
+      classesSet.forEach(cls => {
+          sel.innerHTML += `<option value="${cls}">${cls}</option>`;
+      });
+      document.getElementById('promoteListWrap').style.display = 'none';
+  }
+
+  function loadClassStudentsForPromotion() {
+      let selectedClass = document.getElementById('promoteClassSelect').value;
+      let tbody = document.getElementById('promoteTableBody');
+      tbody.innerHTML = '';
+      if(!selectedClass) {
+          document.getElementById('promoteListWrap').style.display = 'none';
+          return;
+      }
+
+      let students = [];
+      for(let i = 1; i < excelData.length; i++) {
+          let row = excelData[i];
+          if(row[18] && row[18].toString().trim() === selectedClass) {
+              students.push({ rowIndex: i, reg: row[0], name: row[4], currentClass: row[18] });
+          }
+      }
+
+      window._currentPromoteStudents = students;
+      students.forEach((st, idx) => {
+          tbody.innerHTML += `
+              <tr>
+                  <td><input type="checkbox" class="promote-check" data-index="${idx}" checked style="width:auto; height:18px;"></td>
+                  <td>${st.reg || '-'}</td>
+                  <td><strong>${st.name || '-'}</strong></td>
+                  <td>${st.currentClass}</td>
+                  <td><input type="text" id="targetClass_${idx}" value="${getNextClassName(st.currentClass)}" style="font-weight:bold; color:var(--primary-color);"></td>
+              </tr>`;
+      });
+      document.getElementById('promoteListWrap').style.display = 'block';
+  }
+
+  function getNextClassName(curr) {
+      if(curr.includes('५')) return '६ वी';
+      if(curr.includes('६')) return '७ वी';
+      if(curr.includes('७')) return '८ वी';
+      if(curr.includes('८')) return '९ वी';
+      if(curr.includes('९')) return '१० वी';
+      if(curr.includes('१०')) return '११ वी';
+      if(curr.includes('११')) return '१२ वी';
+      return curr;
+  }
+
+  function toggleSelectAll(master) {
+      let checks = document.querySelectorAll('.promote-check');
+      checks.forEach(ch => ch.checked = master.checked);
+  }
+
+  async function executePromotion() {
+      let students = window._currentPromoteStudents || [];
+      if(students.length === 0) return;
+
+      let promotedCount = 0;
+      students.forEach((st, idx) => {
+          let chk = document.querySelector(`.promote-check[data-index="${idx}"]`);
+          if(chk && chk.checked) {
+              let newCls = document.getElementById(`targetClass_${idx}`).value.trim();
+              if(newCls) {
+                  excelData[st.rowIndex][18] = newCls;
+                  promotedCount++;
+              }
+          }
+      });
+
+      await saveGenTableToFirebase();
+      alert(promotedCount + " विद्यार्थ्यांची इयत्ता यशस्वीरित्या अपडेट (Promote) करण्यात आली!");
+      loadClassStudentsForPromotion();
+  }
+
+  // ===== Bulk Print Functions =====
+  function bulkRegNumeric(row) {
+      let n = parseInt(normalizeSearchText(row[0]), 10);
+      return isNaN(n) ? Infinity : n;
+  }
+
+  function loadBulkList() {
+      if (excelData.length === 0) { alert("कृपया मास्टर ॲडमिन पॅनलमधून या शाळेसाठी एक्सेल फाईल अपलोड केलेली तपासा!"); return; }
+
+      let filterVal = document.getElementById('bulkClassFilter').value.trim();
+      let nf = normalizeSearchText(filterVal);
+
+      let rows = excelData.slice(1).filter(row => {
+          if (!filterVal) return true;
+          return row[18] !== undefined && normalizeSearchText(row[18]).includes(nf);
+      });
+      rows.sort((a, b) => bulkRegNumeric(a) - bulkRegNumeric(b));
+      window._bulkRows = rows;
+
+      let tbody = document.getElementById('bulkTableBody');
+      tbody.innerHTML = '';
+      if (rows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#7f8c8d;">कोणतेही विद्यार्थी सापडले नाहीत.</td></tr>`;
+      } else {
+          rows.forEach((row, idx) => {
+              tbody.innerHTML += `
+                  <tr>
+                      <td>${idx + 1}</td>
+                      <td>${row[0] || '-'}</td>
+                      <td>${row[4] || '-'}</td>
+                      <td>${row[18] || '-'}</td>
+                      <td><button onclick="printOneFromBulk(${idx})" style="background:#27ae60; padding:4px 10px; font-size:11px; width:auto;">🖨️ प्रिंट</button></td>
+                  </tr>`;
+          });
+      }
+      document.getElementById('bulkCount').innerText = "एकूण विद्यार्थी: " + rows.length;
+      document.getElementById('bulkListWrap').style.display = 'block';
+  }
+
+  function printOneFromBulk(idx) {
+      let row = window._bulkRows ? window._bulkRows[idx] : null;
+      if (!row) return;
+      document.body.classList.remove('bulk-print-mode');
+      window._bulkPrintActive = false;
+      renderLC(row);
+      document.fonts.ready.then(() => window.print());
+  }
+
+  function printAllBulk() {
+      let rows = window._bulkRows || [];
+      if (rows.length === 0) { alert("कृपया आधी 'यादी दाखवा' बटणाने विद्यार्थ्यांची यादी तयार करा!"); return; }
+      if (!confirm(rows.length + " विद्यार्थ्यांचे दाखले एकत्र प्रिंट करायचे आहेत का? (एकूण " + rows.length + " पाने तयार होतील)")) return;
+
+      const template = document.getElementById('lcCard');
+      const area = document.getElementById('bulkPrintArea');
+      area.innerHTML = '';
+
+      rows.forEach(row => {
+          let clone = template.cloneNode(true);
+          clone.removeAttribute('id');
+          clone.classList.add('bulk-lc-copy');
+          clone.style.display = 'block';
+          clone.style.zoom = '';
+          clone.style.width = '';
+          fillCertificateElement(clone, row);
+          area.appendChild(clone);
+      });
+
+      document.body.classList.add('bulk-print-mode');
+      window._bulkPrintActive = true;
+      document.fonts.ready.then(() => window.print());
+  }
+
+  function fillCertificateElement(root, foundRow) {
+      root.querySelector('#pInst').innerText = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
+      root.querySelector('#pSchool').innerText = currentSchoolProfile.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)";
+      root.querySelector('#pAddress').innerText = "पत्ता : " + (currentSchoolProfile.address || "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली");
+      root.querySelector('#pContact').innerText = "फोन नंबर : " + (currentSchoolProfile.phone || "०२३४६-२२६१६१");
+      root.querySelector('#pEmail').innerText = "इ-मेल : " + (currentSchoolProfile.email || "ramanandnagar.srvsr@gmail.com");
+      root.querySelector('#pRecognition').innerText = "शाळा मान्यता क्रमांक: " + (currentSchoolProfile.recognition || "S-४८ (B), Poone, 21 May 1949") + " | यु-डायस क्रमांक : २७३५०८०४००५";
+      root.querySelector('#pIndexNums').innerText = "एस.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.sscIndex || "--") + " | एच.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.hscIndex || "--");
+
+      let printLogo = root.querySelector('#printLogo');
+      if(schoolLogoBase64) {
+          printLogo.src = schoolLogoBase64;
+          printLogo.style.display = 'block';
+      } else {
+          printLogo.style.display = 'none';
+      }
+
+      root.querySelector('#outReg').value = toMarathiDigits(foundRow[0] || "");
+      root.querySelector('#outMedium').innerText = foundRow[1] || currentSchoolProfile.medium || "मराठी";
+      root.querySelector('#editStudentId').value = toMarathiDigits(foundRow[2] || "");
+      root.querySelector('#editAadhaar').value = toMarathiDigits(foundRow[3] || "");
+      root.querySelector('#outName').value = foundRow[4] || "";
+      root.querySelector('#outMother').value = foundRow[5] || "";
+      root.querySelector('#outNationality').value = foundRow[6] || "";
+      root.querySelector('#outMotherTongue').value = foundRow[7] || "";
+      root.querySelector('#outReligion').value = foundRow[8] || "";
+      
+      let casteFull = (foundRow[9] || "") + (foundRow[10] && foundRow[10] !== "-" ? " (" + foundRow[10] + ")" : "");
+      root.querySelector('#outCaste').value = casteFull;
+      root.querySelector('#outBirthPlace').value = foundRow[11] || "";
+      root.querySelector('#outState').value = foundRow[12] || "";
+      root.querySelector('#outCountry').value = foundRow[13] || "भारत";
+      
+      let dobRaw = foundRow[14] || "";
+      root.querySelector('#outDobNum').value = formatDateDDMMYYYY(dobRaw);
+      root.querySelector('#outDobWords').value = dateToMarathiWords(dobRaw);
+      
+      root.querySelector('#outPrevSchool').value = foundRow[16] || "-";
+      root.querySelector('#outAdmissionDate').value = formatDateDDMMYYYY(foundRow[17]);
+      root.querySelector('#outAdmClass').value = foundRow[18] || "";
+
+      root.querySelector('#currentDate').innerText = toMarathiDigits(new Date().toLocaleDateString('mr-IN'));
+  }
+
+  // ===== Search Functions for LC Tab =====
+  function onSearchTyping() {
+      let mode = document.getElementById('searchMode').value;
+      let box = document.getElementById('liveSuggestions');
+      let query = document.getElementById('regNo').value.trim();
+
+      if(mode === 'reg' || !query || excelData.length === 0) {
+          box.style.display = 'none';
+          box.innerHTML = '';
+          return;
+      }
+
+      let nq = normalizeSearchText(query);
+      let colIndex = (mode === 'name') ? 4 : 18;
+      let matches = [];
+      for(let row of excelData.slice(1)) {
+          if(row[colIndex] !== undefined && normalizeSearchText(row[colIndex]).includes(nq)) {
+              matches.push(row);
+              if(matches.length >= 20) break;
+          }
+      }
+
+      if(matches.length === 0) {
+          box.style.display = 'none';
+          box.innerHTML = '';
+          return;
+      }
+
+      window._liveMatches = matches;
+      box.innerHTML = matches.map((row, idx) => {
+          let name = row[4] || '-';
+          let cls = row[18] || '-';
+          let reg = row[0] || '-';
+          return `<div onclick="pickLiveSuggestion(${idx})" style="padding:6px 10px; cursor:pointer; border-bottom:1px solid #eee; font-size:13px;"
+                       onmouseover="this.style.background='#eaf2f8'" onmouseout="this.style.background='#fff'">
+                      <strong>${name}</strong> — रजि.नं. ${reg} (${cls})
+                  </div>`;
+      }).join('');
+      box.style.display = 'block';
+  }
+
+  function pickLiveSuggestion(idx) {
+      if(!window._liveMatches) return;
+      let box = document.getElementById('liveSuggestions');
+      box.style.display = 'none';
+      box.innerHTML = '';
+      document.getElementById('searchResultsWrap').style.display = 'none';
+      renderLC(window._liveMatches[idx]);
+  }
+
+  function updateSearchUI() {
+      let mode = document.getElementById('searchMode').value;
+      let label = document.getElementById('searchLabel');
+      let input = document.getElementById('regNo');
+      document.getElementById('searchResultsWrap').style.display = 'none';
+      document.getElementById('searchResultsSelect').innerHTML = '';
+      document.getElementById('liveSuggestions').style.display = 'none';
+      document.getElementById('liveSuggestions').innerHTML = '';
+      if(mode === 'name') {
+          label.innerText = 'विद्यार्थ्याचे नाव टाका:';
+          input.placeholder = 'उदा. कासार प्रज्वल';
+      } else if(mode === 'class') {
+          label.innerText = 'इयत्ता टाका:';
+          input.placeholder = 'उदा. ७ वी';
+      } else {
+          label.innerText = 'रजिस्टर नंबर टाका:';
+          input.placeholder = 'Enter Register No.';
+      }
+      input.value = '';
+  }
+
+  function normalizeSearchText(str) {
+      const marathiToEnglish = { '०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9' };
+      return (str || '').toString().trim().toLowerCase().replace(/[०-९]/g, ch => marathiToEnglish[ch] || ch);
+  }
+
+  function performSearch() {
+      let mode = document.getElementById('searchMode').value;
+      let query = document.getElementById('regNo').value.trim();
+      document.getElementById('searchResultsWrap').style.display = 'none';
+      document.getElementById('searchResultsSelect').innerHTML = '';
+
+      if(!query) {
+          if(mode === 'name') alert("कृपया विद्यार्थ्याचे नाव टाका!");
+          else if(mode === 'class') alert("कृपया इयत्ता टाका!");
+          else alert("कृपया रजिस्टर नंबर टाका!");
+          return;
+      }
+      if(excelData.length === 0) { alert("कृपया मास्टर ॲडमिन पॅनलमधून या शाळेसाठी एक्सेल फाईल अपलोड केलेली तपासा!"); return; }
+
+      let nq = normalizeSearchText(query);
+      let matches = [];
+
+      if(mode === 'reg') {
+          for(let row of excelData.slice(1)) {
+              if(row[0] !== undefined && normalizeSearchText(row[0]) === nq) { matches.push(row); break; }
+          }
+      } else if(mode === 'name') {
+          for(let row of excelData.slice(1)) {
+              if(row[4] !== undefined && normalizeSearchText(row[4]).includes(nq)) matches.push(row);
+          }
+      } else {
+          for(let row of excelData.slice(1)) {
+              if(row[18] !== undefined && normalizeSearchText(row[18]).includes(nq)) matches.push(row);
+          }
+      }
+
+      if(matches.length === 0) {
+          alert("'" + query + "' साठी कोणताही विद्यार्थी सापडला नाही.");
+          document.getElementById('lcCard').style.display = 'none';
+          document.getElementById('printBtn').style.display = 'none';
+          return;
+      }
+
+      if(matches.length === 1) {
+          renderLC(matches[0]);
+          return;
+      }
+
+      window._searchMatches = matches;
+      let sel = document.getElementById('searchResultsSelect');
+      sel.innerHTML = '<option value="">-- विद्यार्थी निवडा --</option>';
+      matches.forEach((row, idx) => {
+          sel.innerHTML += `<option value="${idx}">रजि.नं. ${row[0] || '-'} — ${row[4] || '-'} (${row[18] || '-'})</option>`;
+      });
+      document.getElementById('searchResultsWrap').style.display = 'block';
+      document.getElementById('lcCard').style.display = 'none';
+      document.getElementById('printBtn').style.display = 'none';
+      alert(matches.length + " विद्यार्थी सापडले. कृपया खालील यादीतून योग्य विद्यार्थी निवडा.");
+  }
+
+  function onPickSearchResult() {
+      let sel = document.getElementById('searchResultsSelect');
+      let idx = sel.value;
+      if(idx === '' || !window._searchMatches) return;
+      renderLC(window._searchMatches[parseInt(idx, 10)]);
+  }
+
+  function renderLC(foundRow) {
+      let card = document.getElementById('lcCard');
+      fillCertificateElement(card, foundRow);
+      card.style.display = 'block';
+      document.getElementById('printBtn').style.display = 'block';
+      card.scrollIntoView({ behavior: 'smooth' });
   }
 
   async function onAdminSelectSchool() {
@@ -764,7 +1322,7 @@
               let data = new Uint8Array(evt.target.result);
               let workbook = XLSX.read(data, {type: 'array'});
               let parsedData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
-
+              
               let docRef = db.collection("portalData").doc("profile_" + targetUsername);
               let docSnap = await docRef.get();
               let existingInfo = docSnap.exists ? (docSnap.data().info || {}) : {};
@@ -833,7 +1391,7 @@
       document.getElementById('schoolMedium').value = currentSchoolProfile.medium || "मराठी";
       document.getElementById('sscIndex').value = currentSchoolProfile.sscIndex || "--";
       document.getElementById('hscIndex').value = currentSchoolProfile.hscIndex || "--";
-
+      
       schoolLogoBase64 = currentSchoolProfile.logo || "";
       let prev = document.getElementById('logoPreview');
       if(schoolLogoBase64) {
@@ -878,7 +1436,6 @@
       } catch(e) { alert("Error: " + e.message); }
   }
 
-  // Convert English digits to Marathi digits (e.g. 123 -> १२३)
   function toMarathiDigits(str) {
       if(!str) return "";
       const englishToMarathi = { '0': '०', '1': '१', '2': '२', '3': '३', '4': '४', '5': '५', '6': '६', '7': '७', '8': '८', '9': '९' };
@@ -958,111 +1515,6 @@
           return `${dayWord} ${monthWord} ${yearWord}`;
       } catch(e) { return dateStr; }
   }
-
-  function searchStudent() {
-      let regNo = document.getElementById('regNo').value.trim();
-      if(!regNo) { alert("कृपया रजिस्टर नंबर टाका!"); return; }
-      if(excelData.length === 0) { alert("कृपया मास्टर ॲडमिन पॅनलमधून या शाळेसाठी एक्सेल फाईल अपलोड केलेली तपासा!"); return; }
-
-      let foundRow = null;
-      for(let row of excelData) {
-          if(row[0] !== undefined && row[0].toString().trim() === regNo) {
-              foundRow = row;
-              break;
-          }
-      }
-
-      if(!foundRow) { alert("रजिस्टर नंबर '" + regNo + "' सापडला नाही."); document.getElementById('lcCard').style.display = 'none'; document.getElementById('printBtn').style.display = 'none'; return; }
-
-      document.getElementById('pInst').innerText = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
-      document.getElementById('pSchool').innerText = currentSchoolProfile.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)";
-      document.getElementById('pAddress').innerText = "पत्ता : " + (currentSchoolProfile.address || "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली");
-      document.getElementById('pContact').innerText = "फोन नंबर : " + (currentSchoolProfile.phone || "०२३४६-२२६१६१");
-      document.getElementById('pEmail').innerText = "इ-मेल : " + (currentSchoolProfile.email || "ramanandnagar.srvsr@gmail.com");
-      document.getElementById('pRecognition').innerText = "शाळा मान्यता क्रमांक: " + (currentSchoolProfile.recognition || "S-४८ (B), Poone, 21 May 1949") + " | यु-डायस क्रमांक : २७३५०८०४००५";
-      document.getElementById('pIndexNums').innerText = "एस.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.sscIndex || "--") + " | एच.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.hscIndex || "--");
-
-      let printLogo = document.getElementById('printLogo');
-      if(schoolLogoBase64) {
-          printLogo.src = schoolLogoBase64;
-          printLogo.style.display = 'block';
-      } else {
-          printLogo.style.display = 'none';
-      }
-
-      document.getElementById('outReg').value = toMarathiDigits(foundRow[0] || regNo);
-      document.getElementById('outMedium').innerText = foundRow[1] || currentSchoolProfile.medium || "मराठी";
-      document.getElementById('editStudentId').value = toMarathiDigits(foundRow[2] || "");
-      document.getElementById('editAadhaar').value = toMarathiDigits(foundRow[3] || "");
-      document.getElementById('outName').value = foundRow[4] || "";
-      document.getElementById('outMother').value = foundRow[5] || "";
-      document.getElementById('outNationality').value = foundRow[6] || "";
-      document.getElementById('outMotherTongue').value = foundRow[7] || "";
-      document.getElementById('outReligion').value = foundRow[8] || "";
-
-      let casteFull = (foundRow[9] || "") + (foundRow[10] && foundRow[10] !== "-" ? " (" + foundRow[10] + ")" : "");
-      document.getElementById('outCaste').value = casteFull;
-      document.getElementById('outBirthPlace').value = foundRow[11] || "";
-      document.getElementById('outState').value = foundRow[12] || "";
-      document.getElementById('outCountry').value = foundRow[13] || "भारत";
-
-      let dobRaw = foundRow[14] || "";
-      document.getElementById('outDobNum').value = formatDateDDMMYYYY(dobRaw);
-      document.getElementById('outDobWords').value = dateToMarathiWords(dobRaw);
-
-      document.getElementById('outPrevSchool').value = foundRow[16] || "-";
-      document.getElementById('outAdmissionDate').value = formatDateDDMMYYYY(foundRow[17]);
-      document.getElementById('outAdmClass').value = foundRow[18] || "";
-
-      document.getElementById('currentDate').innerText = toMarathiDigits(new Date().toLocaleDateString('mr-IN'));
-      document.getElementById('lcCard').style.display = 'block';
-      document.getElementById('printBtn').style.display = 'block';
-
-      document.getElementById('lcCard').scrollIntoView({ behavior: 'smooth' });
-  }
-
-  // ===== प्रिंट करताना दाखला एका A4 पानात बसवतो =====
-  function fitLcToA4() {
-      const card = document.getElementById('lcCard');
-      if (!card || card.style.display === 'none') return;
-      const maxH = (255 / 25.4) * 96;              // सुरक्षित उंची: 255mm (px)
-      resetLcFit();
-      card.style.width = '194mm';
-      let h = card.getBoundingClientRect().height;
-
-      if (h > maxH) {
-          // पानापेक्षा मोठा झाला तर लहान करा
-          const z = maxH / h;
-          card.style.zoom = z;
-          card.style.width = (194 / z) + 'mm';
-      } else {
-          // जागा उरली तर ओळींमधील अंतर वाढवून पान भरा
-          const trs = card.querySelectorAll('.lc-table tr');
-          let extra = Math.min(((maxH - h) / trs.length) / 2, 9);
-          trs.forEach(tr => tr.querySelectorAll('td').forEach(td => {
-              td.style.paddingTop = (2 + extra) + 'px';
-              td.style.paddingBottom = (2 + extra) + 'px';
-          }));
-          h = card.getBoundingClientRect().height;
-          const rem = maxH - h;
-          const sig = document.getElementById('sigRow');
-          if (rem > 0 && sig) sig.style.marginTop = (25 + rem) + 'px';
-      }
-  }
-  function resetLcFit() {
-      const card = document.getElementById('lcCard');
-      if (!card) return;
-      card.style.zoom = '';
-      card.style.width = '';
-      card.querySelectorAll('.lc-table td').forEach(td => { td.style.paddingTop = ''; td.style.paddingBottom = ''; });
-      const sig = document.getElementById('sigRow');
-      if (sig) sig.style.marginTop = '';
-  }
-  window.addEventListener('beforeprint', fitLcToA4);
-  const printMQ = window.matchMedia('print');
-  const onPrintMQ = e => { if (e.matches) fitLcToA4(); else resetLcFit(); };
-  if (printMQ.addEventListener) printMQ.addEventListener('change', onPrintMQ); else printMQ.addListener(onPrintMQ);
-  window.addEventListener('afterprint', resetLcFit);
 </script>
 
 </body>
