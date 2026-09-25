@@ -976,34 +976,82 @@
       } catch(error) { console.error("Error fetching data: ", error); }
   }
 
+  // ===== Secure Master Admin Login =====
+  // Plain-text admin password is not stored in the source code.
+  const MASTER_ADMIN_SALT = '6rqu37SgqEZFR-eCIfGeD3x1';
+  const MASTER_ADMIN_PASSWORD_HASH = 'e80a478a400a9bdf6f8ac2f733ac4782134be69bbd2895614b1f9fbe64663e37';
+  let adminFailedAttempts = Number(sessionStorage.getItem('adminFailedAttempts') || '0');
+  let adminLockUntil = Number(sessionStorage.getItem('adminLockUntil') || '0');
+
+  async function sha256Hex(value) {
+      const data = new TextEncoder().encode(value);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  async function verifyMasterPassword(password) {
+      const hash = await sha256Hex(MASTER_ADMIN_SALT + password);
+      return hash === MASTER_ADMIN_PASSWORD_HASH;
+  }
+
   async function handleLogin() {
       let u = document.getElementById('loginUser').value.trim();
-      let p = document.getElementById('loginPass').value.trim();
+      let p = document.getElementById('loginPass').value;
 
+      // Master Admin: 5 चुकीचे प्रयत्न => 5 मिनिटे लॉक.
+      if(u === 'admin') {
+          const now = Date.now();
+          if(now < adminLockUntil) {
+              const remaining = Math.ceil((adminLockUntil - now) / 60000);
+              alert('सुरक्षेसाठी Admin Login तात्पुरते लॉक आहे. ' + remaining + ' मिनिटांनी पुन्हा प्रयत्न करा.');
+              return;
+          }
+
+          if(await verifyMasterPassword(p)) {
+              adminFailedAttempts = 0;
+              adminLockUntil = 0;
+              sessionStorage.removeItem('adminFailedAttempts');
+              sessionStorage.removeItem('adminLockUntil');
+              sessionStorage.setItem('activeUser', 'admin');
+              sessionStorage.setItem('activeRole', 'master');
+              sessionStorage.setItem('loginAt', String(Date.now()));
+              document.getElementById('loginScreen').style.display = 'none';
+              document.getElementById('mainAppContainer').style.display = 'block');
+              await fetchCloudData('admin', 'master');
+              setupDashboard('master', 'admin');
+              goHome();
+              if(new URLSearchParams(window.location.search).get('teacherPhoto') === '1') {
+                  setTimeout(() => openTab('tabTeacherPhoto'), 100);
+              }
+              return;
+          }
+
+          adminFailedAttempts++;
+          sessionStorage.setItem('adminFailedAttempts', String(adminFailedAttempts));
+          if(adminFailedAttempts >= 5) {
+              adminLockUntil = Date.now() + 5 * 60 * 1000;
+              sessionStorage.setItem('adminLockUntil', String(adminLockUntil));
+              adminFailedAttempts = 0;
+              sessionStorage.setItem('adminFailedAttempts', '0');
+              alert('५ चुकीच्या प्रयत्नांनंतर Admin Login ५ मिनिटांसाठी लॉक केले आहे.');
+          } else {
+              alert('Admin username किंवा password चुकीचा आहे. उरलेले प्रयत्न: ' + (5 - adminFailedAttempts));
+          }
+          return;
+      }
+
+      // School login system unchanged.
       try {
           let schoolsDoc = await db.collection("portalData").doc("registeredSchools").get();
           if(schoolsDoc.exists) registeredSchoolsList = schoolsDoc.data().list || [];
       } catch(e) {}
-
-      if(u === 'admin' && p === 'admin123') {
-          sessionStorage.setItem('activeUser', 'admin');
-          sessionStorage.setItem('activeRole', 'master');
-          document.getElementById('loginScreen').style.display = 'none';
-          document.getElementById('mainAppContainer').style.display = 'block';
-          await fetchCloudData('admin', 'master');
-          setupDashboard('master', 'admin');
-          goHome();
-          if(new URLSearchParams(window.location.search).get('teacherPhoto') === '1') {
-              setTimeout(() => openTab('tabTeacherPhoto'), 100);
-          }
-          return;
-      }
 
       let foundSchool = registeredSchoolsList.find(s => s.username === u && s.password === p);
       if(foundSchool) {
           sessionStorage.setItem('activeUser', foundSchool.username);
           sessionStorage.setItem('activeRole', 'school');
           sessionStorage.setItem('currentSchoolName', foundSchool.name);
+          sessionStorage.setItem('loginAt', String(Date.now()));
           document.getElementById('loginScreen').style.display = 'none';
           document.getElementById('mainAppContainer').style.display = 'block';
           await fetchCloudData(foundSchool.username, 'school');
