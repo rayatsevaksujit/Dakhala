@@ -120,9 +120,10 @@
         button:hover { background-color: #2471a3; }
 
         table.data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 13px; text-align: left; }
-        table.data-table th { background: #f2f4f4; color: var(--primary-color); }
-        table.data-table input { font-size: 13px !important; font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif !important; }
+        table.data-table th, table.data-table td { border: 1px solid #bdc3c7; padding: 6px 8px; font-size: 13px; text-align: left; white-space: nowrap; }
+        table.data-table th { background: #f2f4f4; color: var(--primary-color); position: sticky; top: 0; z-index: 1; }
+        table.data-table input { font-size: 13px !important; font-family: 'DVOT Surekh', 'Noto Sans Devanagari', Arial, sans-serif !important; border: 1px solid transparent; padding: 4px; background: #fff; min-width: 110px; }
+        table.data-table input:focus { border-color: var(--secondary-color); background: #fef9e7; }
 
         /* Professional LC Format */
         .lc-format {
@@ -240,8 +241,8 @@
             </div>
             <div class="tool-card" id="cardGenRegister" onclick="openTab('tabGenRegister')" style="background: #f4ecf7; border-color: #8e44ad;">
                 <div class="tool-icon">📖</div>
-                <div class="tool-title">जनरल रजिस्टर व पासिंग</div>
-                <div class="tool-desc">जनरल रजिस्टर तपसा, ऑनलाईन एडिट, ऑल पास व बल्क प्रिंट करा.</div>
+                <div class="tool-title">जनरल रजिस्टर व ALL PASS</div>
+                <div class="tool-desc">जनरल रजिस्टर तपसा, ऑनलाईन एडिट, ALL PASS व बल्क प्रिंट करा.</div>
                 <a class="tool-link" style="color: #6c3483;">तपासा &rarr;</a>
             </div>
             <div class="tool-card" id="cardBonafide" onclick="openTab('tabBonafide')" style="display:none;">
@@ -375,9 +376,9 @@
         </div>
     </div>
 
-    <!-- Tab: General Register, Passing & Bulk Print (Combined) -->
+    <!-- Tab: General Register, ALL PASS & Bulk Print (Combined) -->
     <div id="tabGenRegister" class="tab-content">
-        <h3>📖 जनरल रजिस्टर, ऑल पास व बल्क दाखले प्रिंट</h3>
+        <h3>📖 जनरल रजिस्टर, ALL PASS व बल्क दाखले प्रिंट</h3>
         <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही जनरल रजिस्टर तपासू शकता, ऑनलाईन एडिट करू शकता, वर्गनिहाय 'ALL PASS' करू शकता किंवा एकाच वेळी सर्व दाखले प्रिंट करू शकता.</p>
         
         <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; flex-wrap: wrap;">
@@ -386,16 +387,18 @@
             <button onclick="switchGenSubTab('bulk')" id="subBtnBulk" style="width: auto; background: #7f8c8d;">🖨️ वर्गनिहाय बल्क दाखले प्रिंट</button>
         </div>
 
-        <!-- SubTab 1: Verify & Edit -->
+        <!-- SubTab 1: Verify & Edit (Lazy Loaded with formatted dates) -->
         <div id="genSubVerify">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
                 <input type="text" id="genSearchBox" placeholder="🔍 नाव किंवा रजिस्टर नंबर शोधण्यासाठी टाईप करा..." oninput="filterGenTable()" style="max-width:300px;">
                 <button onclick="saveGenTableToFirebase()" style="background:#27ae60; width:auto; padding:6px 14px;">💾 सर्व बदल क्लाउडवर सेव्ह करा</button>
             </div>
-            <div style="max-height:450px; overflow-y:auto; border:1px solid #bdc3c7;">
+            <div style="max-height:480px; overflow:auto; border:1px solid #bdc3c7; background:#fff;">
                 <table class="data-table" id="genRegisterTable" style="margin-top:0;">
                     <thead><tr id="genTableHead"></tr></thead>
-                    <tbody id="genTableBody"></tbody>
+                    <tbody id="genTableBody">
+                        <tr><td colspan="15" style="text-align:center; color:#7f8c8d; padding:25px; font-size:15px;">कृपया वरील सर्च बॉक्समध्ये विद्यार्थ्याचे नाव किंवा रजिस्टर नंबर टाईप करा.</td></tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -446,29 +449,64 @@
 
         <!-- SubTab 3: Bulk Print -->
         <div id="genSubBulk" style="display:none;">
+            <div style="background:#fcf3cf; padding:12px; border-radius:6px; margin-bottom:12px; border:1px solid #f9e79f;">
+                <h4 style="margin:0 0 8px 0; color:#7d6608;">⚙️ बल्क प्रिंटसाठी कॉमन सेटिंग्ज (टिक केलेल्या सर्व दाखल्यांसाठी लागू):</h4>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>शाळा सोडल्याचे कारण:</label>
+                        <input type="text" id="commonLeavingReason" value="शिक्षण पूर्ण / संतोषजनक" style="font-weight:bold;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>शेरा:</label>
+                        <input type="text" id="commonRemark" value="-" style="font-weight:bold;">
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group" style="max-width: 400px;">
-                <label>इयत्ता टाका (रिकामे ठेवल्यास सर्व विद्यार्थी दिसतील):</label>
-                <input type="text" id="bulkClassFilter" placeholder="उदा. १० वी">
-                <button onclick="loadBulkList()" style="margin-top: 6px; background: #2980b9;">यादी दाखवा</button>
+                <label>इयत्ता निवडा:</label>
+                <select id="bulkClassFilter" style="margin-bottom:6px;">
+                    <option value="">-- सर्व विद्यार्थी --</option>
+                    <option value="१ ली">१ ली</option>
+                    <option value="२ री">२ री</option>
+                    <option value="३ री">३ री</option>
+                    <option value="४ थी">४ थी</option>
+                    <option value="५ वी">५ वी</option>
+                    <option value="६ वी">६ वी</option>
+                    <option value="७ वी">७ वी</option>
+                    <option value="८ वी">८ वी</option>
+                    <option value="९ वी">९ वी</option>
+                    <option value="१० वी">१० वी</option>
+                    <option value="११ वी">११ वी</option>
+                    <option value="१२ वी">१२ वी</option>
+                </select>
+                <button onclick="loadBulkList()" style="background: #2980b9;">यादी दाखवा</button>
             </div>
 
             <div id="bulkListWrap" style="display:none; margin-top:10px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin: 10px 0;">
+                    <div>
+                        <input type="checkbox" id="bulkSelectAllCheckbox" onclick="toggleBulkSelectAll(this)" style="width:auto; display:inline-block;" checked>
+                        <label for="bulkSelectAllCheckbox" style="display:inline-block; font-weight:bold; cursor:pointer;">सर्व निवडा (Select All)</label>
+                    </div>
                     <div id="bulkCount" style="font-weight:600; color: var(--primary-color);"></div>
-                    <button onclick="printAllBulk()" style="background:#8e44ad; width:auto; padding:9px 18px;">🖨️ सर्व दाखले एकत्र प्रिंट करा</button>
+                    <button onclick="printAllBulk()" style="background:#8e44ad; width:auto; padding:9px 18px;">🖨️ टिक केलेले सर्व दाखले एकत्र प्रिंट करा</button>
                 </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>अ.क्र.</th>
-                            <th>रजिस्टर नंबर</th>
-                            <th>विद्यार्थ्याचे नाव</th>
-                            <th>इयत्ता</th>
-                            <th>कृती</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bulkTableBody"></tbody>
-                </table>
+                <div style="max-height:450px; overflow:auto; border:1px solid #bdc3c7; background:#fff;">
+                    <table class="data-table" style="margin-top:0;">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">निवड</th>
+                                <th>अ.क्र.</th>
+                                <th>रजिस्टर नंबर</th>
+                                <th>विद्यार्थ्याचे नाव</th>
+                                <th>इयत्ता</th>
+                                <th>कृती</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bulkTableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -528,7 +566,7 @@
                 
                 <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 2px;">
                     <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
-                    <div>यु.आय.डी. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
+                    <div>यु.आय.डिज. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
                 </div>
 
                 <table class="lc-table">
@@ -785,7 +823,6 @@
       if(sub === 'verify') {
           if(btnV) btnV.style.background = 'var(--primary-color)';
           if(divV) divV.style.display = 'block';
-          loadGenRegisterTable();
       } else if(sub === 'promote') {
           if(btnP) btnP.style.background = 'var(--primary-color)';
           if(divP) divP.style.display = 'block';
@@ -795,16 +832,35 @@
       }
   }
 
-  // Load General Register Table for Verification & Editing
-  function loadGenRegisterTable() {
+  // Helper to correctly format Excel serial date numbers to readable DD/MM/YYYY
+  function formatExcelDate(val) {
+      if(!val) return "";
+      let num = Number(val);
+      if(!isNaN(num) && num > 30000 && num < 60000) {
+          let d = new Date((num - (25569 + 2)) * 86400 * 1000);
+          let day = String(d.getDate()).padStart(2, '0');
+          let month = String(d.getMonth() + 1).padStart(2, '0');
+          let year = d.getFullYear();
+          return `${day}/${month}/${year}`;
+      }
+      return val.toString();
+  }
+
+  // Lazy Load / Search in General Register with formatted dates
+  function filterGenTable() {
+      let q = normalizeSearchText(document.getElementById('genSearchBox').value);
       let thead = document.getElementById('genTableHead');
       let tbody = document.getElementById('genTableBody');
       if(!thead || !tbody) return;
-      thead.innerHTML = '';
-      tbody.innerHTML = '';
 
-      if(excelData.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:#7f8c8d;">कोणताही डेटा उपलब्ध नाही. कृपया ॲडमिन पॅनलमधून एक्सेल फाईल अपलोड करा.</td></tr>`;
+      if(!q || q.length < 1) {
+          thead.innerHTML = '';
+          tbody.innerHTML = `<tr><td colspan="15" style="text-align:center; color:#7f8c8d; padding:15px; font-size:14px;">कृपया शोधण्यासाठी नाव किंवा रजिस्टर नंबर टाईप करा...</td></tr>`;
+          return;
+      }
+
+      if(excelData.length <= 1) {
+          tbody.innerHTML = `<tr><td colspan="15" style="text-align:center; color:#7f8c8d; padding:15px;">कोणताही डेटा उपलब्ध नाही.</td></tr>`;
           return;
       }
 
@@ -815,18 +871,28 @@
       }
       thead.innerHTML = headHtml;
 
-      renderGenTableRows(excelData.slice(1));
-  }
+      let matches = [];
+      for(let i = 1; i < excelData.length; i++) {
+          let row = excelData[i];
+          if(row.some(cell => normalizeSearchText(cell).includes(q))) {
+              matches.push({ row, rowIndex: i });
+              if(matches.length >= 50) break;
+          }
+      }
 
-  function renderGenTableRows(rows) {
-      let tbody = document.getElementById('genTableBody');
-      if(!tbody) return;
+      if(matches.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="15" style="text-align:center; color:#7f8c8d; padding:15px; font-size:14px;">कोणताही विद्यार्थी सापडला नाही.</td></tr>`;
+          return;
+      }
+
       tbody.innerHTML = '';
-      rows.forEach((row, rIdx) => {
+      matches.forEach((m, rIdx) => {
           let trHtml = `<td>${rIdx + 1}</td>`;
-          for(let cIdx = 0; cIdx < (excelData[0] || []).length; cIdx++) {
-              let val = row[cIdx] !== undefined ? row[cIdx] : '';
-              trHtml += `<td><input type="text" value="${val}" onchange="updateGenCell(${rIdx + 1}, ${cIdx}, this.value)" style="border:none; background:transparent; width:100%;"></td>`;
+          for(let cIdx = 0; cIdx < headers.length; cIdx++) {
+              let val = m.row[cIdx] !== undefined ? m.row[cIdx] : '';
+              // If it's likely a date column (e.g., DOB or Admission date), format it nicely
+              let displayVal = (cIdx === 14 || cIdx === 17) ? formatExcelDate(val) : val;
+              trHtml += `<td><input type="text" value="${displayVal}" onchange="updateGenCell(${m.rowIndex}, ${cIdx}, this.value)" style="border:none; background:transparent; width:100%; min-width:110px;"></td>`;
           }
           tbody.innerHTML += `<tr>${trHtml}</tr>`;
       });
@@ -836,18 +902,6 @@
       if(excelData[rowIdx]) {
           excelData[rowIdx][colIdx] = val;
       }
-  }
-
-  function filterGenTable() {
-      let q = normalizeSearchText(document.getElementById('genSearchBox').value);
-      if(!q || excelData.length <= 1) {
-          renderGenTableRows(excelData.slice(1));
-          return;
-      }
-      let filtered = excelData.slice(1).filter(row => {
-          return row.some(cell => normalizeSearchText(cell).includes(q));
-      });
-      renderGenTableRows(filtered);
   }
 
   async function saveGenTableToFirebase() {
@@ -963,11 +1017,12 @@
       if(!tbody) return;
       tbody.innerHTML = '';
       if (rows.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#7f8c8d;">कोणतेही विद्यार्थी सापडले नाहीत.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#7f8c8d;">कोणतेही विद्यार्थी सापडले नाहीत.</td></tr>`;
       } else {
           rows.forEach((row, idx) => {
               tbody.innerHTML += `
                   <tr>
+                      <td><input type="checkbox" class="bulk-item-check" data-index="${idx}" checked style="width:auto; height:18px;"></td>
                       <td>${idx + 1}</td>
                       <td>${row[0] || '-'}</td>
                       <td>${row[4] || '-'}</td>
@@ -980,32 +1035,50 @@
       document.getElementById('bulkListWrap').style.display = 'block';
   }
 
+  function toggleBulkSelectAll(master) {
+      let checks = document.querySelectorAll('.bulk-item-check');
+      checks.forEach(ch => ch.checked = master.checked);
+  }
+
   function printOneFromBulk(idx) {
       let row = window._bulkRows ? window._bulkRows[idx] : null;
       if (!row) return;
       document.body.classList.remove('bulk-print-mode');
       window._bulkPrintActive = false;
-      renderLC(row);
+      let commonReason = document.getElementById('commonLeavingReason').value.trim();
+      let commonRemark = document.getElementById('commonRemark').value.trim();
+      renderLC(row, commonReason, commonRemark);
       document.fonts.ready.then(() => window.print());
   }
 
   function printAllBulk() {
       let rows = window._bulkRows || [];
       if (rows.length === 0) { alert("कृपया आधी 'यादी दाखवा' बटणाने विद्यार्थ्यांची यादी तयार करा!"); return; }
-      if (!confirm(rows.length + " विद्यार्थ्यांचे दाखले एकत्र प्रिंट करायचे आहेत का? (एकूण " + rows.length + " पाने तयार होतील)")) return;
+
+      let selectedRows = [];
+      rows.forEach((row, idx) => {
+          let chk = document.querySelector(`.bulk-item-check[data-index="${idx}"]`);
+          if (chk && chk.checked) selectedRows.push(row);
+      });
+
+      if (selectedRows.length === 0) { alert("कृपया प्रिंट करण्यासाठी किमान एका विद्यार्थ्याची निवड (टिक) करा!"); return; }
+      if (!confirm(selectedRows.length + " विद्यार्थ्यांचे दाखले एकत्र प्रिंट करायचे आहेत का?")) return;
 
       const template = document.getElementById('lcCard');
       const area = document.getElementById('bulkPrintArea');
       area.innerHTML = '';
 
-      rows.forEach(row => {
+      let commonReason = document.getElementById('commonLeavingReason').value.trim();
+      let commonRemark = document.getElementById('commonRemark').value.trim();
+
+      selectedRows.forEach(row => {
           let clone = template.cloneNode(true);
           clone.removeAttribute('id');
           clone.classList.add('bulk-lc-copy');
           clone.style.display = 'block';
           clone.style.zoom = '';
           clone.style.width = '';
-          fillCertificateElement(clone, row);
+          fillCertificateElement(clone, row, commonReason, commonRemark);
           area.appendChild(clone);
       });
 
@@ -1014,7 +1087,7 @@
       document.fonts.ready.then(() => window.print());
   }
 
-  function fillCertificateElement(root, foundRow) {
+  function fillCertificateElement(root, foundRow, customReason, customRemark) {
       root.querySelector('#pInst').innerText = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
       root.querySelector('#pSchool').innerText = currentSchoolProfile.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)";
       root.querySelector('#pAddress').innerText = "पत्ता : " + (currentSchoolProfile.address || "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली");
@@ -1054,6 +1127,9 @@
       root.querySelector('#outPrevSchool').value = foundRow[16] || "-";
       root.querySelector('#outAdmissionDate').value = formatDateDDMMYYYY(foundRow[17]);
       root.querySelector('#outAdmClass').value = foundRow[18] || "";
+
+      if(customReason !== undefined) root.querySelector('#outLeavingReason').value = customReason;
+      if(customRemark !== undefined) root.querySelector('#outRemark').value = customRemark;
 
       root.querySelector('#currentDate').innerText = toMarathiDigits(new Date().toLocaleDateString('mr-IN'));
   }
@@ -1196,12 +1272,327 @@
       renderLC(window._searchMatches[parseInt(idx, 10)]);
   }
 
-  function renderLC(foundRow) {
+  function renderLC(foundRow, customReason, customRemark) {
       let card = document.getElementById('lcCard');
-      fillCertificateElement(card, foundRow);
+      fillCertificateElement(card, foundRow, customReason, customRemark);
       card.style.display = 'block';
       document.getElementById('printBtn').style.display = 'block';
       card.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function onAdminSelectSchool() {
+      let selUser = document.getElementById('adminSchoolSelect').value;
+      await loadAdminSelectedSchoolProfile(selUser);
+  }
+
+  async function loadAdminSelectedSchoolProfile(username) {
+      let profileDoc = await db.collection("portalData").doc("profile_" + username).get();
+      if(profileDoc.exists) {
+          let data = profileDoc.data();
+          currentSchoolProfile = data.info || {};
+          schoolLogoBase64 = currentSchoolProfile.logo || "";
+          let rawExcel = data.excel;
+          excelData = (typeof rawExcel === 'string') ? JSON.parse(rawExcel) : (rawExcel || []);
+      } else {
+          currentSchoolProfile = {};
+          schoolLogoBase64 = "";
+          excelData = [];
+      }
+      window.adminEditingTarget = username;
+      loadSchoolInfo(username);
+  }
+
+  function goHome() {
+      let contents = document.getElementsByClassName('tab-content');
+      for(let c of contents) c.classList.remove('active');
+      document.getElementById('homeDashboard').style.display = 'block';
+      document.getElementById('backBar').style.display = 'none';
+  }
+
+  async function registerNewSchool() {
+      let name = document.getElementById('newSchoolName').value.trim();
+      let udise = document.getElementById('newSchoolUdise').value.trim();
+      let mobile = document.getElementById('newSchoolMobile').value.trim();
+      let user = document.getElementById('newSchoolUser').value.trim();
+      let pass = document.getElementById('newSchoolPass').value.trim();
+
+      if(!name || !user || !pass) { alert("Please fill required fields!"); return; }
+
+      registeredSchoolsList.push({name, udise, mobile, username: user, password: pass});
+      try {
+          await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
+          await db.collection("portalData").doc("profile_" + user).set({
+              info: {
+                  inst: "रयत शिक्षण संस्था, सातारा.",
+                  school: name,
+                  address: "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली",
+                  phone: "०२३४६-२२६१६१",
+                  email: "ramanandnagar.srvsr@gmail.com",
+                  recognition: "S-४८ (B), Poone, 21 May 1949",
+                  udise: udise || "27350804005",
+                  medium: "मराठी",
+                  sscIndex: "--",
+                  hscIndex: "--",
+                  logo: ""
+              },
+              excel: []
+          }, { merge: true });
+          alert("New school registered successfully!");
+          loadSchoolTable();
+      } catch(e) { alert("Error: " + e.message); }
+  }
+
+  function loadSchoolTable() {
+      let tbody = document.getElementById('schoolTableBody');
+      tbody.innerHTML = '';
+      if(registeredSchoolsList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#7f8c8d;">No schools registered yet.</td></tr>`;
+          return;
+      }
+      registeredSchoolsList.forEach((s, index) => {
+          tbody.innerHTML += `
+              <tr>
+                  <td>${index+1}</td>
+                  <td><strong>${s.name}</strong></td>
+                  <td>Udise: ${s.udise||'-'}<br>Mob: ${s.mobile||'-'}</td>
+                  <td>
+                      User: <input type="text" id="editUser_${index}" value="${s.username}" style="width:100px; display:inline-block; padding:2px;"><br>
+                      Pass: <input type="text" id="editPass_${index}" value="${s.password}" style="width:100px; display:inline-block; padding:2px; margin-top:2px;"><br>
+                      <button onclick="updateSchoolCredentials(${index})" style="background:#2980b9; padding:2px 6px; font-size:10px; width:auto; margin-top:3px;">💾 Update Login</button>
+                  </td>
+                  <td>
+                      <input type="file" id="adminExcel_${s.username}" accept=".xlsx, .xls, .csv" style="font-size:11px; margin-bottom:4px;"><br>
+                      <button onclick="uploadSchoolExcel('${s.username}')" style="background:#27ae60; padding:3px 8px; font-size:11px; width:auto;">📤 Upload Excel</button>
+                  </td>
+                  <td>
+                      <button onclick="deleteSchool(${index})" style="background:#c0392b; padding:4px 8px; font-size:11px; width:auto;">Delete</button>
+                  </td>
+              </tr>`;
+      });
+  }
+
+  async function updateSchoolCredentials(index) {
+      let newU = document.getElementById(`editUser_${index}`).value.trim();
+      let newP = document.getElementById(`editPass_${index}`).value.trim();
+      if(!newU || !newP) { alert("युजरनेम आणि पासवर्ड रिकामे असू शकत नाहीत!"); return; }
+
+      registeredSchoolsList[index].username = newU;
+      registeredSchoolsList[index].password = newP;
+
+      try {
+          await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
+          alert("शाळेचे लॉगिन नाव व पासवर्ड यशस्वीरित्या अपडेट झाले!");
+          loadSchoolTable();
+      } catch(e) {
+          alert("Error updating credentials: " + e.message);
+      }
+  }
+
+  async function uploadSchoolExcel(targetUsername) {
+      let fileInput = document.getElementById('adminExcel_' + targetUsername);
+      if(!fileInput.files || fileInput.files.length === 0) {
+          alert("कृपया आधी फाईल निवडा!");
+          return;
+      }
+      let file = fileInput.files[0];
+      let reader = new FileReader();
+      reader.onload = async function(evt) {
+          try {
+              let data = new Uint8Array(evt.target.result);
+              let workbook = XLSX.read(data, {type: 'array'});
+              let parsedData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
+              
+              let docRef = db.collection("portalData").doc("profile_" + targetUsername);
+              let docSnap = await docRef.get();
+              let existingInfo = docSnap.exists ? (docSnap.data().info || {}) : {};
+
+              await docRef.set({
+                  info: existingInfo,
+                  excel: JSON.stringify(parsedData)
+              }, { merge: true });
+
+              alert("शाळा '" + targetUsername + "' साठी एक्सेल डेटा यशस्वीरित्या अपलोड झाला!");
+          } catch(err) {
+              alert("Error uploading: " + err.message);
+          }
+      };
+      reader.readAsArrayBuffer(file);
+  }
+
+  async function deleteSchool(index) {
+      if(confirm("Delete school?")) {
+          registeredSchoolsList.splice(index, 1);
+          await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
+          loadSchoolTable();
+      }
+  }
+
+  function requestUnlock() {
+      let pass = prompt("Enter Admin Password to Unlock & Edit:");
+      if(pass === 'admin123') {
+          ['instName', 'schoolName', 'schoolAddress', 'schoolPhone', 'schoolEmail', 'schoolRecognition', 'schoolUdise', 'schoolMedium', 'sscIndex', 'hscIndex', 'schoolLogoFile'].forEach(id => document.getElementById(id).disabled = false);
+          document.getElementById('saveBtn').style.display = 'block';
+          alert("Unlocked!");
+      } else { alert("Incorrect Admin Password!"); }
+  }
+
+  async function saveSchoolInfo() {
+      let role = getActiveRole();
+      let targetUser = (role === 'master' && window.adminEditingTarget) ? window.adminEditingTarget : getActiveUser();
+
+      currentSchoolProfile = {
+          inst: document.getElementById('instName').value,
+          school: document.getElementById('schoolName').value,
+          address: document.getElementById('schoolAddress').value,
+          phone: document.getElementById('schoolPhone').value,
+          email: document.getElementById('schoolEmail').value,
+          recognition: document.getElementById('schoolRecognition').value,
+          udise: document.getElementById('schoolUdise').value,
+          medium: document.getElementById('schoolMedium').value,
+          sscIndex: document.getElementById('sscIndex').value,
+          hscIndex: document.getElementById('hscIndex').value,
+          logo: schoolLogoBase64
+      };
+      await db.collection("portalData").doc("profile_" + targetUser).set({ info: currentSchoolProfile, excel: JSON.stringify(excelData) }, { merge: true });
+      ['instName', 'schoolName', 'schoolAddress', 'schoolPhone', 'schoolEmail', 'schoolRecognition', 'schoolUdise', 'schoolMedium', 'sscIndex', 'hscIndex', 'schoolLogoFile'].forEach(id => document.getElementById(id).disabled = true);
+      document.getElementById('saveBtn').style.display = 'none';
+      alert("Saved successfully!");
+  }
+
+  function loadSchoolInfo(user) {
+      document.getElementById('instName').value = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
+      document.getElementById('schoolName').value = currentSchoolProfile.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)";
+      document.getElementById('schoolAddress').value = currentSchoolProfile.address || "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली";
+      document.getElementById('schoolPhone').value = currentSchoolProfile.phone || "०२३४६-२२६१६१";
+      document.getElementById('schoolEmail').value = currentSchoolProfile.email || "ramanandnagar.srvsr@gmail.com";
+      document.getElementById('schoolRecognition').value = currentSchoolProfile.recognition || "S-४८ (B), Poone, 21 May 1949";
+      document.getElementById('schoolUdise').value = currentSchoolProfile.udise || "27350804005";
+      document.getElementById('schoolMedium').value = currentSchoolProfile.medium || "मराठी";
+      document.getElementById('sscIndex').value = currentSchoolProfile.sscIndex || "--";
+      document.getElementById('hscIndex').value = currentSchoolProfile.hscIndex || "--";
+      
+      schoolLogoBase64 = currentSchoolProfile.logo || "";
+      let prev = document.getElementById('logoPreview');
+      if(schoolLogoBase64) {
+          prev.src = schoolLogoBase64;
+          prev.style.display = 'block';
+      } else {
+          prev.style.display = 'none';
+      }
+  }
+
+  async function saveManualStudent() {
+      let reg = document.getElementById('entReg').value.trim();
+      let med = document.getElementById('entMed').value.trim();
+      let studId = document.getElementById('entStudId').value.trim();
+      let aadhaar = document.getElementById('entAadhaar').value.trim();
+      let name = document.getElementById('entName').value.trim();
+      let mother = document.getElementById('entMother').value.trim();
+      let nat = document.getElementById('entNat').value.trim();
+      let lang = document.getElementById('entLang').value.trim();
+      let rel = document.getElementById('entRel').value.trim();
+      let caste = document.getElementById('entCaste').value.trim();
+      let bp = document.getElementById('entBirthPlace').value.trim();
+      let state = document.getElementById('entState').value.trim();
+      let country = document.getElementById('entCountry').value.trim();
+      let dob = document.getElementById('entDob').value.trim();
+      let adm = document.getElementById('entAdmDate').value.trim();
+      let admClass = document.getElementById('entAdmClass').value.trim();
+      let prevSchool = document.getElementById('entPrevSchool').value.trim();
+
+      if(!reg || !name) { alert("कृपया किमान रजिस्टर नंबर आणि विद्यार्थ्याचे नाव भरा!"); return; }
+
+      let newRow = [reg, med, studId, aadhaar, name, mother, nat, lang, rel, caste, "", bp, state, country, dob, "", prevSchool, adm, admClass, "१० वी", "अ"];
+      excelData.push(newRow);
+
+      let user = getActiveUser() || 'admin';
+      try {
+          await db.collection("portalData").doc("profile_" + user).set({
+              info: currentSchoolProfile || {},
+              excel: JSON.stringify(excelData)
+          }, { merge: true });
+          alert("विद्यार्थ्याची माहिती यशस्वीरित्या सेव्ह झाली!");
+      } catch(e) { alert("Error: " + e.message); }
+  }
+
+  function toMarathiDigits(str) {
+      if(!str) return "";
+      const englishToMarathi = { '0': '०', '1': '१', '2': '२', '3': '३', '4': '४', '5': '५', '6': '६', '7': '७', '8': '८', '9': '९' };
+      return str.toString().replace(/[0-9]/g, function(w) { return englishToMarathi[w]; });
+  }
+
+  function formatDateDDMMYYYY(val) {
+      if(!val) return "";
+      let formatted = "";
+      if(typeof val === 'number') {
+          let d = new Date((val - 25569) * 86400 * 1000);
+          let day = String(d.getDate()).padStart(2, '0');
+          let month = String(d.getMonth() + 1).padStart(2, '0');
+          let year = d.getFullYear();
+          formatted = `${day}/${month}/${year}`;
+      } else {
+          let d = new Date(val);
+          if(!isNaN(d)) {
+              let day = String(d.getDate()).padStart(2, '0');
+              let month = String(d.getMonth() + 1).padStart(2, '0');
+              let year = d.getFullYear();
+              formatted = `${day}/${month}/${year}`;
+          } else {
+              let parts = val.split('-');
+              if(parts.length === 3 && parts[0].length === 4) {
+                  formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+              } else {
+                  formatted = val;
+              }
+          }
+      }
+      return toMarathiDigits(formatted);
+  }
+
+  const ones = ["", "एक", "दोन", "तीन", "चार", "पाच", "सहा", "सात", "आठ", "नऊ", "दहा",
+      "अकरा", "बारा", "तेरा", "चौदा", "पंधरा", "सोळा", "सतरा", "अठरा", "एकोणीस", "वीस",
+      "एकवीस", "बावीस", "तेवीस", "चोवीस", "पंचवीस", "सव्वीस", "सत्तावीस", "अठ्ठावीस", "एकूणतीस", "तीस", "एकतीस"];
+
+  const marathiMonthsFull = { 1: "जानेवारी", 2: "फेब्रुवारी", 3: "मार्च", 4: "एप्रिल", 5: "मे", 6: "जून", 7: "जुलै", 8: "ऑगस्ट", 9: "सप्टेंबर", 10: "ऑक्टोबर", 11: "नोव्हेंबर", 12: "डिसेंबर" };
+
+  function convertNumberToWords(num) {
+      if (num <= 31) return ones[num];
+      if (num == 1982) return "एकोणीस शे ब्याऐंशी";
+      if (num >= 1900 && num < 2000) {
+          let rem = num - 1900;
+          let century = "एकोणीस शे ";
+          if (rem === 0) return "एकोणीस शे";
+          return century + convertNumberToWords(rem);
+      }
+      if (num >= 2000 && num < 2100) {
+          let rem = num - 2000;
+          let century = "दोन हजार ";
+          if (rem === 0) return "दोन हजार";
+          return century + convertNumberToWords(rem);
+      }
+      return num.toString();
+  }
+
+  function dateToMarathiWords(dateStr) {
+      try {
+          let d;
+          if(typeof dateStr === 'number') {
+              d = new Date((dateStr - 25569) * 86400 * 1000);
+          } else {
+              if(typeof dateStr === 'string' && dateStr.includes('/')) {
+                  let p = dateStr.split('/');
+                  d = new Date(`${p[2]}-${p[1]}-${p[0]}`);
+              } else {
+                  d = new Date(dateStr);
+              }
+          }
+          if (isNaN(d)) return dateStr;
+
+          let dayWord = ones[d.getDate()] || d.getDate();
+          let monthWord = marathiMonthsFull[d.getMonth() + 1] || "";
+          let yearWord = convertNumberToWords(d.getFullYear());
+          return `${dayWord} ${monthWord} ${yearWord}`;
+      } catch(e) { return dateStr; }
   }
 </script>
 
