@@ -517,7 +517,7 @@ input:focus,select:focus{
         <label>Password:</label>
         <input type="password" id="loginPass" placeholder="Enter password" inputmode="latin" autocomplete="current-password" oninput="forceEnglishCredential(this)">
     </div>
-    <button onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
+    <button type="button" onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
 </div>
 
 <!-- Main Application Container -->
@@ -2681,5 +2681,16 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 </script>
 
+
+<script id="dakhala-login-enter">
+document.addEventListener('DOMContentLoaded', function(){
+  ['loginUser','loginPass'].forEach(function(id){
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){ e.preventDefault(); handleLogin(); }
+    });
+  });
+});
+</script>
 </body>
 </html>
