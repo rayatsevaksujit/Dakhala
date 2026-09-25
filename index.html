@@ -373,11 +373,11 @@
     
     <div class="form-group">
         <label>Username:</label>
-        <input type="text" id="loginUser" placeholder="Enter username">
+        <input type="text" id="loginUser" placeholder="Enter username" inputmode="latin" autocomplete="username" oninput="forceEnglishCredential(this)">
     </div>
     <div class="form-group">
         <label>Password:</label>
-        <input type="password" id="loginPass" placeholder="Enter password">
+        <input type="password" id="loginPass" placeholder="Enter password" inputmode="latin" autocomplete="current-password" oninput="forceEnglishCredential(this)">
     </div>
     <button onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
 </div>
@@ -529,8 +529,8 @@
             <div class="form-group"><label>शाळेचे नाव (School Name):</label><input type="text" id="newSchoolName" placeholder="Enter school name"></div>
             <div class="form-group"><label>युडायस कोड (UDISE Code):</label><input type="text" id="newSchoolUdise" placeholder="Enter UDISE code"></div>
             <div class="form-group"><label>अधिकृत मोबाईल नंबर (Mobile Number):</label><input type="text" id="newSchoolMobile" placeholder="Enter official mobile number"></div>
-            <div class="form-group"><label>युजरनेम (Username):</label><input type="text" id="newSchoolUser" placeholder="Enter login username"></div>
-            <div class="form-group"><label>पासवर्ड (Password):</label><input type="text" id="newSchoolPass" placeholder="Enter login password"></div>
+            <div class="form-group"><label>युजरनेम (Username) — फक्त English:</label><input type="text" id="newSchoolUser" placeholder="Enter login username (English only)" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)"></div>
+            <div class="form-group"><label>पासवर्ड (Password) — फक्त English:</label><input type="text" id="newSchoolPass" placeholder="Enter login password (English only)" inputmode="latin" autocomplete="new-password" oninput="forceEnglishCredential(this)"></div>
             <button onclick="registerNewSchool()" style="background: #27ae60; margin-top: 5px;">नवीन शाळा जोडा (Register School)</button>
         </div>
 
@@ -920,6 +920,17 @@
   function getActiveUser() { return sessionStorage.getItem('activeUser'); }
   function getActiveRole() { return sessionStorage.getItem('activeRole'); }
 
+  // Login credentials नेहमी English/ASCII मध्येच ठेवतो.
+  function forceEnglishCredential(el) {
+      if(!el) return;
+      const marathiDigits = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'};
+      el.value = String(el.value || '').replace(/[०-९]/g, ch => marathiDigits[ch] || ch).replace(/[^\x00-\x7F]/g, '');
+  }
+  function forceEnglishCredentialValue(value) {
+      const marathiDigits = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'};
+      return String(value || '').replace(/[०-९]/g, ch => marathiDigits[ch] || ch).replace(/[^\x00-\x7F]/g, '');
+  }
+
   window.onload = async function() {
       let currentUser = getActiveUser();
       let currentRole = getActiveRole();
@@ -1285,11 +1296,14 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       let targetUser = (role === 'master' && window.adminEditingTarget) ? window.adminEditingTarget : user;
 
       try {
-          await db.collection("portalData").doc("profile_" + targetUser).set({
-              info: currentSchoolProfile || {},
-              excel: JSON.stringify(excelData)
-          }, { merge: true });
-          alert("जनरल रजिस्टरमधील बदल यशस्वीरित्या क्लाउडवर सेव्ह झाले!");
+          const docRef = db.collection("portalData").doc("profile_" + targetUser);
+          await docRef.set({ info: currentSchoolProfile || {}, excel: JSON.stringify(excelData) }, { merge: true });
+          const verifySnap = await docRef.get();
+          if(!verifySnap.exists) throw new Error("Firebase document verification failed.");
+          const verifyData = verifySnap.data() || {};
+          const verifyExcel = typeof verifyData.excel === 'string' ? JSON.parse(verifyData.excel) : (verifyData.excel || []);
+          if(JSON.stringify(verifyExcel) !== JSON.stringify(excelData)) throw new Error("Firebase verification failed: saved data does not match.");
+          alert("☁️ Firebase Cloud Save Confirmed ✅\nजनरल रजिस्टरमधील बदल प्रत्यक्ष Cloud मधून तपासून सेव्ह झाल्याचे निश्चित झाले!");
       } catch(e) {
           alert("Error saving: " + e.message);
       }
@@ -1731,8 +1745,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
                   <td><strong>${s.name}</strong></td>
                   <td>Udise: ${s.udise||'-'}<br>Mob: ${s.mobile||'-'}</td>
                   <td>
-                      User: <input type="text" id="editUser_${index}" value="${s.username}" style="width:100px; display:inline-block; padding:2px;"><br>
-                      Pass: <input type="text" id="editPass_${index}" value="${s.password}" style="width:100px; display:inline-block; padding:2px; margin-top:2px;"><br>
+                      User: <input type="text" id="editUser_${index}" value="${forceEnglishCredentialValue(s.username)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px; display:inline-block; padding:2px;"><br>
+                      Pass: <input type="password" id="editPass_${index}" value="${forceEnglishCredentialValue(s.password)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px; display:inline-block; padding:2px; margin-top:2px;"><br>
                       <button onclick="updateSchoolCredentials(${index})" style="background:#2980b9; padding:2px 6px; font-size:10px; width:auto; margin-top:3px;">💾 Update Login</button>
                   </td>
                   <td>
@@ -1880,14 +1894,33 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       let newRow = [reg, med, studId, aadhaar, name, mother, nat, lang, rel, caste, "", bp, state, country, dob, "", prevSchool, adm, admClass, "१० वी", "अ"];
       excelData.push(newRow);
 
-      let user = getActiveUser() || 'admin';
+      let role = getActiveRole();
+      let user = (role === 'master' && window.adminEditingTarget) ? window.adminEditingTarget : (getActiveUser() || 'admin');
+
       try {
-          await db.collection("portalData").doc("profile_" + user).set({
-              info: currentSchoolProfile || {},
-              excel: JSON.stringify(excelData)
-          }, { merge: true });
-          alert("विद्यार्थ्याची माहिती यशस्वीरित्या सेव्ह झाली!");
-      } catch(e) { alert("Error: " + e.message); }
+          const docRef = db.collection("portalData").doc("profile_" + user);
+          await docRef.set({ info: currentSchoolProfile || {}, excel: JSON.stringify(excelData) }, { merge: true });
+
+          const verifySnap = await docRef.get();
+          if(!verifySnap.exists) {
+              excelData.pop();
+              alert("❌ Firebase Cloud Verification Failed!\nDocument सापडला नाही. माहिती पुन्हा सेव्ह करा.");
+              return;
+          }
+          const verifyData = verifySnap.data() || {};
+          const verifyExcel = typeof verifyData.excel === 'string' ? JSON.parse(verifyData.excel) : (verifyData.excel || []);
+          const found = verifyExcel.some(row => Array.isArray(row) && String(row[0] || '').trim() === String(reg).trim() && String(row[4] || '').trim() === String(name).trim());
+
+          if(found) {
+              alert("☁️ Firebase Cloud Save Confirmed ✅\n\nविद्यार्थी: " + name + "\nरजिस्टर नं.: " + reg + "\n\nFirebase मध्ये माहिती प्रत्यक्ष तपासून सेव्ह झाल्याचे निश्चित झाले.");
+          } else {
+              excelData.pop();
+              alert("❌ Firebase Cloud Verification Failed!\n\nमाहिती Cloud वर सापडली नाही. कृपया पुन्हा Save करा.");
+          }
+      } catch(e) {
+          excelData.pop();
+          alert("❌ Firebase Save Error:\n" + e.message);
+      }
   }
 
   function toMarathiDigits(str) {
