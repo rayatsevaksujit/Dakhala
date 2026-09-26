@@ -1700,7 +1700,31 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       checks.forEach(ch => ch.checked = master.checked);
   }
 
-  async function printDakhalaCurrent(){if(!validateDakhalaPrintFields())return;const source=document.getElementById('lcCard');if(!source||source.style.display==='none'){alert('प्रथम विद्यार्थी निवडा आणि दाखला तयार करा.');return;}const w=window.open('','_blank','width=900,height=700');if(!w){alert('Print window उघडता आली नाही. Browser मध्ये pop-up allow करा.');return;}const card=source.cloneNode(true);card.removeAttribute('id');card.querySelectorAll('input').forEach(el=>{const s=document.createElement('span');s.textContent=el.value||'';s.style.fontWeight='bold';s.style.fontSize='14px';el.replaceWith(s);});const css=`@page{size:A4 portrait;margin:7mm 8mm 15mm 8mm}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#000}body{font-family:'Sakal Marathi','Nirmala UI','Mangal','Noto Sans Devanagari',Arial,sans-serif}.lc-format{display:block!important;width:194mm!important;max-width:194mm!important;margin:0 auto!important;border:2px solid #000!important;padding:7px 11px!important;background:#fff!important;font-size:14px!important;font-weight:700!important;line-height:1.22!important}.lc-format img#printLogo{max-height:70px!important;width:auto!important}.lc-table{width:100%!important;border-collapse:collapse!important}.lc-table th,.lc-table td{border:1px solid #000!important;padding:3px 5px!important;font-size:14px!important;line-height:1.18!important}.editable-field{border:none!important;background:transparent!important;padding:0!important}@media print{.lc-format{break-inside:avoid!important;page-break-inside:avoid!important}}`;w.document.open();w.document.write('<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>दाखला Print</title><style>'+css+'</style></head><body></body></html>');w.document.close();w.document.body.appendChild(card);await new Promise(r=>setTimeout(r,250));const maxH=270/25.4*96,actualH=card.getBoundingClientRect().height;if(actualH>maxH){const z=Math.max(.84,maxH/actualH);card.style.zoom=z;card.style.width=(194/z)+'mm';}await new Promise(r=>setTimeout(r,100));w.focus();w.print();w.onafterprint=()=>setTimeout(()=>{try{w.close()}catch(e){}},300);}
+  async function printDakhalaCurrent(){
+    if(!validateDakhalaPrintFields()) return;
+    const source=document.getElementById('lcCard');
+    if(!source || source.style.display==='none'){
+        alert('प्रथम विद्यार्थी निवडा आणि दाखला तयार करा.');
+        return;
+    }
+
+    // Popup blocker टाळण्यासाठी स्वतंत्र window न उघडता browser चा native print वापरतो.
+    // सध्याचा Dakhala print CSS फक्त #tabDakhala दाखवेल.
+    const printBtn=document.getElementById('printBtn');
+    if(printBtn) printBtn.style.display='none';
+
+    try{
+        await document.fonts.ready;
+        await new Promise(resolve=>setTimeout(resolve,120));
+        window.focus();
+        window.print();
+    }catch(e){
+        console.error('Dakhala print error:',e);
+        alert('प्रिंट सुरू करताना त्रुटी आली. कृपया पुन्हा प्रयत्न करा.');
+    }finally{
+        if(printBtn) printBtn.style.display='block';
+    }
+}
 
   function printOneFromBulk(idx) { if(!validateDakhalaPrintFields()) return;
       let row = window._bulkRows ? window._bulkRows[idx] : null;
@@ -1791,7 +1815,6 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       root.querySelector('#outAdmissionDate').value = formatExcelDate(foundRow[17]);
       root.querySelector('#outAdmClass').value = foundRow[18] || "";
       root.querySelector('#outLeavingDate').value = "";
-      root.querySelector('#outCertificateNo').value = "";
       const now=new Date(); root.querySelector('#currentDate').value=String(now.getDate()).padStart(2,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+now.getFullYear();
 
       if(customReason !== undefined) root.querySelector('#outLeavingReason').value = customReason;
