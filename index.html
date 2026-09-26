@@ -986,6 +986,7 @@ input:focus,select:focus{
                 <div class="form-group"><label>आधार क्रमांक :</label><input type="text" id="entAadhaar" placeholder="आधार क्रमांक"></div>
             </div>
             <div class="form-group"><label>विद्यार्थ्याचे पूर्ण नाव :</label><input type="text" id="entName" placeholder="उदा. आवटी शुभम परशुराम"></div>
+            <div class="form-group"><label>लिंग :</label><select id="entGender"><option value="">-- निवडा --</option><option value="Male">Male</option><option value="Female">Female</option></select></div>
             <div class="form-group"><label>आईचे नाव :</label><input type="text" id="entMother" placeholder="उदा. भाग्यश्री"></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div class="form-group"><label>राष्ट्रीयत्व :</label><input type="text" id="entNat" value="भारतीय"></div>
@@ -1283,6 +1284,7 @@ input:focus,select:focus{
 <div id="bulkPrintArea" style="display:none;"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCN270jqcwG3Jiv2AnGev2Sq305c6IfKGw",
@@ -1680,8 +1682,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       }
 
       let headers = excelData[0] || [];
-      if(headers.length <= 19) headers[19] = 'शाळा सोडल्याचा दिनांक';
-      for(let ri=1; ri<excelData.length; ri++){ if(!Array.isArray(excelData[ri])) excelData[ri]=[]; while(excelData[ri].length < 20) excelData[ri].push(''); }
+      if(headers.length <= 20) headers[20] = 'लिंग';
+      for(let ri=1; ri<excelData.length; ri++){ if(!Array.isArray(excelData[ri])) excelData[ri]=[]; while(excelData[ri].length < 21) excelData[ri].push(''); }
       let headHtml = '<th>अ.क्र.</th>';
       for(let h of headers) {
           headHtml += `<th>${h || 'कॉलम'}</th>`;
@@ -2281,12 +2283,80 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       }
   }
 
-  function getExpectedExcelHeaders(){return ["अनुक्रमांक","विद्यार्थ्याचे नाव","आईचे नाव","वडिलांचे नाव","इयत्ता","तुकडी","जन्मतारीख","जात","शालार्थ ID","आधार क्रमांक","प्रवेश क्रमांक","प्रवेश दिनांक","विद्यार्थी UID","मोबाईल क्रमांक","जन्मतारीख (प्रमाणित)","जन्मतारीख (शब्दात)","लिंग","शाळा सोडण्याचे कारण","शेरा","शाळा सोडल्याचा दिनांक"];}
-function excelColumnName(n){let s='';n++;while(n){let r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s;}
-function validateUploadedExcel(rows){const expected=getExpectedExcelHeaders(),errors=[];if(!rows||!rows.length)return["Excel रिकामी आहे."];const h=(rows[0]||[]).map(v=>String(v??'').trim());expected.forEach((x,i)=>{if(h[i]!==x)errors.push("Header "+excelColumnName(i)+" चुकीचा. अपेक्षित: '"+x+"' ; मिळाले: '"+(h[i]||"(रिकामा)")+"'");});if(h.length>expected.length)errors.push("अनावश्यक अतिरिक्त column: "+h.slice(expected.length).join(", "));rows.slice(1).forEach((row,idx)=>{const er=idx+2;if(row.every(v=>String(v??'').trim()===''))return;expected.forEach((x,i)=>{if(row[i]===undefined)errors.push("Row "+er+" : "+excelColumnName(i)+" ("+x+") missing आहे.");});[6,11,14,19].forEach(i=>{const v=String(row[i]??'').trim();if(v&&!/^\d{2}-\d{2}-\d{4}$/.test(normalizeStudentDate(v)))errors.push("Row "+er+" : "+expected[i]+" '"+v+"' — DD-MM-YYYY पाहिजे.");});const m=String(row[13]??'').replace(/\s/g,'');if(m&&!/^\d{10}$/.test(m))errors.push("Row "+er+" : मोबाईल क्रमांक 10 अंकी असावा.");if(!String(row[0]??'').trim())errors.push("Row "+er+" : अनुक्रमांक रिकामा आहे.");if(!String(row[1]??'').trim())errors.push("Row "+er+" : विद्यार्थ्याचे नाव रिकामे आहे.");});return errors.slice(0,80);}
-function downloadExcelSample(){const rows=[getExpectedExcelHeaders(),["1","नमुना विद्यार्थी","नमुना आई","नमुना वडील","10","A","15-06-2010","General","SAMPLE001","123456789012","1001","10-06-2020","UID001","9876543210","15-06-2010","","Male","नमुना कारण","नमुना शेरा","31-03-2026"]];const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,"StudentData");XLSX.writeFile(wb,"Dakhala_Excel_Sample.xlsx");}
-async function exportSchoolExcel(targetUsername){try{const snap=await db.collection("portalData").doc("profile_"+targetUsername).get();if(!snap.exists||!snap.data().excel){alert("या शाळेसाठी Cloud वर Excel data उपलब्ध नाही.");return;}const raw=snap.data().excel,rows=typeof raw==='string'?JSON.parse(raw):raw;if(!Array.isArray(rows)||!rows.length){alert("Export करण्यासाठी data उपलब्ध नाही.");return;}const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,"StudentData");XLSX.writeFile(wb,"Dakhala_Backup_"+targetUsername+"_"+new Date().toISOString().slice(0,10)+".xlsx");alert("Cloud मधील data Excel backup म्हणून download झाला.");}catch(err){alert("Export error: "+err.message);}}
-async function uploadSchoolExcel(targetUsername){let fileInput=document.getElementById('adminExcel_'+targetUsername);if(!fileInput.files||!fileInput.files.length){alert("कृपया आधी फाईल निवडा!");return;}let reader=new FileReader();reader.onload=async function(evt){try{let workbook=XLSX.read(new Uint8Array(evt.target.result),{type:'array'});if(!workbook.SheetNames.length)throw new Error("Excel मध्ये कोणतीही sheet नाही.");let parsedData=XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]],{header:1,defval:""}),errors=validateUploadedExcel(parsedData);if(errors.length){alert("❌ Excel Upload थांबवला.\n\n• "+errors.join("\n• "));return;}if(!confirm("ही Excel '"+targetUsername+"' च्या Cloud data ला replace करेल. Backup/Export घेतले आहे का?\n\nOK = Upload करा"))return;let docRef=db.collection("portalData").doc("profile_"+targetUsername),snap=await docRef.get(),data=snap.exists?snap.data():{},oldExcel=data.excel||null;await docRef.set({info:data.info||{},excelBackup:oldExcel,excelBackupAt:new Date().toISOString(),excel:JSON.stringify(parsedData)},{merge:true});alert("✅ Excel यशस्वीरित्या Upload झाला. जुना Cloud data backup म्हणून जतन केला आहे.");fileInput.value="";}catch(err){alert("❌ Excel Upload Error: "+err.message);}};reader.readAsArrayBuffer(file);}
+  function getExpectedExcelHeaders(){return ["रजिस्टर नंबर","माध्यम","PEN आयडी","आधार क्रमांक","विद्यार्थ्याचे पूर्ण नाव","आईचे नाव","राष्ट्रीयत्व","मातृभाषा","धर्म","जात","पोटजात","जन्मस्थळ","राज्य","देश","जन्मदिनांक","जन्मदिनांक (अक्षरी)","यापूर्वीची शाळा","प्रवेश दिनांक","प्रवेश इयत्ता","शाळा सोडल्याचा दिनांक","लिंग"];}
+
+  function excelColumnName(n){let s='';n++;while(n){let r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s;}
+
+  function dateValueForValidation(v){
+      if(v instanceof Date && !isNaN(v.getTime())) return String(v.getDate()).padStart(2,'0')+'-'+String(v.getMonth()+1).padStart(2,'0')+'-'+v.getFullYear();
+      return normalizeStudentDate(v);
+  }
+
+  function isValidStudentDate(v){
+      const s=dateValueForValidation(v),m=s.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+      if(!m)return false;
+      const d=Number(m[1]),mo=Number(m[2]),y=Number(m[3]);
+      if(y<1900||y>2100||mo<1||mo>12||d<1||d>31)return false;
+      const dt=new Date(y,mo-1,d);
+      return dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d;
+  }
+
+  function validateUploadedExcel(rows){
+      const expected=getExpectedExcelHeaders(),errors=[];
+      if(!rows||!rows.length)return["Excel रिकामी आहे."];
+      const h=(rows[0]||[]).map(v=>String(v??'').trim());
+      expected.forEach((x,i)=>{if(h[i]!==x)errors.push("Header "+excelColumnName(i)+" चुकीचा. अपेक्षित: '"+x+"' ; मिळाले: '"+(h[i]||"(रिकामा)")+"'");});
+      if(h.length>expected.length)errors.push("अनावश्यक अतिरिक्त column: "+h.slice(expected.length).join(", "));
+      rows.slice(1).forEach((row,idx)=>{
+          const er=idx+2;if(row.every(v=>String(v??'').trim()===''))return;
+          if(!String(row[0]??'').trim())errors.push("Row "+er+" : रजिस्टर नंबर रिकामा आहे.");
+          if(!String(row[4]??'').trim())errors.push("Row "+er+" : विद्यार्थ्याचे पूर्ण नाव रिकामे आहे.");
+          [14,17,19].forEach(i=>{const v=row[i];if(String(v??'').trim()&&!isValidStudentDate(v))errors.push("Row "+er+" : "+expected[i]+" '"+String(v)+"' चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या.");});
+          const gender=String(row[20]??'').trim();if(gender&&!["Male","Female"].includes(gender))errors.push("Row "+er+" : लिंग चुकीचे आहे — फक्त Male किंवा Female निवडा.");
+          const aadhaar=String(row[3]??'').replace(/\s/g,'');if(aadhaar&&!/^\d{12}$/.test(aadhaar))errors.push("Row "+er+" : आधार क्रमांक 12 अंकी असावा.");
+          if(errors.length>=80)return;
+      });return errors.slice(0,80);
+  }
+
+  async function downloadExcelSample(){
+      try{
+          if(typeof ExcelJS==='undefined'){alert("Excel Template module load झाला नाही. कृपया पेज Refresh करून पुन्हा प्रयत्न करा.");return;}
+          const wb=new ExcelJS.Workbook(),ws=wb.addWorksheet("StudentData"),headers=getExpectedExcelHeaders();
+          ws.addRow(headers);
+          ws.addRow(["1","मराठी","PEN001","123456789012","नमुना विद्यार्थी","नमुना आई","भारतीय","मराठी","हिंदू","General","","गाव, तालुका, जिल्हा","महाराष्ट्र","भारत",new Date(2010,5,15),"","नमुना मागील शाळा",new Date(2020,6,30),"10 वी",new Date(2026,2,31),"Male"]);
+          ws.views=[{state:'frozen',ySplit:1}];ws.autoFilter={from:'A1',to:'U1'};
+          ws.getRow(1).eachCell(cell=>{cell.font={bold:true};cell.alignment={vertical:'middle',horizontal:'center',wrapText:true};cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'D9EAF7'}};});
+          ws.getRow(1).height=30;
+          [15,18,20].forEach(col=>{ws.getColumn(col).numFmt='dd-mm-yyyy';});
+          ws.getColumn(15).width=15;ws.getColumn(18).width=15;ws.getColumn(20).width=22;ws.getColumn(21).width=12;
+          for(let i=1;i<=21;i++)if(![15,18,20,21].includes(i))ws.getColumn(i).width=18;
+          for(let row=2;row<=1001;row++){
+              ws.getCell(row,21).dataValidation={type:'list',allowBlank:true,formulae:['"Male,Female"']};
+              [15,18,20].forEach(col=>{ws.getCell(row,col).numFmt='dd-mm-yyyy';});
+          }
+          const buffer=await wb.xlsx.writeBuffer(),blob=new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),a=document.createElement('a');
+          a.href=URL.createObjectURL(blob);a.download='Dakhala_General_Register_Student_Template.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      }catch(err){alert("Excel Template तयार करताना Error: "+err.message);}
+  }
+
+  async function exportSchoolExcel(targetUsername){
+      try{const snap=await db.collection("portalData").doc("profile_"+targetUsername).get();if(!snap.exists||!snap.data().excel){alert("या शाळेसाठी Cloud वर Excel data उपलब्ध नाही.");return;}const raw=snap.data().excel,rows=typeof raw==='string'?JSON.parse(raw):raw;if(!Array.isArray(rows)||!rows.length){alert("Export करण्यासाठी data उपलब्ध नाही.");return;}const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,"StudentData");XLSX.writeFile(wb,"Dakhala_Backup_"+targetUsername+"_"+new Date().toISOString().slice(0,10)+".xlsx");alert("Cloud मधील data Excel backup म्हणून download झाला.");}catch(err){alert("Export error: "+err.message);}
+  }
+
+  async function uploadSchoolExcel(targetUsername){
+      let fileInput=document.getElementById('adminExcel_'+targetUsername);if(!fileInput.files||!fileInput.files.length){alert("कृपया आधी फाईल निवडा!");return;}
+      let reader=new FileReader();reader.onload=async function(evt){try{
+          let workbook=XLSX.read(new Uint8Array(evt.target.result),{type:'array',cellDates:true});if(!workbook.SheetNames.length)throw new Error("Excel मध्ये कोणतीही sheet नाही.");
+          let parsedData=XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]],{header:1,defval:"",raw:true}),errors=validateUploadedExcel(parsedData);
+          if(errors.length){alert("❌ Excel Upload थांबवला. खालील चुका दुरुस्त करा:\n\n• "+errors.join("\n• "));return;}
+          parsedData.slice(1).forEach(row=>{[14,17,19].forEach(i=>{if(row[i] instanceof Date)row[i]=dateValueForValidation(row[i]);});row[15]="";while(row.length<21)row.push("");row[20]=String(row[20]||"").trim();});
+          if(!confirm("ही Excel '"+targetUsername+"' च्या Cloud data ला replace करेल. Backup/Export घेतले आहे का?\n\nOK = Upload करा"))return;
+          let docRef=db.collection("portalData").doc("profile_"+targetUsername),snap=await docRef.get(),data=snap.exists?snap.data():{},oldExcel=data.excel||null;
+          await docRef.set({info:data.info||{},excelBackup:oldExcel,excelBackupAt:new Date().toISOString(),excel:JSON.stringify(parsedData)},{merge:true});
+          alert("✅ Excel यशस्वीरित्या Upload झाला. जुना Cloud data backup म्हणून जतन केला आहे.");fileInput.value="";
+      }catch(err){alert("❌ Excel Upload Error: "+err.message);}};reader.readAsArrayBuffer(file);
+  }
+
 async function deleteSchool(index) {
       if(confirm("Delete school?")) {
           registeredSchoolsList.splice(index, 1);
@@ -2367,10 +2437,14 @@ async function deleteSchool(index) {
       let adm = document.getElementById('entAdmDate').value.trim();
       let admClass = document.getElementById('entAdmClass').value.trim();
       let prevSchool = document.getElementById('entPrevSchool').value.trim();
+       let gender = document.getElementById('entGender').value.trim();
 
       if(!reg || !name) { alert("कृपया किमान रजिस्टर नंबर आणि विद्यार्थ्याचे नाव भरा!"); return; }
+       if(dob && !isValidStudentDate(dob)) { alert("जन्मदिनांक चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या."); return; }
+       if(adm && !isValidStudentDate(adm)) { alert("प्रवेश दिनांक चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या."); return; }
+       if(gender && !["Male","Female"].includes(gender)) { alert("लिंग फक्त Male किंवा Female असावे."); return; }
 
-      let newRow = [reg, med, studId, aadhaar, name, mother, nat, lang, rel, caste, "", bp, state, country, dob, "", prevSchool, adm, admClass, "१० वी", "अ"];
+      let newRow = [reg, med, studId, aadhaar, name, mother, nat, lang, rel, caste, "", bp, state, country, dob, "", prevSchool, adm, admClass, "", gender];
       excelData.push(newRow);
 
       let role = getActiveRole();
@@ -2403,7 +2477,7 @@ async function deleteSchool(index) {
       }
   }
 
-  function clearStudentEntryForm(){const ids=['entReg','entStudId','entAadhaar','entName','entMother','entBirthPlace','entState','entCountry','entDob','entAdmDate','entAdmClass','entPrevSchool','entRel','entCaste'];ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});const med=document.getElementById('entMed');if(med)med.value='मराठी';const nat=document.getElementById('entNat');if(nat)nat.value='भारतीय';const lang=document.getElementById('entLang');if(lang)lang.value='मराठी';setTimeout(()=>document.getElementById('entName')?.focus(),150);}
+  function clearStudentEntryForm(){const ids=['entReg','entStudId','entAadhaar','entName','entMother','entBirthPlace','entState','entCountry','entDob','entAdmDate','entAdmClass','entPrevSchool','entRel','entCaste'];ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});const med=document.getElementById('entMed');if(med)med.value='मराठी';const nat=document.getElementById('entNat');if(nat)nat.value='भारतीय';const lang=document.getElementById('entLang');if(lang)lang.value='मराठी';const gender=document.getElementById('entGender');if(gender)gender.value='';setTimeout(()=>document.getElementById('entName')?.focus(),150);}
 function validateDakhalaPrintFields(){
       const leave=document.getElementById('outLeavingDate'),date=document.getElementById('currentDate');
       const missing=[];
