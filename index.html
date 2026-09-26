@@ -1600,6 +1600,10 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
   function formatExcelDate(val) {
       if(!val) return "";
+      let s = String(val).trim();
+      // YYYYMMDD / YYYY-MM-DD / DD-MM-YYYY सर्वांना print साठी DD-MM-YYYY मध्ये बदला.
+      let normalized = normalizeStudentDate(s);
+      if(/^\\d{2}-\\d{2}-\\d{4}$/.test(normalized)) return normalized;
       let num = Number(val);
       if(!isNaN(num) && num > 30000 && num < 60000) {
           let d = new Date((num - (25569 + 2)) * 86400 * 1000);
@@ -1608,7 +1612,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           let year = d.getFullYear();
           return `${day}-${month}-${year}`;
       }
-      return val.toString();
+      return s;
   }
 
   // Helper to get Marathi words for dates
