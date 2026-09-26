@@ -153,7 +153,7 @@
 
         /* ===== A4 PRINT ===== */
         @media print {
-            @page { size: A4 portrait; margin: 18mm 8mm 8mm 8mm; }
+            @page { size: A4 portrait; margin: 7mm 8mm 15mm 8mm; }
             html, body { background: #fff !important; margin: 0; padding: 0; }
 
             body > *:not(#mainAppContainer) { display: none !important; }
@@ -162,7 +162,7 @@
 
             #mainAppContainer { display: block !important; box-shadow: none; padding: 0; margin: 0; max-width: none; border-radius: 0; }
             #tabDakhala { display: block !important; border: none; padding: 0; }
-            #printableArea { position: static; width: 100%; max-height: 271mm; overflow: visible; }
+            #printableArea { position: static; width: 100%; max-height: 270mm; overflow: visible; }
             #bulkPrintArea { display: none !important; }
 
             body.bulk-print-mode .tab-content:not(#tabBulkPrint) { display: none !important; }
@@ -526,6 +526,7 @@ input:focus,select:focus{
 @media(max-width:430px){#loginScreen{margin:22px auto !important;padding:24px 18px 18px !important}}
 </style>
 
+<style id="dakhala-final-polish">.dk-use-card{margin:14px auto 0;max-width:720px;text-align:left;background:linear-gradient(135deg,#fff,#f4f8ff);border:1px solid #dbe7ff;border-radius:16px;padding:15px;box-shadow:0 8px 25px rgba(30,64,175,.08)}.dk-use-title{text-align:center;font-size:15px;font-weight:900;color:#173b7a;margin-bottom:10px}.dk-use-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.dk-use-grid>div{padding:9px 10px;border-radius:11px;background:#fff;border:1px solid #e8edf5}.dk-use-grid b{display:block;font-size:12px}.dk-use-grid span{display:block;margin-top:3px;font-size:10.5px;color:#64748b}.dk-credits{margin:14px auto 4px;max-width:720px;text-align:center;padding:13px 10px;border-top:1px solid #d7dee9;border-bottom:1px solid #d7dee9;color:#475569;font-size:10.5px;line-height:1.5}.dk-credits-names{font-size:14px;font-weight:900;color:#173b7a}.dk-credits-names span{padding:0 6px;color:#94a3b8}.dk-rights{margin-top:6px;font-weight:800}.dk-notice-wrap{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none}.dk-notice{min-width:280px;max-width:92vw;padding:15px 20px;border-radius:16px;background:#fff;border:1px solid #dbe4f0;box-shadow:0 18px 55px rgba(15,23,42,.22);text-align:center;font-weight:800;font-size:14px;animation:dkNoticeIn .28s ease both}.dk-notice.err{border-color:#f2b8b8}.dk-notice.warn{border-color:#f6d58a}@keyframes dkNoticeIn{from{opacity:0;transform:translateY(-18px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes dkNoticeOut{to{opacity:0;transform:translateY(-10px) scale(.97)}}#lcCard{font-size:14px!important;line-height:1.22!important}#lcCard #printLogo{max-height:70px!important;width:auto!important}#lcCard .lc-table td{padding:3px 5px!important;font-size:14px!important}#lcCard input{font-size:14px!important}@media(max-width:700px){.dk-use-grid{grid-template-columns:1fr}}@media print{.dk-notice-wrap{display:none!important}}</style>
 </head>
 <body>
 
@@ -563,6 +564,7 @@ input:focus,select:focus{
     </details>
 
     <a class="dk-login-support" href="tel:9333411111">📞 मदतीसाठी: ९३३३४१११११</a>
+    <div class="dk-use-card"><div class="dk-use-title">📣 प्रणालीची माहिती व वापर पद्धत</div><div class="dk-use-grid"><div><b>📝 Student Data Entry</b><span>विद्यार्थ्याची माहिती भरा आणि Cloud वर Save करा.</span></div><div><b>📜 दाखला</b><span>विद्यार्थी शोधा, आवश्यक दिनांक भरा आणि Print करा.</span></div><div><b>🪪 Bonafide</b><span>विद्यार्थी निवडा आणि Bonafide Print करा.</span></div><div><b>📷 Teacher Photo</b><span>दिलेल्या लिंकवरून विद्यार्थ्याचा फोटो अपलोड करता येतो.</span></div><div><b>🖨️ Print / PDF</b><span>A4 Paper आणि योग्य Printer setting तपासा.</span></div><div><b>📊 Print Report</b><span>दाखला/Bonafide कोणाचा Print झाला ते पाहता येते.</span></div></div></div><div class="dk-credits"><b>निर्मिती व विकासासाठी योगदान:</b><div class="dk-credits-names">सुजित पाटील <span>•</span> महेश जाधव</div><div>या प्रणालीच्या संकल्पना, विकास, परीक्षण आणि कार्यान्वयनासाठी संयुक्त योगदान.</div><div class="dk-rights">© सर्व हक्क राखीव — Sujit Patil &amp; Mahesh Jadhav</div></div>
 </div>
 
 <!-- Main Application Container -->
@@ -1029,7 +1031,8 @@ input:focus,select:focus{
                         <span id="pEmail">इ-मेल : ramanandnagar.srvsr@gmail.com</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-top: 2px;">
-                        <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block; font-weight:bold;"></span>
+                        <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block; font-weight:bold;"></span><span>दाखला क्र. : <input type="text" id="outCertificateNo" class="editable-field" placeholder="दाखला क्र." style="width:72px;display:inline-block;font-weight:bold;"></span>
+                        
                         <span>माध्यम : <span id="outMedium">मराठी</span></span>
                         <span>अनु क्र. : <input type="text" id="outAnu" readonly style="width:50px; display:inline-block; font-weight:bold;" value="-"></span>
                     </div>
@@ -1045,7 +1048,7 @@ input:focus,select:focus{
                 
                 <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 2px;">
                     <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
-                    <div>यु.आय.डिज. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
+                    <div>आधार क्रमांक : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
                 </div>
 
                 <table class="lc-table">
@@ -1070,14 +1073,14 @@ input:focus,select:focus{
                         <td colspan="2"><strong style="display:inline-block; width:50px;">राज्य :</strong> <input type="text" id="outState" readonly style="width:150px; display:inline-block; font-weight:bold;"> &nbsp;|&nbsp; <strong>देश :</strong> <input type="text" id="outCountry" readonly style="width:100px; display:inline-block; font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:120px;">जन्मदिनांक (अंकात) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:120px;">जन्मदिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
                         <td><strong style="display:inline-block; width:135px;">जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" readonly style="color: #000; font-weight: bold; display:inline-block; width:calc(100% - 140px);"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:110px;">यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly style="display:inline-block; width:calc(100% - 115px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:190px;">या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:calc(100% - 195px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:190px;">या शाळेत प्रवेश घेतल्याचा दिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:calc(100% - 195px); font-weight:bold;"></td>
                         <td><strong style="display:inline-block; width:80px;">प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
                     </tr>
                     <tr>
@@ -1085,7 +1088,8 @@ input:focus,select:focus{
                         <td><strong style="display:inline-block; width:70px;">वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली" style="display:inline-block; width:calc(100% - 75px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:220px;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block; width:calc(100% - 225px); font-weight:bold;"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:220px;"><tr><td colspan="2"><strong style="display:inline-block;width:180px;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" class="editable-field required-print-date" placeholder="DD-MM-YYYY" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)" style="width:150px;font-weight:bold;"></td></tr>
+                    कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block; width:calc(100% - 225px); font-weight:bold;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:140px;">शाळा सोडल्याचे कारण :</strong> <input type="text" id="outLeavingReason" class="editable-field" value="शिक्षण पूर्ण / संतोषजनक" style="display:inline-block; width:calc(100% - 145px);"></td>
@@ -1107,7 +1111,7 @@ input:focus,select:focus{
                 </div>
 
                 <div style="margin-top: 5px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold;">
-                    <div>तारीख : <span id="currentDate"></span></div>
+                    <div>तारीख : <input type="text" id="currentDate" class="editable-field required-print-date" placeholder="DD-MM-YYYY" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)" style="width:105px;font-weight:bold;border-bottom:1px solid #000;"></div>
                 </div>
                 <div style="margin-top: 4px; font-size: 9px; font-weight: bold; text-align: center; border-top: 1px dashed #000; padding-top: 2px;">
                     (टिप- शाळा सोडल्याचे दाखल्यामध्ये अनाधिकृतरित्या बदल केल्यास संबंधितावर कायदेशीर कारवाई करण्यात येईल.)
@@ -1135,6 +1139,7 @@ input:focus,select:focus{
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+  let _dkNoticeTimer=null;function showDkNotice(message,type='ok'){const old=document.getElementById('dkNoticeWrap');if(old)old.remove();const wrap=document.createElement('div');wrap.id='dkNoticeWrap';wrap.className='dk-notice-wrap';const box=document.createElement('div');box.className='dk-notice '+(type==='err'?'err':type==='warn'?'warn':'ok');box.innerHTML=String(message||'').replace(/\n/g,'<br>');wrap.appendChild(box);document.body.appendChild(wrap);clearTimeout(_dkNoticeTimer);_dkNoticeTimer=setTimeout(()=>{box.style.animation='dkNoticeOut .2s ease both';setTimeout(()=>wrap.remove(),190)},3200);}window.alert=function(message){showDkNotice(message,/❌|Error|Failed/i.test(String(message))?'err':/⚠️|कृपया/i.test(String(message))?'warn':'ok');};
 
   let registeredSchoolsList = [];
   let currentSchoolProfile = {};
@@ -1436,7 +1441,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           let day = String(d.getDate()).padStart(2, '0');
           let month = String(d.getMonth() + 1).padStart(2, '0');
           let year = d.getFullYear();
-          return `${day}/${month}/${year}`;
+          return `${day}-${month}-${year}`;
       }
       return val.toString();
   }
@@ -1693,20 +1698,9 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       checks.forEach(ch => ch.checked = master.checked);
   }
 
-  async function printDakhalaCurrent() {
-      const source=document.getElementById('lcCard');
-      if(!source || source.style.display==='none'){ alert('प्रथम विद्यार्थी निवडा आणि दाखला तयार करा.'); return; }
-      const w=window.open('','_blank','width=900,height=700');
-      if(!w){ alert('Print window उघडता आली नाही. Browser मध्ये pop-up allow करा.'); return; }
-      const card=source.cloneNode(true); card.removeAttribute('id');
-      card.querySelectorAll('input').forEach(el=>{ const s=document.createElement('span'); s.textContent=el.value||''; s.style.fontWeight='bold'; el.replaceWith(s); });
-      const css=`@page{size:A4 portrait;margin:8mm}*{box-sizing:border-box}body{margin:0;background:#fff;color:#000;font-family:'Sakal Marathi','Nirmala UI','Mangal','Noto Sans Devanagari',Arial,sans-serif}.lc-format{display:block!important;width:194mm!important;max-width:194mm!important;margin:0 auto!important;border:2px solid #000!important;padding:8px 12px!important;background:#fff!important;font-size:13px!important;font-weight:700!important}.lc-table{width:100%!important;border-collapse:collapse!important}.lc-table th,.lc-table td{border:1px solid #000!important;padding:2px 5px!important;font-size:13px!important}`;
-      w.document.open(); w.document.write('<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>दाखला Print</title><style>'+css+'</style></head><body></body></html>'); w.document.close();
-      w.document.body.appendChild(card); await new Promise(r=>setTimeout(r,300)); w.focus(); w.print();
-      w.onafterprint=()=>setTimeout(()=>{try{w.close()}catch(e){}},300);
-  }
+  async function printDakhalaCurrent(){if(!validateDakhalaPrintFields())return;const source=document.getElementById('lcCard');if(!source||source.style.display==='none'){alert('प्रथम विद्यार्थी निवडा आणि दाखला तयार करा.');return;}const w=window.open('','_blank','width=900,height=700');if(!w){alert('Print window उघडता आली नाही. Browser मध्ये pop-up allow करा.');return;}const card=source.cloneNode(true);card.removeAttribute('id');card.querySelectorAll('input').forEach(el=>{const s=document.createElement('span');s.textContent=el.value||'';s.style.fontWeight='bold';s.style.fontSize='14px';el.replaceWith(s);});const css=\`@page{size:A4 portrait;margin:7mm 8mm 15mm 8mm}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#000}body{font-family:'Sakal Marathi','Nirmala UI','Mangal','Noto Sans Devanagari',Arial,sans-serif}.lc-format{display:block!important;width:194mm!important;max-width:194mm!important;margin:0 auto!important;border:2px solid #000!important;padding:7px 11px!important;background:#fff!important;font-size:14px!important;font-weight:700!important;line-height:1.22!important}.lc-format img#printLogo{max-height:70px!important;width:auto!important}.lc-table{width:100%!important;border-collapse:collapse!important}.lc-table th,.lc-table td{border:1px solid #000!important;padding:3px 5px!important;font-size:14px!important;line-height:1.18!important}.editable-field{border:none!important;background:transparent!important;padding:0!important}@media print{.lc-format{break-inside:avoid!important;page-break-inside:avoid!important}}\`;w.document.open();w.document.write('<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>दाखला Print</title><style>'+css+'</style></head><body></body></html>');w.document.close();w.document.body.appendChild(card);await new Promise(r=>setTimeout(r,250));const maxH=270/25.4*96,actualH=card.getBoundingClientRect().height;if(actualH>maxH){const z=Math.max(.84,maxH/actualH);card.style.zoom=z;card.style.width=(194/z)+'mm';}await new Promise(r=>setTimeout(r,100));w.focus();w.print();w.onafterprint=()=>setTimeout(()=>{try{w.close()}catch(e){}},300);}
 
-  function printOneFromBulk(idx) {
+  function printOneFromBulk(idx) { if(!validateDakhalaPrintFields()) return;
       let row = window._bulkRows ? window._bulkRows[idx] : null;
       if (!row) return;
       document.body.classList.remove('bulk-print-mode');
@@ -1728,6 +1722,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       });
 
       if (selectedRows.length === 0) { alert("कृपया प्रिंट करण्यासाठी किमान एका विद्यार्थ्याची निवड (टिक) करा!"); return; }
+      if (!validateDakhalaPrintFields()) return;
       if (!confirm(selectedRows.length + " विद्यार्थ्यांचे दाखले एकत्र प्रिंट करायचे आहेत का?")) return;
 
       const template = document.getElementById('lcCard');
@@ -1793,6 +1788,9 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       root.querySelector('#outPrevSchool').value = foundRow[16] || "-";
       root.querySelector('#outAdmissionDate').value = formatExcelDate(foundRow[17]);
       root.querySelector('#outAdmClass').value = foundRow[18] || "";
+      root.querySelector('#outLeavingDate').value = "";
+      root.querySelector('#outCertificateNo').value = "";
+      const now=new Date(); root.querySelector('#currentDate').value=String(now.getDate()).padStart(2,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+now.getFullYear();
 
       if(customReason !== undefined) root.querySelector('#outLeavingReason').value = customReason;
       if(customRemark !== undefined) root.querySelector('#outRemark').value = customRemark;
@@ -2190,6 +2188,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
           if(found) {
               alert("☁️ Firebase Cloud Save Confirmed ✅\n\nविद्यार्थी: " + name + "\nरजिस्टर नं.: " + reg + "\n\nFirebase मध्ये माहिती प्रत्यक्ष तपासून सेव्ह झाल्याचे निश्चित झाले.");
+              clearStudentEntryForm();
           } else {
               excelData.pop();
               alert("❌ Firebase Cloud Verification Failed!\n\nमाहिती Cloud वर सापडली नाही. कृपया पुन्हा Save करा.");
@@ -2200,7 +2199,10 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       }
   }
 
-  function toMarathiDigits(str) {
+  function clearStudentEntryForm(){const ids=['entReg','entStudId','entAadhaar','entName','entMother','entBirthPlace','entState','entCountry','entDob','entAdmDate','entAdmClass','entPrevSchool','entRel','entCaste'];ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});const med=document.getElementById('entMed');if(med)med.value='मराठी';const nat=document.getElementById('entNat');if(nat)nat.value='भारतीय';const lang=document.getElementById('entLang');if(lang)lang.value='मराठी';setTimeout(()=>document.getElementById('entName')?.focus(),150);}
+function validateDakhalaPrintFields(){const leave=document.getElementById('outLeavingDate'),date=document.getElementById('currentDate');const missing=[];if(!leave||!normalizeStudentDate(leave.value.trim()))missing.push('शाळा सोडल्याचा दिनांक');if(!date||!normalizeStudentDate(date.value.trim()))missing.push('सहीखालील दिनांक');if(missing.length){alert('⚠️ प्रिंट करण्यापूर्वी खालील माहिती भरणे आवश्यक आहे:\n\n• '+missing.join('\n• '));const el=missing[0]==='शाळा सोडल्याचा दिनांक'?leave:date;if(el){el.focus();el.scrollIntoView({behavior:'smooth',block:'center'});}return false;}leave.value=normalizeStudentDate(leave.value.trim());date.value=normalizeStudentDate(date.value.trim());return true;}
+
+  function toMarathiDigits(str) {function toMarathiDigits(str) {
       if(!str) return "";
       const englishToMarathi = { '0': '०', '1': '१', '2': '२', '3': '३', '4': '४', '5': '५', '6': '६', '7': '७', '8': '८', '9': '९' };
       return str.toString().replace(/[0-9]/g, function(w) { return englishToMarathi[w]; });
