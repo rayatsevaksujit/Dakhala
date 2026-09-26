@@ -1303,6 +1303,15 @@ input:focus,select:focus{
   let registeredSchoolsList = [];
   let currentSchoolProfile = {};
   let excelData = [];
+  function normalizeLoadedStudentRows(){
+      if(!Array.isArray(excelData)||!excelData.length)return;
+      for(let i=1;i<excelData.length;i++){
+          const row=excelData[i];
+          if(!Array.isArray(row))continue;
+          while(row.length<21)row.push("");
+          if(row[20] && !["Male","Female"].includes(String(row[20]).trim())) row[20]="";
+      }
+  }
   let schoolLogoBase64 = "";
 
   function getActiveUser() { return sessionStorage.getItem('activeUser'); }
@@ -1334,6 +1343,7 @@ input:focus,select:focus{
               if(!doc.exists) throw new Error('not found');
               const data=doc.data()||{}; currentSchoolProfile=data.info||{}; schoolLogoBase64=currentSchoolProfile.logo||'';
               excelData=(typeof data.excel==='string')?JSON.parse(data.excel):(data.excel||[]);
+               normalizeLoadedStudentRows();
               sessionStorage.setItem('activeUser',publicSchool); sessionStorage.setItem('activeRole','teacherPhoto');
               await openTab('tabTeacherPhoto'); document.getElementById('backBar').style.display='none';
           }catch(e){
@@ -1391,6 +1401,7 @@ input:focus,select:focus{
               schoolLogoBase64 = currentSchoolProfile.logo || "";
               let rawExcel = profileDoc.data().excel;
               excelData = (typeof rawExcel === 'string') ? JSON.parse(rawExcel) : (rawExcel || []);
+               normalizeLoadedStudentRows();
           } else {
               currentSchoolProfile = {};
               schoolLogoBase64 = "";
@@ -2283,7 +2294,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       }
   }
 
-  function getExpectedExcelHeaders(){return ["रजिस्टर नंबर","माध्यम","PEN आयडी","आधार क्रमांक","विद्यार्थ्याचे पूर्ण नाव","आईचे नाव","राष्ट्रीयत्व","मातृभाषा","धर्म","जात","पोटजात","जन्मस्थळ","राज्य","देश","जन्मदिनांक","जन्मदिनांक (अक्षरी)","यापूर्वीची शाळा","प्रवेश दिनांक","प्रवेश इयत्ता","शाळा सोडल्याचा दिनांक","लिंग"];}
+  function getExpectedExcelHeaders(){return ["जनरल रजिस्टर क्रमांक","माध्यम","PEN आयडी","आधार क्रमांक","विद्यार्थ्याचे पूर्ण नाव","आईचे नाव","राष्ट्रीयत्व","मातृभाषा","धर्म","जात","पोटजात","जन्मस्थळ","राज्य","देश","जन्मदिनांक","जन्मदिनांक (अक्षरी)","यापूर्वीची शाळा","प्रवेश दिनांक","प्रवेश इयत्ता","शाळा सोडल्याचा दिनांक","लिंग"];}
 
   function excelColumnName(n){let s='';n++;while(n){let r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s;}
 
