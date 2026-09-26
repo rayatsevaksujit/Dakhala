@@ -1318,6 +1318,8 @@ input:focus,select:focus{
           document.body.classList.add('public-teacher-mode');
           document.getElementById('loginScreen').style.display='none';
           document.getElementById('mainAppContainer').style.display='block';
+          document.documentElement.classList.add('app-logged-in');
+          document.body.classList.add('app-logged-in');
           try{
               const doc=await db.collection("portalData").doc("profile_"+publicSchool).get();
               if(!doc.exists) throw new Error('not found');
@@ -1336,6 +1338,8 @@ input:focus,select:focus{
       if(currentUser) {
           document.getElementById('loginScreen').style.display = 'none';
           document.getElementById('mainAppContainer').style.display = 'block';
+          document.documentElement.classList.add('app-logged-in');
+          document.body.classList.add('app-logged-in');
           await fetchCloudData(currentUser, currentRole);
           setupDashboard(currentRole, currentUser);
           goHome();
@@ -1427,6 +1431,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
               sessionStorage.setItem('loginAt', String(Date.now()));
               document.getElementById('loginScreen').style.display = 'none';
               document.getElementById('mainAppContainer').style.display = 'block';
+          document.documentElement.classList.add('app-logged-in');
+          document.body.classList.add('app-logged-in');
               await fetchCloudData('admin', 'master');
               setupDashboard('master', 'admin');
               goHome();
@@ -1464,6 +1470,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           sessionStorage.setItem('loginAt', String(Date.now()));
           document.getElementById('loginScreen').style.display = 'none';
           document.getElementById('mainAppContainer').style.display = 'block';
+          document.documentElement.classList.add('app-logged-in');
+          document.body.classList.add('app-logged-in');
           await fetchCloudData(foundSchool.username, 'school');
           setupDashboard('school', foundSchool.username);
           goHome();
