@@ -2230,6 +2230,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
                   <td>
                       <input type="file" id="adminExcel_${s.username}" accept=".xlsx, .xls, .csv" style="font-size:11px; margin-bottom:4px;"><br>
                       <button onclick="uploadSchoolExcel('${s.username}')" style="background:#27ae60; padding:3px 8px; font-size:11px; width:auto;">📤 Upload Excel</button>
+                      <button onclick="downloadExcelSample()" style="background:#2980b9; padding:3px 8px; font-size:11px; width:auto;">📥 Sample</button>
+                      <button onclick="exportSchoolExcel('${s.username}')" style="background:#8e44ad; padding:3px 8px; font-size:11px; width:auto;">📤 Export</button>
                   </td>
                   <td>
                       <button onclick="deleteSchool(${index})" style="background:#c0392b; padding:4px 8px; font-size:11px; width:auto;">Delete</button>
@@ -2255,38 +2257,13 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       }
   }
 
-  async function uploadSchoolExcel(targetUsername) {
-      let fileInput = document.getElementById('adminExcel_' + targetUsername);
-      if(!fileInput.files || fileInput.files.length === 0) {
-          alert("कृपया आधी फाईल निवडा!");
-          return;
-      }
-      let file = fileInput.files[0];
-      let reader = new FileReader();
-      reader.onload = async function(evt) {
-          try {
-              let data = new Uint8Array(evt.target.result);
-              let workbook = XLSX.read(data, {type: 'array'});
-              let parsedData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
-              
-              let docRef = db.collection("portalData").doc("profile_" + targetUsername);
-              let docSnap = await docRef.get();
-              let existingInfo = docSnap.exists ? (docSnap.data().info || {}) : {};
-
-              await docRef.set({
-                  info: existingInfo,
-                  excel: JSON.stringify(parsedData)
-              }, { merge: true });
-
-              alert("शाळा '" + targetUsername + "' साठी एक्सेल डेटा यशस्वीरित्या अपलोड झाला!");
-          } catch(err) {
-              alert("Error uploading: " + err.message);
-          }
-      };
-      reader.readAsArrayBuffer(file);
-  }
-
-  async function deleteSchool(index) {
+  function getExpectedExcelHeaders(){return ["अनुक्रमांक","विद्यार्थ्याचे नाव","आईचे नाव","वडिलांचे नाव","इयत्ता","तुकडी","जन्मतारीख","जात","शालार्थ ID","आधार क्रमांक","प्रवेश क्रमांक","प्रवेश दिनांक","विद्यार्थी UID","मोबाईल क्रमांक","जन्मतारीख (प्रमाणित)","जन्मतारीख (शब्दात)","लिंग","शाळा सोडण्याचे कारण","शेरा","शाळा सोडल्याचा दिनांक"];}
+function excelColumnName(n){let s='';n++;while(n){let r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s;}
+function validateUploadedExcel(rows){const expected=getExpectedExcelHeaders(),errors=[];if(!rows||!rows.length)return["Excel रिकामी आहे."];const h=(rows[0]||[]).map(v=>String(v??'').trim());expected.forEach((x,i)=>{if(h[i]!==x)errors.push("Header "+excelColumnName(i)+" चुकीचा. अपेक्षित: '"+x+"' ; मिळाले: '"+(h[i]||"(रिकामा)")+"'");});if(h.length>expected.length)errors.push("अनावश्यक अतिरिक्त column: "+h.slice(expected.length).join(", "));rows.slice(1).forEach((row,idx)=>{const er=idx+2;if(row.every(v=>String(v??'').trim()===''))return;expected.forEach((x,i)=>{if(row[i]===undefined)errors.push("Row "+er+" : "+excelColumnName(i)+" ("+x+") missing आहे.");});[6,11,14,19].forEach(i=>{const v=String(row[i]??'').trim();if(v&&!/^\d{2}-\d{2}-\d{4}$/.test(normalizeStudentDate(v)))errors.push("Row "+er+" : "+expected[i]+" '"+v+"' — DD-MM-YYYY पाहिजे.");});const m=String(row[13]??'').replace(/\s/g,'');if(m&&!/^\d{10}$/.test(m))errors.push("Row "+er+" : मोबाईल क्रमांक 10 अंकी असावा.");if(!String(row[0]??'').trim())errors.push("Row "+er+" : अनुक्रमांक रिकामा आहे.");if(!String(row[1]??'').trim())errors.push("Row "+er+" : विद्यार्थ्याचे नाव रिकामे आहे.");});return errors.slice(0,80);}
+function downloadExcelSample(){const rows=[getExpectedExcelHeaders(),["1","नमुना विद्यार्थी","नमुना आई","नमुना वडील","10","A","15-06-2010","General","SAMPLE001","123456789012","1001","10-06-2020","UID001","9876543210","15-06-2010","","Male","नमुना कारण","नमुना शेरा","31-03-2026"]];const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,"StudentData");XLSX.writeFile(wb,"Dakhala_Excel_Sample.xlsx");}
+async function exportSchoolExcel(targetUsername){try{const snap=await db.collection("portalData").doc("profile_"+targetUsername).get();if(!snap.exists||!snap.data().excel){alert("या शाळेसाठी Cloud वर Excel data उपलब्ध नाही.");return;}const raw=snap.data().excel,rows=typeof raw==='string'?JSON.parse(raw):raw;if(!Array.isArray(rows)||!rows.length){alert("Export करण्यासाठी data उपलब्ध नाही.");return;}const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,"StudentData");XLSX.writeFile(wb,"Dakhala_Backup_"+targetUsername+"_"+new Date().toISOString().slice(0,10)+".xlsx");alert("Cloud मधील data Excel backup म्हणून download झाला.");}catch(err){alert("Export error: "+err.message);}}
+async function uploadSchoolExcel(targetUsername){let fileInput=document.getElementById('adminExcel_'+targetUsername);if(!fileInput.files||!fileInput.files.length){alert("कृपया आधी फाईल निवडा!");return;}let reader=new FileReader();reader.onload=async function(evt){try{let workbook=XLSX.read(new Uint8Array(evt.target.result),{type:'array'});if(!workbook.SheetNames.length)throw new Error("Excel मध्ये कोणतीही sheet नाही.");let parsedData=XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]],{header:1,defval:""}),errors=validateUploadedExcel(parsedData);if(errors.length){alert("❌ Excel Upload थांबवला.\n\n• "+errors.join("\n• "));return;}if(!confirm("ही Excel '"+targetUsername+"' च्या Cloud data ला replace करेल. Backup/Export घेतले आहे का?\n\nOK = Upload करा"))return;let docRef=db.collection("portalData").doc("profile_"+targetUsername),snap=await docRef.get(),data=snap.exists?snap.data():{},oldExcel=data.excel||null;await docRef.set({info:data.info||{},excelBackup:oldExcel,excelBackupAt:new Date().toISOString(),excel:JSON.stringify(parsedData)},{merge:true});alert("✅ Excel यशस्वीरित्या Upload झाला. जुना Cloud data backup म्हणून जतन केला आहे.");fileInput.value="";}catch(err){alert("❌ Excel Upload Error: "+err.message);}};reader.readAsArrayBuffer(file);}
+function deleteSchool(index) {
       if(confirm("Delete school?")) {
           registeredSchoolsList.splice(index, 1);
           await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
