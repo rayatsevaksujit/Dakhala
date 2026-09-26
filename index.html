@@ -362,14 +362,6 @@
     }
 }
 </style>
-<style id="dakhala-prelogin-guide">
-.pre-login-guide{margin-top:14px;text-align:left;border:1px solid rgba(21,94,239,.14);background:linear-gradient(135deg,rgba(246,248,255,.98),rgba(255,255,255,.98));border-radius:16px;padding:12px;box-shadow:0 8px 22px rgba(15,23,42,.07);animation:dkFadeUp .7s ease both}
-.pre-login-guide-head{display:flex;align-items:center;gap:8px;color:#173b68;font-size:14px;margin-bottom:9px}.pre-login-guide-head span{font-size:19px}
-.pre-login-guide-body{display:grid;gap:6px;color:#475569;font-size:11px;line-height:1.45}
-.pre-login-help{margin-top:11px;padding-top:9px;border-top:1px dashed rgba(21,94,239,.18);display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;color:#64748b}
-.pre-login-help a{font-weight:700;color:#155eef;text-decoration:none;white-space:nowrap}.pre-login-help a:hover{text-decoration:underline}
-@media(max-width:520px){.pre-login-guide{padding:10px}.pre-login-help{align-items:flex-start;flex-direction:column}}
-</style>
 <style id="dakhala-modern-ui">
 /* ===== DAKHALA MODERN UI / CLICK ANIMATIONS ===== */
 :root{
@@ -519,13 +511,13 @@ input:focus,select:focus{
     
     <div class="form-group">
         <label>Username:</label>
-        <input type="text" id="loginUser" placeholder="Username" inputmode="latin" autocomplete="username" oninput="forceEnglishCredential(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('loginPass').focus();}">
+        <input type="text" id="loginUser" placeholder="Enter username" inputmode="latin" autocomplete="username" oninput="forceEnglishCredential(this)">
     </div>
     <div class="form-group">
         <label>Password:</label>
-        <input type="password" id="loginPass" placeholder="Password" inputmode="latin" autocomplete="current-password" oninput="forceEnglishCredential(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();handleLogin();}">
+        <input type="password" id="loginPass" placeholder="Enter password" inputmode="latin" autocomplete="current-password" oninput="forceEnglishCredential(this)">
     </div>
-    <button type="button" id="loginButton" onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 10px;">Login</button>
+    <button onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
 </div>
 
 <!-- Main Application Container -->
@@ -2689,16 +2681,5 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 </script>
 
-
-<script id="dakhala-login-enter">
-document.addEventListener('DOMContentLoaded', function(){
-  ['loginUser','loginPass'].forEach(function(id){
-    const el=document.getElementById(id);
-    if(el) el.addEventListener('keydown',function(e){
-      if(e.key==='Enter'){ e.preventDefault(); handleLogin(); }
-    });
-  });
-});
-</script>
 </body>
 </html>
