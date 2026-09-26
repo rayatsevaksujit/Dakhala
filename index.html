@@ -153,7 +153,7 @@
 
         /* ===== A4 PRINT ===== */
         @media print {
-            @page { size: A4 portrait; margin: 7mm 8mm 15mm 8mm; }
+            @page { size: A4 portrait; margin: 10mm; }
             html, body { background: #fff !important; margin: 0; padding: 0; }
 
             body > *:not(#mainAppContainer) { display: none !important; }
@@ -1031,7 +1031,7 @@ input:focus,select:focus{
                         <span id="pEmail">इ-मेल : ramanandnagar.srvsr@gmail.com</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-top: 2px;">
-                        <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block; font-weight:bold;"></span><span>दाखला क्र. : <input type="text" id="outCertificateNo" class="editable-field" placeholder="दाखला क्र." style="width:72px;display:inline-block;font-weight:bold;"></span>
+                        <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block; font-weight:bold;"></span>
                         
                         <span>माध्यम : <span id="outMedium">मराठी</span></span>
                         <span>अनु क्र. : <input type="text" id="outAnu" readonly style="width:50px; display:inline-block; font-weight:bold;" value="-"></span>
@@ -1064,7 +1064,7 @@ input:focus,select:focus{
                     </tr>
                     <tr>
                         <td><strong style="display:inline-block; width:80px;">धर्म :</strong> <input type="text" id="outReligion" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
-                        <td><strong style="display:inline-block; width:100px;">जात व उपजात :</strong> <input type="text" id="outCaste" readonly style="display:inline-block; width:calc(100% - 105px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:100px;">जात व पोटजात :</strong> <input type="text" id="outCaste" readonly style="display:inline-block; width:calc(100% - 105px); font-weight:bold;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:135px;">जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace" readonly style="display:inline-block; width:calc(100% - 140px); font-weight:bold;"></td>
@@ -1088,8 +1088,10 @@ input:focus,select:focus{
                         <td><strong style="display:inline-block; width:70px;">वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली" style="display:inline-block; width:calc(100% - 75px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:220px;"><tr><td colspan="2"><strong style="display:inline-block;width:180px;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" class="editable-field required-print-date" placeholder="DD-MM-YYYY" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)" style="width:150px;font-weight:bold;"></td></tr>
-                    कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block; width:calc(100% - 225px); font-weight:bold;"></td>
+                        <td colspan="2"><strong style="display:inline-block;width:180px;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" class="editable-field required-print-date" placeholder="DD-MM-YYYY" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)" style="width:150px;font-weight:bold;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong style="display:inline-block;width:290px;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block;width:calc(100% - 295px);font-weight:bold;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:140px;">शाळा सोडल्याचे कारण :</strong> <input type="text" id="outLeavingReason" class="editable-field" value="शिक्षण पूर्ण / संतोषजनक" style="display:inline-block; width:calc(100% - 145px);"></td>
