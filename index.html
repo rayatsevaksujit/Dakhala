@@ -362,6 +362,15 @@
     }
 }
 </style>
+<style id="dakhala-public-teacher-photo">
+body.public-teacher-mode #loginScreen,body.public-teacher-mode .app-header,body.public-teacher-mode #homeDashboard,body.public-teacher-mode #backBar,body.public-teacher-mode .photo-link-box{display:none!important}
+body.public-teacher-mode #mainAppContainer{display:block!important;max-width:980px;margin:20px auto}
+body.public-teacher-mode #tabTeacherPhoto{display:block!important;border:0;padding:0}
+body.public-teacher-mode #tabTeacherPhoto .teacher-photo-box button[onclick="removeTeacherStudentPhoto()"]{display:none!important}
+.public-photo-title{display:none;padding:14px;margin-bottom:12px;border-radius:16px;background:linear-gradient(135deg,#123c78,#155eef,#7c3aed);color:#fff;font-weight:700;font-size:18px;text-align:center}
+body.public-teacher-mode .public-photo-title{display:block}
+.photo-ai-note{font-size:12px;color:#52606d;background:#f4f8ff;border:1px solid #dbeafe;padding:8px;border-radius:8px;margin-top:8px}
+</style>
 <style id="dakhala-modern-ui">
 /* ===== DAKHALA MODERN UI / CLICK ANIMATIONS ===== */
 :root{
@@ -698,7 +707,7 @@ input:focus,select:focus{
     </div>
 
     <!-- ===== ADD-ON: Class Teacher Photo Upload ===== -->
-    <div id="tabTeacherPhoto" class="tab-content">
+    <div id="tabTeacherPhoto" class="tab-content"><div class="public-photo-title">📷 वर्गशिक्षक विद्यार्थी फोटो अपलोड</div>
         <h3>📷 विद्यार्थ्यांचा फोटो Upload</h3>
         <p style="font-size:12px;color:#666;">वर्ग निवडा → विद्यार्थी निवडा/रजिस्टर नंबर शोधा → मोबाईलवरून फोटो काढा → सेव्ह करा.</p>
 
@@ -720,7 +729,7 @@ input:focus,select:focus{
             <div class="teacher-photo-box">
                 <div id="teacherSelectedInfo" style="font-weight:700;">विद्यार्थी निवडा</div>
                 <input id="teacherPhotoFile" type="file" accept="image/*" capture="user" onchange="previewTeacherPhoto(event)" style="margin-top:10px;">
-                <img id="teacherPhotoPreview" class="teacher-photo-preview" style="display:none;">
+                <img id="teacherPhotoPreview" class="teacher-photo-preview" style="display:none;"><div class="photo-ai-note">✨ Smart Photo Clear: प्रकाश, कॉन्ट्रास्ट, शार्पनेस आणि फोटोचा आकार आपोआप सुधारला जाईल.</div>
                 <button onclick="saveTeacherStudentPhoto()" class="no-print" style="max-width:220px;margin:auto;">📷 फोटो सेव्ह करा</button>
                 <button onclick="removeTeacherStudentPhoto()" class="no-print" style="max-width:220px;margin:8px auto 0;background:#c0392b;">🗑️ फोटो काढून टाका</button>
             </div>
@@ -835,8 +844,8 @@ input:focus,select:focus{
                 <div class="form-group"><label>देश :</label><input type="text" id="entCountry" value="भारत"></div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group"><label>जन्मदिनांक (DDMMYYYY) :</label><input type="text" id="entDob" placeholder="उदा. 01052010" maxlength="8" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
-                <div class="form-group"><label>प्रवेश दिनांक (DDMMYYYY) :</label><input type="text" id="entAdmDate" placeholder="उदा. 30072022" maxlength="8" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
+                <div class="form-group"><label>जन्मदिनांक (DD-MM-YYYY) :</label><input type="text" id="entDob" placeholder="उदा. 01-05-2010" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
+                <div class="form-group"><label>प्रवेश दिनांक (DD-MM-YYYY) :</label><input type="text" id="entAdmDate" placeholder="उदा. 30-07-2022" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
                 <div class="form-group"><label>प्रवेश इयत्ता :</label><input type="text" id="entAdmClass" placeholder="७ वी"></div>
@@ -1147,6 +1156,27 @@ input:focus,select:focus{
   }
 
   window.onload = async function() {
+      const urlParams=new URLSearchParams(window.location.search);
+      const publicTeacherPhoto=urlParams.get('teacherPhoto')==='1';
+      const publicSchool=urlParams.get('school')||'';
+      if(publicTeacherPhoto && publicSchool){
+          document.body.classList.add('public-teacher-mode');
+          document.getElementById('loginScreen').style.display='none';
+          document.getElementById('mainAppContainer').style.display='block';
+          try{
+              const doc=await db.collection("portalData").doc("profile_"+publicSchool).get();
+              if(!doc.exists) throw new Error('not found');
+              const data=doc.data()||{}; currentSchoolProfile=data.info||{}; schoolLogoBase64=currentSchoolProfile.logo||'';
+              excelData=(typeof data.excel==='string')?JSON.parse(data.excel):(data.excel||[]);
+              sessionStorage.setItem('activeUser',publicSchool); sessionStorage.setItem('activeRole','teacherPhoto');
+              await openTab('tabTeacherPhoto'); document.getElementById('backBar').style.display='none';
+          }catch(e){
+              document.body.classList.remove('public-teacher-mode'); document.getElementById('mainAppContainer').style.display='none'; document.getElementById('loginScreen').style.display='block';
+              alert('वर्गशिक्षक फोटो लिंक चुकीची किंवा कालबाह्य आहे.');
+          }
+          return;
+      }
+      let currentUser = getActiveUser();
       let currentUser = getActiveUser();
       let currentRole = getActiveRole();
       if(currentUser) {
@@ -1381,17 +1411,21 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   // Helper to correctly format Excel serial date numbers to readable DD/MM/YYYY
   function formatEntryDateInput(el) {
       if(!el) return;
-      el.value = String(el.value || '').replace(/\D/g, '').slice(0, 8);
+      let v = String(el.value || '').replace(/[^0-9]/g, '').slice(0, 8);
+      if(v.length > 4) v = v.slice(0,2) + '-' + v.slice(2,4) + '-' + v.slice(4);
+      else if(v.length > 2) v = v.slice(0,2) + '-' + v.slice(2);
+      el.value = v;
   }
 
   function normalizeStudentDate(val) {
       if(!val) return '';
       let v = String(val).trim().replace(/\s+/g,'');
-      if(/^\d{8}$/.test(v)) return v;
-      let p = v.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
-      if(p) return p[3].padStart(2,'0') + p[2].padStart(2,'0') + p[1];
-      p = v.match(/^(\d{4})(\d{2})(\d{2})$/);
-      if(p) return p[3] + p[2] + p[1];
+      let p = v.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+      if(p) return p[1].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[3];
+      p = v.match(/^(\d{8})$/);
+      if(p) return p[1].slice(6,8) + '-' + p[1].slice(4,6) + '-' + p[1].slice(0,4);
+      p = v.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+      if(p) return p[3].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[1];
       return v;
   }
 
@@ -1658,6 +1692,19 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   function toggleBulkSelectAll(master) {
       let checks = document.querySelectorAll('.bulk-item-check');
       checks.forEach(ch => ch.checked = master.checked);
+  }
+
+  async function printDakhalaCurrent() {
+      const source=document.getElementById('lcCard');
+      if(!source || source.style.display==='none'){ alert('प्रथम विद्यार्थी निवडा आणि दाखला तयार करा.'); return; }
+      const w=window.open('','_blank','width=900,height=700');
+      if(!w){ alert('Print window उघडता आली नाही. Browser मध्ये pop-up allow करा.'); return; }
+      const card=source.cloneNode(true); card.removeAttribute('id');
+      card.querySelectorAll('input').forEach(el=>{ const s=document.createElement('span'); s.textContent=el.value||''; s.style.fontWeight='bold'; el.replaceWith(s); });
+      const css=`@page{size:A4 portrait;margin:8mm}*{box-sizing:border-box}body{margin:0;background:#fff;color:#000;font-family:'Sakal Marathi','Nirmala UI','Mangal','Noto Sans Devanagari',Arial,sans-serif}.lc-format{display:block!important;width:194mm!important;max-width:194mm!important;margin:0 auto!important;border:2px solid #000!important;padding:8px 12px!important;background:#fff!important;font-size:13px!important;font-weight:700!important}.lc-table{width:100%!important;border-collapse:collapse!important}.lc-table th,.lc-table td{border:1px solid #000!important;padding:2px 5px!important;font-size:13px!important}`;
+      w.document.open(); w.document.write('<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>दाखला Print</title><style>'+css+'</style></head><body></body></html>'); w.document.close();
+      w.document.body.appendChild(card); await new Promise(r=>setTimeout(r,300)); w.focus(); w.print();
+      w.onafterprint=()=>setTimeout(()=>{try{w.close()}catch(e){}},300);
   }
 
   function printOneFromBulk(idx) {
@@ -2571,7 +2618,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   function prepareTeacherPhotoModule() {
       fillTeacherClassSelect();
       const link=document.getElementById('teacherPhotoShareLink');
-      if(link) link.value=window.location.href.split('?')[0]+'?teacherPhoto=1';
+      if(link) link.value=window.location.href.split('?')[0]+'?teacherPhoto=1&school='+encodeURIComponent(getActiveUser()||'');
       filterTeacherStudents();
   }
 
@@ -2642,25 +2689,24 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       return new Promise((resolve,reject)=>{
           const img=new Image();
           img.onload=function(){
-              const targetW=450,targetH=600;
-              const canvas=document.createElement('canvas');
-              canvas.width=targetW;canvas.height=targetH;
-              const ctx=canvas.getContext('2d');
-              ctx.fillStyle='#fff';ctx.fillRect(0,0,targetW,targetH);
-              const scale=Math.max(targetW/img.width,targetH/img.height);
-              const w=img.width*scale,h=img.height*scale;
-              const x=(targetW-w)/2,y=(targetH-h)/2;
+              const targetW=450,targetH=600,canvas=document.createElement('canvas'); canvas.width=targetW; canvas.height=targetH;
+              const ctx=canvas.getContext('2d',{willReadFrequently:true}); ctx.fillStyle='#fff'; ctx.fillRect(0,0,targetW,targetH);
+              const scale=Math.max(targetW/img.width,targetH/img.height),w=img.width*scale,h=img.height*scale,x=(targetW-w)/2,y=(targetH-h)/2;
               ctx.drawImage(img,x,y,w,h);
-              resolve(canvas.toDataURL('image/jpeg',0.82));
-          };
-          img.onerror=reject;img.src=src;
+              const im=ctx.getImageData(0,0,targetW,targetH),d=im.data; let sum=0,n=0;
+              for(let i=0;i<d.length;i+=16){sum+=(d[i]+d[i+1]+d[i+2])/3;n++}
+              const bright=(128-sum/n)*0.22,contrast=1.12;
+              for(let i=0;i<d.length;i+=4){d[i]=Math.max(0,Math.min(255,(d[i]-128)*contrast+128+bright));d[i+1]=Math.max(0,Math.min(255,(d[i+1]-128)*contrast+128+bright));d[i+2]=Math.max(0,Math.min(255,(d[i+2]-128)*contrast+128+bright))}
+              ctx.putImageData(im,0,0); resolve(canvas.toDataURL('image/jpeg',0.88));
+          }; img.onerror=reject; img.src=src;
       });
   }
 
   async function saveTeacherStudentPhoto() {
       if(!selectedTeacherStudent){alert('कृपया विद्यार्थी निवडा.');return;}
       if(!teacherPhotoDataUrl){alert('कृपया फोटो काढा किंवा निवडा.');return;}
-      const user=(getActiveRole()==='master' && window.adminEditingTarget) ? window.adminEditingTarget : (getActiveUser()||'admin');
+      const publicUser=new URLSearchParams(window.location.search).get('school');
+      const user=publicUser || ((getActiveRole()==='master' && window.adminEditingTarget) ? window.adminEditingTarget : (getActiveUser()||'admin'));
       try{
           await db.collection("portalData").doc("studentPhotos_"+user).collection("photos").doc(safePhotoDocId(selectedTeacherStudent.row[0])).set({
               photo:teacherPhotoDataUrl,
@@ -2712,7 +2758,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   function copyTeacherPhotoLink() {
       const input=document.getElementById('teacherPhotoShareLink');
       if(!input) return;
-      const link=input.value || (window.location.href.split('?')[0]+'?teacherPhoto=1');
+      const link=input.value || (window.location.href.split('?')[0]+'?teacherPhoto=1&school='+encodeURIComponent(getActiveUser()||''));
       navigator.clipboard.writeText(link).then(()=>alert('वर्गशिक्षकांची फोटो लिंक Copy झाली.')).catch(()=>{
           input.select(); document.execCommand('copy'); alert('लिंक Copy झाली.');
       });
