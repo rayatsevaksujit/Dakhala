@@ -519,26 +519,13 @@ input:focus,select:focus{
     
     <div class="form-group">
         <label>Username:</label>
-        <input type="text" id="loginUser" placeholder="Enter username" inputmode="latin" autocomplete="username" oninput="forceEnglishCredential(this)">
+        <input type="text" id="loginUser" placeholder="Username" inputmode="latin" autocomplete="username" oninput="forceEnglishCredential(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('loginPass').focus();}">
     </div>
     <div class="form-group">
         <label>Password:</label>
-        <input type="password" id="loginPass" placeholder="Enter password" inputmode="latin" autocomplete="current-password" oninput="forceEnglishCredential(this)">
+        <input type="password" id="loginPass" placeholder="Password" inputmode="latin" autocomplete="current-password" oninput="forceEnglishCredential(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();handleLogin();}">
     </div>
-    <button type="button" onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
-
-    <div id="preLoginGuide" class="pre-login-guide">
-        <div class="pre-login-guide-head"><span>📘</span><strong>Entry करण्यापूर्वी मार्गदर्शक</strong></div>
-        <div class="pre-login-guide-body">
-            <div>1️⃣ <b>Login</b> — Username आणि Password English मध्ये भरा.</div>
-            <div>2️⃣ <b>Student Entry</b> — विद्यार्थ्याची माहिती अचूक भरून Save करा.</div>
-            <div>3️⃣ <b>Dakhala / Bonafide</b> — आवश्यक विद्यार्थी निवडून प्रमाणपत्र तयार करा.</div>
-            <div>4️⃣ <b>Photo</b> — फोटो उपलब्ध असल्यासच फोटो दिसेल.</div>
-            <div>5️⃣ <b>Print</b> — Print करताना योग्य paper setting तपासा.</div>
-            <div>6️⃣ <b>Print Report</b> — कोणत्या विद्यार्थ्याचा Dakhala किंवा Bonafide print झाला हे रिपोर्टमध्ये पाहता येईल.</div>
-        </div>
-        <div class="pre-login-help"><span>❓ अडचण असल्यास संपर्क करा:</span><a href="tel:9333411111">📞 ९३३३४१११११</a></div>
-    </div>
+    <button type="button" id="loginButton" onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 10px;">Login</button>
 </div>
 
 <!-- Main Application Container -->
