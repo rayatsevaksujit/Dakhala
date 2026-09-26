@@ -835,8 +835,8 @@ input:focus,select:focus{
                 <div class="form-group"><label>देश :</label><input type="text" id="entCountry" value="भारत"></div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group"><label>जन्मदिनांक (अंकी YYYY-MM-DD) :</label><input type="text" id="entDob" placeholder="उदा. 2010-05-01"></div>
-                <div class="form-group"><label>प्रवेश दिनांक :</label><input type="text" id="entAdmDate" placeholder="उदा. 2022-07-30"></div>
+                <div class="form-group"><label>जन्मदिनांक (DDMMYYYY) :</label><input type="text" id="entDob" placeholder="उदा. 01052010" maxlength="8" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
+                <div class="form-group"><label>प्रवेश दिनांक (DDMMYYYY) :</label><input type="text" id="entAdmDate" placeholder="उदा. 30072022" maxlength="8" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
                 <div class="form-group"><label>प्रवेश इयत्ता :</label><input type="text" id="entAdmClass" placeholder="७ वी"></div>
@@ -1379,6 +1379,22 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
   // Helper to correctly format Excel serial date numbers to readable DD/MM/YYYY
+  function formatEntryDateInput(el) {
+      if(!el) return;
+      el.value = String(el.value || '').replace(/\D/g, '').slice(0, 8);
+  }
+
+  function normalizeStudentDate(val) {
+      if(!val) return '';
+      let v = String(val).trim().replace(/\s+/g,'');
+      if(/^\d{8}$/.test(v)) return v;
+      let p = v.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+      if(p) return p[3].padStart(2,'0') + p[2].padStart(2,'0') + p[1];
+      p = v.match(/^(\d{4})(\d{2})(\d{2})$/);
+      if(p) return p[3] + p[2] + p[1];
+      return v;
+  }
+
   function formatExcelDate(val) {
       if(!val) return "";
       let num = Number(val);
