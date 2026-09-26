@@ -1236,7 +1236,7 @@ input:focus,select:focus{
                         <td><strong style="display:inline-block; width:70px;">वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली" style="display:inline-block; width:calc(100% - 75px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block;width:180px;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" class="editable-field required-print-date" placeholder="DD-MM-YYYY" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)" style="width:150px;font-weight:bold;"></td>
+                        <td colspan="2"><strong style="display:inline-block;width:180px;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" readonly placeholder="DD-MM-YYYY" maxlength="10" style="width:150px;font-weight:bold;background:#fff;border:none;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block;width:290px;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block;width:calc(100% - 295px);font-weight:bold;"></td>
@@ -1661,6 +1661,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       }
 
       let headers = excelData[0] || [];
+      if(headers.length <= 19) headers[19] = 'शाळा सोडल्याचा दिनांक';
+      for(let ri=1; ri<excelData.length; ri++){ if(!Array.isArray(excelData[ri])) excelData[ri]=[]; while(excelData[ri].length < 20) excelData[ri].push(''); }
       let headHtml = '<th>अ.क्र.</th>';
       for(let h of headers) {
           headHtml += `<th>${h || 'कॉलम'}</th>`;
@@ -1705,6 +1707,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
   function updateGenCell(rowIdx, colIdx, val) {
       if(excelData[rowIdx]) {
+          if(colIdx === 19) val = normalizeStudentDate(String(val||'').trim());
           excelData[rowIdx][colIdx] = val;
       }
   }
@@ -1874,9 +1877,14 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
     }
 }
 
-  function printOneFromBulk(idx) { if(!validateDakhalaPrintFields()) return;
+  function printOneFromBulk(idx) {
       let row = window._bulkRows ? window._bulkRows[idx] : null;
       if (!row) return;
+      if(!normalizeStudentDate(String(row[19]||'').trim())){
+          alert('⚠️ या विद्यार्थ्याचा शाळा सोडल्याचा दिनांक जनरल रजिस्टरमध्ये भरलेला नाही. प्रथम जनरल रजिस्टरमध्ये दुरुस्ती करा.');
+          return;
+      }
+      if (!validateDakhalaPrintFields()) return;
       document.body.classList.remove('bulk-print-mode');
       window._bulkPrintActive = false;
       let commonReason = document.getElementById('commonLeavingReason').value.trim();
@@ -1896,6 +1904,13 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       });
 
       if (selectedRows.length === 0) { alert("कृपया प्रिंट करण्यासाठी किमान एका विद्यार्थ्याची निवड (टिक) करा!"); return; }
+      const missingDateRows = selectedRows.filter(row => !normalizeStudentDate(String(row[19]||'').trim()));
+      if(missingDateRows.length){
+          alert('⚠️ निवडलेल्या '+missingDateRows.length+' विद्यार्थ्यांच्या जनरल रजिस्टरमध्ये शाळा सोडल्याचा दिनांक भरलेला नाही. आधी जनरल रजिस्टरमध्ये तो भरा.');
+          return;
+      }
+      const leaveEl=document.getElementById('outLeavingDate');
+      if(leaveEl) leaveEl.value=normalizeStudentDate(String(selectedRows[0][19]||'').trim());
       if (!validateDakhalaPrintFields()) return;
       if (!confirm(selectedRows.length + " विद्यार्थ्यांचे दाखले एकत्र प्रिंट करायचे आहेत का?")) return;
 
@@ -1962,7 +1977,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       root.querySelector('#outPrevSchool').value = foundRow[16] || "-";
       root.querySelector('#outAdmissionDate').value = formatExcelDate(foundRow[17]);
       root.querySelector('#outAdmClass').value = foundRow[18] || "";
-      root.querySelector('#outLeavingDate').value = "";
+      root.querySelector('#outLeavingDate').value = formatExcelDate(foundRow[19] || "");
       const now=new Date(); root.querySelector('#currentDate').value=String(now.getDate()).padStart(2,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+now.getFullYear();
 
       if(customReason !== undefined) root.querySelector('#outLeavingReason').value = customReason;
@@ -2373,7 +2388,14 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
   function clearStudentEntryForm(){const ids=['entReg','entStudId','entAadhaar','entName','entMother','entBirthPlace','entState','entCountry','entDob','entAdmDate','entAdmClass','entPrevSchool','entRel','entCaste'];ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});const med=document.getElementById('entMed');if(med)med.value='मराठी';const nat=document.getElementById('entNat');if(nat)nat.value='भारतीय';const lang=document.getElementById('entLang');if(lang)lang.value='मराठी';setTimeout(()=>document.getElementById('entName')?.focus(),150);}
-function validateDakhalaPrintFields(){const leave=document.getElementById('outLeavingDate'),date=document.getElementById('currentDate');const missing=[];if(!leave||!normalizeStudentDate(leave.value.trim()))missing.push('शाळा सोडल्याचा दिनांक');if(!date||!normalizeStudentDate(date.value.trim()))missing.push('सहीखालील दिनांक');if(missing.length){alert('⚠️ प्रिंट करण्यापूर्वी खालील माहिती भरणे आवश्यक आहे:\n\n• '+missing.join('\n• '));const el=missing[0]==='शाळा सोडल्याचा दिनांक'?leave:date;if(el){el.focus();el.scrollIntoView({behavior:'smooth',block:'center'});}return false;}leave.value=normalizeStudentDate(leave.value.trim());date.value=normalizeStudentDate(date.value.trim());return true;}
+function validateDakhalaPrintFields(){
+      const leave=document.getElementById('outLeavingDate'),date=document.getElementById('currentDate');
+      const missing=[];
+      if(!leave || !normalizeStudentDate(leave.value.trim())) missing.push('जनरल रजिस्टरमध्ये शाळा सोडल्याचा दिनांक');
+      if(!date || !normalizeStudentDate(date.value.trim())) missing.push('सहीखालील दिनांक');
+      if(missing.length){ alert('⚠️ प्रिंट करण्यापूर्वी खालील माहिती पूर्ण असणे आवश्यक आहे:\n\n• '+missing.join('\n• ')); return false; }
+      date.value=normalizeStudentDate(date.value.trim()); return true;
+  }
 
   function toMarathiDigits(str) {
       if(!str) return "";
