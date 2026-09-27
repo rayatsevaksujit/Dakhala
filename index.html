@@ -1429,6 +1429,56 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       return hash === MASTER_ADMIN_PASSWORD_HASH;
   }
 
+  async function loadRegisteredSchoolsForLogin() {
+      // Primary source: Firestore. Cache is only a fallback when Firebase read is
+      // temporarily blocked/offline, so an already-registered school is not locked out.
+      let firebaseError = null;
+      try {
+          if(!db) throw new Error('Firebase database उपलब्ध नाही.');
+          const snap = await db.collection('portalData').doc('registeredSchools').get();
+          if(snap.exists) {
+              const raw = snap.data() || {};
+              const list = Array.isArray(raw.list) ? raw.list : [];
+              registeredSchoolsList = list.filter(Boolean).map(s => ({
+                  ...s,
+                  username: String(s.username || '').trim(),
+                  password: String(s.password || ''),
+                  name: String(s.name || '')
+              }));
+              try {
+                  localStorage.setItem('registeredSchoolsCache', JSON.stringify(registeredSchoolsList));
+                  sessionStorage.setItem('registeredSchoolsCache', JSON.stringify(registeredSchoolsList));
+              } catch(e) {}
+              return { list: registeredSchoolsList, source: 'firebase' };
+          }
+          firebaseError = new Error('registeredSchools document सापडला नाही.');
+      } catch(e) {
+          firebaseError = e;
+          console.error('registeredSchools read failed:', e);
+      }
+
+      // Fallback cache: keeps existing registered schools usable during a
+      // transient Firebase permission/network problem.
+      try {
+          const cached = localStorage.getItem('registeredSchoolsCache') ||
+                         sessionStorage.getItem('registeredSchoolsCache');
+          const parsed = cached ? JSON.parse(cached) : [];
+          if(Array.isArray(parsed) && parsed.length) {
+              registeredSchoolsList = parsed.filter(Boolean).map(s => ({
+                  ...s,
+                  username: String(s.username || '').trim(),
+                  password: String(s.password || ''),
+                  name: String(s.name || '')
+              }));
+              return { list: registeredSchoolsList, source: 'cache', error: firebaseError };
+          }
+      } catch(e) {
+          console.error('registeredSchools cache read failed:', e);
+      }
+
+      throw firebaseError || new Error('registeredSchools data उपलब्ध नाही.');
+  }
+
   async function handleLogin() {
       const userEl = document.getElementById('loginUser');
       const passEl = document.getElementById('loginPass');
@@ -1438,7 +1488,6 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           return;
       }
 
-      // English/ASCII credentials — accidental Marathi typing टाळा.
       forceEnglishCredential(userEl);
       forceEnglishCredential(passEl);
       const u = userEl.value.trim();
@@ -1483,8 +1532,6 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
               sessionStorage.setItem('activeRole','master');
               sessionStorage.setItem('loginAt',String(Date.now()));
 
-              // Login success आधीच दाखवा; Cloud data load मध्ये network error आला तरी
-              // Admin dashboard अडू नये.
               document.getElementById('loginScreen').style.display='none';
               document.getElementById('mainAppContainer').style.display='block';
               document.documentElement.classList.add('app-logged-in');
@@ -1498,7 +1545,6 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
                   goHome();
               } catch(cloudErr) {
                   console.error('Admin cloud load failed:', cloudErr);
-                  alert('Admin Login झाले आहे; पण Cloud data load होत नाही. Internet/Firebase connection तपासा.');
               }
               return;
           } catch(err) {
@@ -1510,25 +1556,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
       // ===== School Login =====
       try {
-          if(!db){
-              throw new Error('Firebase database उपलब्ध नाही.');
-          }
-
-          // नवीन/refresh झालेल्या page वर Firestore मधून school list घ्या.
-          const schoolsDoc = await db.collection('portalData').doc('registeredSchools').get();
-          if(!schoolsDoc.exists){
-              registeredSchoolsList = [];
-          } else {
-              const list = schoolsDoc.data() && schoolsDoc.data().list;
-              registeredSchoolsList = Array.isArray(list) ? list : [];
-          }
-
-          // पुढील refresh साठी local session cache ठेवा.
-          try {
-              sessionStorage.setItem('registeredSchoolsCache', JSON.stringify(registeredSchoolsList));
-          } catch(e) {}
-
-          const foundSchool = registeredSchoolsList.find(s =>
+          const result = await loadRegisteredSchoolsForLogin();
+          const foundSchool = result.list.find(s =>
               String(s.username || '').trim() === u &&
               String(s.password || '') === p
           );
@@ -1557,11 +1586,19 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
               goHome();
           } catch(cloudErr) {
               console.error('School cloud load failed:', cloudErr);
-              alert('School Login झाले आहे; पण शाळेचा Cloud data load होत नाही.');
+          }
+
+          if(result.source === 'cache') {
+              console.warn('School login used registeredSchools cache because Firebase read failed:', result.error);
           }
       } catch(err) {
           console.error('School login error:', err);
-          alert('School Login साठी Firebase/Internet connection मध्ये समस्या आहे. कृपया page refresh करून पुन्हा प्रयत्न करा.');
+          const msg = String(err && err.message || err || '');
+          if(/permission|denied|unauthenticated/i.test(msg)) {
+              alert('❌ Firebase registeredSchools वाचण्याची परवानगी नाही. Firebase Firestore Rules मध्ये portalData/registeredSchools साठी read permission तपासणे आवश्यक आहे.');
+          } else {
+              alert('❌ School Login साठी Firebase/Internet समस्या आहे. पुन्हा प्रयत्न करा.');
+          }
       }
   }
 
