@@ -987,7 +987,7 @@ input:focus,select:focus{
                 <div class="form-group"><label>आधार क्रमांक :</label><input type="text" id="entAadhaar" placeholder="आधार क्रमांक"></div>
             </div>
             <div class="form-group"><label>विद्यार्थ्याचे पूर्ण नाव :</label><input type="text" id="entName" placeholder="उदा. आवटी शुभम परशुराम"></div>
-            <div class="form-group"><label>लिंग :</label><select id="entGender"><option value="">-- निवडा --</option><option value="Male">Male</option><option value="Female">Female</option></select></div>
+            <div class="form-group"><label>लिंग :</label><select id="entGender"><option value="">-- निवडा --</option><option value="Male">पुरुष</option><option value="Female">स्त्री</option></select></div>
             <div class="form-group"><label>आईचे नाव :</label><input type="text" id="entMother" placeholder="उदा. भाग्यश्री"></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div class="form-group"><label>राष्ट्रीयत्व :</label><input type="text" id="entNat" value="भारतीय"></div>
@@ -2904,7 +2904,7 @@ function validateDakhalaPrintFields(){
     const compact=x.replace(/[ .\-_/]/g,'');
     for(const k of Object.keys(WORD_CLASS)) if(compact===k || compact.includes(k)) return CLASS_MAP[WORD_CLASS[k]];
     const e=engDigits(x);
-    const m=e.match(/(?:^|\\D)(1[0-2]|[1-9])(?:st|nd|rd|th|वी|ली|री|थी|वा|वी|व्या)?(?:\\D|$)/i);
+    const m=e.match(/(?:^|[^0-9])(1[0-2]|[1-9])(?:st|nd|rd|th|वी|ली|री|थी|वा|वी|व्या)?(?:[^0-9]|$)/i);
     if(m) return CLASS_MAP[Number(m[1])];
     const mr=x.match(/(?:^|\\D)([१-९]|१०|११|१२)(?:\\s*(?:ली|री|थी|वी|वा))?(?:\\D|$)/);
     if(mr){ const n=Number(mr[1].replace(/[१२३४५६७८९]/g,d=>({'१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'}[d]))); if(CLASS_MAP[n]) return CLASS_MAP[n]; }
