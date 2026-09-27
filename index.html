@@ -876,6 +876,7 @@ input:focus,select:focus{
                         <option value="">-- वर्ग निवडा --</option>
                     </select>
                 </div>
+                <button type="button" onclick="standardizeAllStudentClasses()" class="no-print" style="background:#8e44ad;margin:0 0 10px 0;">🧹 वर्गांची नावे एकसारखी / दुरुस्त करा</button>
                 <div class="form-group">
                     <label>रजिस्टर नंबर / नाव शोधा</label>
                     <input id="teacherStudentSearch" type="text" placeholder="रजिस्टर नंबर किंवा नाव" oninput="filterTeacherStudents()">
@@ -978,7 +979,7 @@ input:focus,select:focus{
         <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही एक्सेल फाईलशिवाय थेट एका विद्यार्थ्याची माहिती क्लाउडवर सेव्ह करू शकता.</p>
         <div style="max-width: 600px; background: #fdfefe; padding: 15px; border-radius: 6px; border: 1px solid #d5dbdb;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group"><label>रजिस्टर नंबर :</label><input type="text" id="entReg" placeholder="उदा. 12718"></div>
+                <div class="form-group"><label>रजिस्टर नंबर :</label><input type="text" id="entReg" placeholder="उदा. 12718" onblur="checkDuplicateRegEntry()" autocomplete="off"></div>
                 <div class="form-group"><label>माध्यम :</label><input type="text" id="entMed" value="मराठी"></div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -1019,7 +1020,7 @@ input:focus,select:focus{
         <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही जनरल रजिस्टर तपासू शकता, ऑनलाईन एडिट करू शकता, वर्गनिहाय 'ALL PASS' करू शकता किंवा एकाच वेळी सर्व दाखले प्रिंट करू शकता.</p>
         
         <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 10px; flex-wrap: wrap;">
-            <button onclick="switchGenSubTab('verify')" id="subBtnVerify" style="width: auto; background: var(--primary-color);">🔍 जनरल रजिस्टर तपसणी व एडिट</button>
+            <button onclick="switchGenSubTab('verify')" id="subBtnVerify" style="width: auto; background: var(--primary-color);">🔍 जनरल रजिस्टर तपासणी व एडिट</button>
             <button onclick="switchGenSubTab('promote')" id="subBtnPromote" style="width: auto; background: #7f8c8d;">🎓 वर्गनिहाय ALL PASS</button>
             <button onclick="switchGenSubTab('bulk')" id="subBtnBulk" style="width: auto; background: #7f8c8d;">🖨️ वर्गनिहाय बल्क दाखले प्रिंट</button>
         </div>
@@ -2881,7 +2882,224 @@ function validateDakhalaPrintFields(){
         '<title>Bonafide Print</title>' +
         '<style>' + printCss + '</style>' +
         '</head>' +
-        '<body></body>' +
+        '<body>
+<script id="dakhala-register-fixes">
+(function(){
+  const CLASS_MAP = {
+    1:'१ ली',2:'२ री',3:'३ री',4:'४ थी',5:'५ वी',6:'६ वी',
+    7:'७ वी',8:'८ वी',9:'९ वी',10:'१० वी',11:'११ वी',12:'१२ वी'
+  };
+  const WORD_CLASS = {
+    'पहिली':1,'पहिला':1,'दुसरी':2,'दुसरा':2,'तिसरी':3,'तिसरा':3,
+    'चौथी':4,'चौथा':4,'पाचवी':5,'पाचवा':5,'सहावी':6,'सहावा':6,
+    'सातवी':7,'सातवा':7,'आठवी':8,'आठवा':8,'नववी':9,'नववा':9,
+    'दहावी':10,'दहावा':10,'अकरावी':11,'अकरावा':11,'बारावी':12,'बारावा':12,
+    'first':1,'second':2,'third':3,'fourth':4,'fifth':5,'sixth':6,
+    'seventh':7,'eighth':8,'ninth':9,'tenth':10,'eleventh':11,'twelfth':12
+  };
+  function engDigits(v){return String(v||'').replace(/[०-९]/g,ch=>({'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'}[ch]));}
+  window.canonicalClassName=function(v){
+    let x=String(v||'').trim().toLowerCase().replace(/\s+/g,' ');
+    if(!x) return '';
+    const compact=x.replace(/[ .\-_/]/g,'');
+    for(const k of Object.keys(WORD_CLASS)) if(compact===k || compact.includes(k)) return CLASS_MAP[WORD_CLASS[k]];
+    const e=engDigits(x);
+    const m=e.match(/(?:^|\\D)(1[0-2]|[1-9])(?:st|nd|rd|th|वी|ली|री|थी|वा|वी|व्या)?(?:\\D|$)/i);
+    if(m) return CLASS_MAP[Number(m[1])];
+    const mr=x.match(/(?:^|\\D)([१-९]|१०|११|१२)(?:\\s*(?:ली|री|थी|वी|वा))?(?:\\D|$)/);
+    if(mr){ const n=Number(mr[1].replace(/[१२३४५६७८९]/g,d=>({'१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'}[d]))); if(CLASS_MAP[n]) return CLASS_MAP[n]; }
+    if(compact.includes('नाइंथ')||compact.includes('नाईन्थ')||compact.includes('ninth')) return CLASS_MAP[9];
+    return String(v||'').trim();
+  };
+  window.hasDuplicateReg=function(reg,ignoreIndex){
+    const q=normalizeSearchText(String(reg||'').trim());
+    if(!q || !Array.isArray(excelData)) return false;
+    for(let i=1;i<excelData.length;i++){
+      if(i===ignoreIndex) continue;
+      if(normalizeSearchText(String((excelData[i]||[])[0]||'').trim())===q) return true;
+    }
+    return false;
+  };
+  window.checkDuplicateRegEntry=function(){
+    const el=document.getElementById('entReg'); if(!el) return;
+    if(hasDuplicateReg(el.value,-1)){
+      alert('⚠️ हा General Register Number यापूर्वी वापरलेला आहे. कृपया दुसरा नंबर टाका.');
+      el.focus(); el.select();
+    }
+  };
+
+  // Replace manual save with duplicate-safe version.
+  window.saveManualStudent = async function() {
+    let reg=document.getElementById('entReg').value.trim();
+    let med=document.getElementById('entMed').value.trim();
+    let studId=document.getElementById('entStudId').value.trim();
+    let aadhaar=document.getElementById('entAadhaar').value.trim();
+    let name=document.getElementById('entName').value.trim();
+    let mother=document.getElementById('entMother').value.trim();
+    let nat=document.getElementById('entNat').value.trim();
+    let lang=document.getElementById('entLang').value.trim();
+    let rel=document.getElementById('entRel').value.trim();
+    let caste=document.getElementById('entCaste').value.trim();
+    let bp=document.getElementById('entBirthPlace').value.trim();
+    let state=document.getElementById('entState').value.trim();
+    let country=document.getElementById('entCountry').value.trim();
+    let dob=document.getElementById('entDob').value.trim();
+    let adm=document.getElementById('entAdmDate').value.trim();
+    let admClass=canonicalClassName(document.getElementById('entAdmClass').value.trim());
+    let prevSchool=document.getElementById('entPrevSchool').value.trim();
+    let gender=document.getElementById('entGender').value.trim();
+
+    if(!reg || !name){alert('कृपया किमान रजिस्टर नंबर आणि विद्यार्थ्याचे नाव भरा!');return;}
+    if(hasDuplicateReg(reg,-1)){alert('⚠️ हा General Register Number यापूर्वी वापरलेला आहे. नवीन विद्यार्थ्यासाठी दुसरा नंबर टाका.');document.getElementById('entReg').focus();return;}
+    if(dob && !isValidStudentDate(dob)){alert('जन्मदिनांक चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या.');return;}
+    if(adm && !isValidStudentDate(adm)){alert('प्रवेश दिनांक चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या.');return;}
+    if(gender && !['Male','Female'].includes(gender)){alert('लिंग फक्त Male किंवा Female असावे.');return;}
+
+    let newRow=[reg,med,studId,aadhaar,name,mother,nat,lang,rel,caste,'',bp,state,country,dob,'',prevSchool,adm,admClass,'',gender];
+    excelData.push(newRow);
+    let role=getActiveRole();
+    let user=(role==='master'&&window.adminEditingTarget)?window.adminEditingTarget:(getActiveUser()||'admin');
+    try{
+      const docRef=db.collection('portalData').doc('profile_'+user);
+      await docRef.set({info:currentSchoolProfile||{},excel:JSON.stringify(excelData)},{merge:true});
+      const verifySnap=await docRef.get();
+      if(!verifySnap.exists) throw new Error('Firebase Cloud Verification Failed');
+      const verifyData=verifySnap.data()||{};
+      const verifyExcel=typeof verifyData.excel==='string'?JSON.parse(verifyData.excel):(verifyData.excel||[]);
+      const found=verifyExcel.some(row=>Array.isArray(row)&&String(row[0]||'').trim()===String(reg).trim()&&String(row[4]||'').trim()===String(name).trim());
+      if(!found) throw new Error('माहिती Cloud वर सापडली नाही.');
+      alert('☁️ विद्यार्थी माहिती यशस्वीरित्या सेव्ह झाली.\\n\\nरजिस्टर नं.: '+reg+'\\nविद्यार्थी: '+name);
+      clearStudentEntryForm();
+    }catch(e){excelData.pop();alert('❌ Firebase Save Error: '+e.message);}
+  };
+
+  // Duplicate-safe edit + gender dropdown + delete button.
+  window.updateGenCell = function(rowIdx,colIdx,val){
+    if(!excelData[rowIdx]) return;
+    if(colIdx===0){
+      val=String(val||'').trim();
+      if(!val){alert('रजिस्टर नंबर रिकामा ठेवता येणार नाही.');return;}
+      if(hasDuplicateReg(val,rowIdx)){alert('⚠️ हा General Register Number यापूर्वी वापरलेला आहे. दुसरा नंबर टाका.');filterGenTable();return;}
+    }
+    if(colIdx===18) val=canonicalClassName(val);
+    if(colIdx===19){
+      val=normalizeStudentDate(String(val||'').trim());
+      if(val && !/^\\d{2}-\\d{2}-\\d{4}$/.test(val)){alert('⚠️ शाळा सोडल्याचा दिनांक DD-MM-YYYY या स्वरूपात टाका.');return;}
+    }
+    if(colIdx===20 && val && !['Male','Female'].includes(val)){alert('लिंग फक्त Male किंवा Female निवडा.');return;}
+    excelData[rowIdx][colIdx]=val;
+  };
+
+  window.deleteGenStudent = async function(rowIdx){
+    const row=excelData[rowIdx]||[];
+    const reg=String(row[0]||'').trim(), name=String(row[4]||'').trim();
+    if(!reg){alert('ही नोंद हटवता आली नाही.');return;}
+    if(!confirm('⚠️ विद्यार्थी नोंद हटवायची आहे का?\\n\\nरजिस्टर नं.: '+reg+'\\nनाव: '+name+'\\n\\nही कृती पूर्ववत करता येणार नाही.')) return;
+    const backup=excelData[rowIdx];
+    excelData.splice(rowIdx,1);
+    let role=getActiveRole(), user=(role==='master'&&window.adminEditingTarget)?window.adminEditingTarget:(getActiveUser()||'admin');
+    try{
+      await db.collection('portalData').doc('profile_'+user).set({info:currentSchoolProfile||{},excel:JSON.stringify(excelData)},{merge:true});
+      const snap=await db.collection('portalData').doc('profile_'+user).get();
+      const saved= snap.exists ? (typeof snap.data().excel==='string'?JSON.parse(snap.data().excel):(snap.data().excel||[])) : [];
+      if(saved.some(r=>Array.isArray(r)&&normalizeSearchText(r[0])===normalizeSearchText(reg))) throw new Error('Cloud verification failed');
+      alert('🗑️ विद्यार्थी नोंद हटवली आहे.\\nरजिस्टर नं.: '+reg);
+      filterGenTable();
+    }catch(e){
+      excelData.splice(rowIdx,0,backup);
+      alert('❌ नोंद delete करताना त्रुटी: '+e.message);
+      filterGenTable();
+    }
+  };
+
+  window.filterGenTable = function(){
+    const q=normalizeSearchText(document.getElementById('genSearchBox').value);
+    const thead=document.getElementById('genTableHead'), tbody=document.getElementById('genTableBody');
+    if(!thead||!tbody)return;
+    if(!q){thead.innerHTML='';tbody.innerHTML='<tr><td colspan="25" style="text-align:center;color:#7f8c8d;padding:15px;">कृपया नाव किंवा रजिस्टर नंबर शोधा...</td></tr>';return;}
+    if(excelData.length<=1){tbody.innerHTML='<tr><td colspan="25" style="text-align:center;">कोणताही डेटा उपलब्ध नाही.</td></tr>';return;}
+    excelData[0]=excelData[0]||[];
+    if(excelData[0].length<21) excelData[0][20]='लिंग';
+    for(let i=1;i<excelData.length;i++){while((excelData[i]||[]).length<21)excelData[i].push('');}
+    const headers=excelData[0];
+    let hh='<th>अ.क्र.</th>'+headers.map(h=>'<th>'+escBona(h||'कॉलम')+'</th>').join('')+'<th class="no-print">📷 फोटो</th><th class="no-print">🗑️ कृती</th>';
+    thead.innerHTML=hh;
+    let matches=[];
+    for(let i=1;i<excelData.length;i++){
+      const row=excelData[i]||[];
+      if(row.some(c=>normalizeSearchText(c).includes(q))){matches.push({row,rowIndex:i});if(matches.length>=50)break;}
+    }
+    if(!matches.length){tbody.innerHTML='<tr><td colspan="25" style="text-align:center;color:#7f8c8d;padding:15px;">कोणताही विद्यार्थी सापडला नाही.</td></tr>';return;}
+    tbody.innerHTML='';
+    matches.forEach((m,rIdx)=>{
+      let tr='<td>'+(rIdx+1)+'</td>';
+      for(let c=0;c<headers.length;c++){
+        let val=m.row[c]===undefined?'':m.row[c], displayVal=val;
+        if(c===14)displayVal=formatExcelDate(val);
+        else if(c===15)displayVal=dateToMarathiWords(m.row[14]);
+        else if(c===18)displayVal=canonicalClassName(val);
+        else if(c===19)displayVal=formatExcelDate(val);
+        if(c===20){
+          tr+='<td><select onchange="updateGenCell('+m.rowIndex+',20,this.value)" style="min-width:110px;"><option value="">-- निवडा --</option><option value="Male" '+(val==='Male'?'selected':'')+'>Male</option><option value="Female" '+(val==='Female'?'selected':'')+'>Female</option></select></td>';
+        }else if(c===19){
+          tr+='<td><input type="text" value="'+escBona(displayVal||'')+'" placeholder="DD-MM-YYYY" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)" onchange="updateGenCell('+m.rowIndex+',19,this.value)" style="min-width:125px;font-weight:600;"></td>';
+        }else if(c===18){
+          tr+='<td><input type="text" value="'+escBona(displayVal||'')+'" onchange="updateGenCell('+m.rowIndex+',18,this.value)" style="min-width:110px;font-weight:600;"></td>';
+        }else if(c===0){
+          tr+='<td><input type="text" value="'+escBona(displayVal||'')+'" onchange="updateGenCell('+m.rowIndex+',0,this.value)" style="min-width:100px;font-weight:600;"></td>';
+        }else{
+          tr+='<td><input type="text" value="'+escBona(displayVal||'')+'" onchange="updateGenCell('+m.rowIndex+','+c+',this.value)" style="min-width:110px;"></td>';
+        }
+      }
+      tr+='<td class="photo-action no-print" id="genPhotoCell_'+m.rowIndex+'">फोटो तपासत आहे...</td>';
+      tr+='<td class="no-print"><button type="button" onclick="deleteGenStudent('+m.rowIndex+')" style="background:#c0392b;width:auto;padding:5px 9px;">🗑️ Delete</button></td>';
+      tbody.innerHTML+='<tr>'+tr+'</tr>';
+      loadGenPhotoCell(m.rowIndex,m.row[0]);
+    });
+  };
+
+  window.fillTeacherClassSelect=function(){
+    const sel=document.getElementById('teacherClassSelect'); if(!sel)return;
+    const old=canonicalClassName(sel.value), set=new Set();
+    for(let i=1;i<excelData.length;i++){const c=canonicalClassName((excelData[i]||[])[18]);if(c)set.add(c);}
+    const classes=Array.from(set).sort((a,b)=>a.localeCompare(b,'mr'));
+    sel.innerHTML='<option value="">-- वर्ग निवडा --</option>'+classes.map(c=>'<option value="'+escBona(c)+'">'+escBona(c)+'</option>').join('');
+    if(classes.includes(old))sel.value=old;
+  };
+
+  window.filterTeacherStudents=function(){
+    const sel=document.getElementById('teacherClassSelect'), q=normalizeSearchText(document.getElementById('teacherStudentSearch').value||''), box=document.getElementById('teacherStudentList');
+    if(!box)return;
+    const cls=normalizeSearchText(sel?sel.value:''); const rows=[];
+    for(let i=1;i<excelData.length;i++){
+      const r=excelData[i]||[]; if(cls&&normalizeSearchText(canonicalClassName(r[18]))!==cls)continue;
+      if(q&&!normalizeSearchText(r[0]).includes(q)&&!normalizeSearchText(r[4]).includes(q))continue;
+      rows.push({rowIndex:i,row:r}); if(rows.length>=100)break;
+    }
+    if(!cls){box.innerHTML='<div style="padding:12px;color:#777;">प्रथम वर्ग निवडा.</div>';return;}
+    if(!rows.length){box.innerHTML='<div style="padding:12px;color:#777;">विद्यार्थी सापडला नाही.</div>';return;}
+    box.innerHTML=rows.map(x=>'<div class="teacher-student" onclick="selectTeacherStudent('+x.rowIndex+')"><span><strong>'+escBona(x.row[0])+'</strong> — '+escBona(x.row[4])+'</span><span>'+escBona(canonicalClassName(x.row[18]))+'</span></div>').join('');
+  };
+
+  window.standardizeAllStudentClasses=async function(){
+    let changed=0;
+    for(let i=1;i<excelData.length;i++){
+      const old=String((excelData[i]||[])[18]||'').trim(), neu=canonicalClassName(old);
+      if(old&&neu&&old!==neu){excelData[i][18]=neu;changed++;}
+    }
+    if(!changed){fillTeacherClassSelect();filterTeacherStudents();alert('✅ सर्व वर्गांची नावे आधीच एकसारखी आहेत.');return;}
+    if(!confirm('एकूण '+changed+' विद्यार्थ्यांच्या वर्गाची नावे standard स्वरूपात बदलायची आहेत?')) return;
+    try{
+      let role=getActiveRole(),user=(role==='master'&&window.adminEditingTarget)?window.adminEditingTarget:(getActiveUser()||'admin');
+      await db.collection('portalData').doc('profile_'+user).set({info:currentSchoolProfile||{},excel:JSON.stringify(excelData)},{merge:true});
+      fillTeacherClassSelect();filterTeacherStudents();filterGenTable();
+      alert('✅ '+changed+' विद्यार्थ्यांच्या वर्गांची नावे एकसारखी करून Cloud वर सेव्ह केली.');
+    }catch(e){alert('❌ वर्गांची नावे सेव्ह करताना त्रुटी: '+e.message);}
+  };
+})();
+</script>
+
+</body>' +
         '</html>'
       );
       printWindow.document.close();
