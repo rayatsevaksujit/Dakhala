@@ -153,7 +153,7 @@
 
         /* ===== A4 PRINT ===== */
         @media print {
-            @page { size: A4 portrait; margin: 18mm 8mm 8mm 8mm; }
+            @page { size: A4 portrait; margin: 10mm; }
             html, body { background: #fff !important; margin: 0; padding: 0; }
 
             body > *:not(#mainAppContainer) { display: none !important; }
@@ -162,14 +162,11 @@
 
             #mainAppContainer { display: block !important; box-shadow: none; padding: 0; margin: 0; max-width: none; border-radius: 0; }
             #tabDakhala { display: block !important; border: none; padding: 0; }
-            #printableArea { position: static; width: 100%; max-height: 271mm; overflow: visible; }
+            #printableArea { position: static; width: 100%; max-height: 270mm; overflow: visible; }
             #bulkPrintArea { display: none !important; }
 
-            body.bulk-print-mode .tab-content:not(#tabGenRegister) { display: none !important; }
-            body.bulk-print-mode #tabGenRegister { display: block !important; border: none; padding: 0; }
-            body.bulk-print-mode #genSubVerify,
-            body.bulk-print-mode #genSubPromote { display: none !important; }
-            body.bulk-print-mode #genSubBulk { display: block !important; }
+            body.bulk-print-mode .tab-content:not(#tabBulkPrint) { display: none !important; }
+            body.bulk-print-mode #tabBulkPrint { display: block !important; border: none; padding: 0; }
             body.bulk-print-mode #bulkPrintArea { display: block !important; }
 
             #lcCard, .bulk-lc-copy {
@@ -184,25 +181,545 @@
             .bulk-lc-copy:last-child { page-break-after: auto; }
             .editable-field { border: none !important; background: transparent !important; padding: 0 !important; }
         }
-    </style>
+    
+/* ===== ADD-ON: Bonafide + Student Photo Module ===== */
+.bona-format{
+    width:190mm; height:132mm; min-height:132mm; box-sizing:border-box;
+    margin:10px auto; padding:6mm 7mm 5mm;
+    border:3px double #000; background:#fff; color:#000;
+    font-family:'Sakal Marathi','Nirmala UI','Mangal','Noto Sans Devanagari',Arial,sans-serif;
+    font-size:15px; line-height:1.48; position:relative;
+    overflow:hidden;
+}
+.bona-head{
+    position:relative; min-height:38mm; text-align:center;
+    padding:0 39mm 0 39mm; box-sizing:border-box;
+    display:flex; flex-direction:column; justify-content:flex-start; align-items:center;
+}
+.bona-logo{
+    position:absolute; left:0; top:0; width:30mm; height:30mm;
+    object-fit:contain; z-index:2;
+}
+.bona-head h1,.bona-head h2,.bona-head h3,.bona-head p{margin:0; line-height:1.28; max-width:100%;}
+.bona-head h1{font-size:17px;font-weight:700;}
+.bona-head h2{font-size:17px;font-weight:800;margin-top:1mm;}
+.bona-head h3{font-size:14px;font-weight:700;margin-top:1mm;}
+.bona-title{font-size:18px;font-weight:800;margin-top:2mm!important;}
+.bona-photo{
+    position:absolute; right:0; top:0; width:27mm; height:35mm;
+    object-fit:cover; object-position:center top; z-index:3;
+}
+.bona-body{margin-top:2mm;text-align:left;font-weight:600;}
+.bona-line{margin:1.2mm 0;}
+.bona-field{font-weight:800;}
+.bona-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:9mm;font-weight:700;}
+.bona-footer .sign{width:30%;text-align:center;}
+.bona-controls{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:12px;}
+.bona-search-results{max-height:220px;overflow:auto;border:1px solid #ddd;border-radius:5px;background:#fff;}
+.bona-result{padding:8px 10px;border-bottom:1px solid #eee;cursor:pointer;}
+.bona-result:hover{background:#eef6fb;}
+.bona-preview-wrap{overflow:auto;background:#f4f6f7;padding:8px;border-radius:6px;}
+.photo-mini{width:45px;height:58px;object-fit:cover;vertical-align:middle;}
+.photo-action{white-space:nowrap!important;}
+.photo-action button{width:auto;padding:4px 8px;margin:1px;font-size:11px;}
+.teacher-photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.teacher-student-list{max-height:350px;overflow:auto;border:1px solid #ddd;border-radius:5px;}
+.teacher-student{padding:9px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;gap:8px;}
+.teacher-student:hover{background:#f3f8fb;}
+.teacher-photo-box{text-align:center;border:1px solid #ddd;border-radius:6px;padding:15px;background:#fafafa;}
+.teacher-photo-preview{max-width:180px;max-height:220px;object-fit:cover;margin:10px auto;display:block;}
+.photo-link-box{background:#f8f9f9;border:1px dashed #7f8c8d;padding:10px;border-radius:6px;margin-top:10px;}
+.bona-print-area{background:#fff;}
+@media(max-width:700px){
+    .teacher-photo-grid{grid-template-columns:1fr;}
+    .bona-controls{grid-template-columns:1fr;}
+    .bona-format{width:100%;height:auto;min-height:132mm;font-size:13px;padding:5mm;}
+    .bona-head{padding-left:30mm;padding-right:30mm;min-height:31mm;}
+    .bona-logo{width:24mm;height:24mm;}
+    .bona-photo{width:24mm;height:31mm;}
+    .bona-head h1{font-size:13px}.bona-head h2{font-size:14px}.bona-head h3,.bona-title{font-size:12px}
+}
+@media print {
+    @page { size: A4 portrait; margin: 0; }
+
+    html, body {
+        width: 210mm !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        overflow: hidden !important;
+    }
+
+    body > * { display: none !important; }
+
+    #mainAppContainer,
+    #tabBonafide,
+    #bonaPrintArea,
+    #bonaCard {
+        display: block !important;
+    }
+
+    #mainAppContainer {
+        position: static !important;
+        width: 210mm !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        border: 0 !important;
+    }
+
+    #tabBonafide {
+        position: static !important;
+        width: 210mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: #fff !important;
+    }
+
+    #bonaPrintArea {
+        width: 210mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff !important;
+    }
+
+    #bonaCard {
+        position: relative !important;
+        width: 190mm !important;
+        height: 132mm !important;
+        min-height: 132mm !important;
+        max-height: 132mm !important;
+        margin: 8mm auto 0 !important;
+        padding: 6mm 7mm 5mm !important;
+        box-sizing: border-box !important;
+        border: 3px double #000 !important;
+        background: #fff !important;
+        color: #000 !important;
+        overflow: hidden !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    #bonaCard .bona-head {
+        position: relative !important;
+        width: 100% !important;
+        min-height: 38mm !important;
+        padding: 0 39mm !important;
+        box-sizing: border-box !important;
+    }
+
+    #bonaCard .bona-logo {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 30mm !important;
+        height: 30mm !important;
+        object-fit: contain !important;
+        z-index: 2 !important;
+    }
+
+    #bonaCard .bona-photo {
+        position: absolute !important;
+        right: 0 !important;
+        top: 0 !important;
+        width: 27mm !important;
+        height: 35mm !important;
+        object-fit: cover !important;
+        object-position: center top !important;
+        z-index: 3 !important;
+    }
+
+    #bonaCard .bona-body,
+    #bonaCard .bona-footer {
+        position: relative !important;
+        z-index: 1 !important;
+    }
+
+    #bonaCard .bona-body {
+        margin-top: 2mm !important;
+        text-align: left !important;
+    }
+
+    #bonaCard .bona-footer { margin-top: 9mm !important; }
+
+    #bonaCard .bona-photo:not([src]),
+    #bonaCard .bona-photo[src=""] {
+        display: none !important;
+    }
+
+    .no-print,
+    .bona-controls,
+    .bona-search-results,
+    .app-header,
+    #homeDashboard,
+    #backBar,
+    #bonaSearchArea {
+        display: none !important;
+    }
+}
+</style>
+<style id="dakhala-scroll-fix">
+html.app-logged-in, body.app-logged-in{
+  overflow:auto!important;
+  height:auto!important;
+  min-height:100%!important;
+}
+</style>
+<style id="dakhala-public-teacher-photo">
+body.public-teacher-mode #loginScreen,body.public-teacher-mode .app-header,body.public-teacher-mode #homeDashboard,body.public-teacher-mode #backBar,body.public-teacher-mode .photo-link-box{display:none!important}
+body.public-teacher-mode #mainAppContainer{display:block!important;max-width:980px;margin:20px auto}
+body.public-teacher-mode #tabTeacherPhoto{display:block!important;border:0;padding:0}
+body.public-teacher-mode #tabTeacherPhoto .teacher-photo-box button[onclick="removeTeacherStudentPhoto()"]{display:none!important}
+.public-photo-title{display:none;padding:14px;margin-bottom:12px;border-radius:16px;background:linear-gradient(135deg,#123c78,#155eef,#7c3aed);color:#fff;font-weight:700;font-size:18px;text-align:center}
+body.public-teacher-mode .public-photo-title{display:block}
+.photo-ai-note{font-size:12px;color:#52606d;background:#f4f8ff;border:1px solid #dbeafe;padding:8px;border-radius:8px;margin-top:8px}
+</style>
+<style id="dakhala-modern-ui">
+/* ===== DAKHALA MODERN UI / CLICK ANIMATIONS ===== */
+:root{
+  --ui-primary:#155eef;
+  --ui-primary2:#7c3aed;
+  --ui-surface:#ffffff;
+  --ui-soft:#f6f8ff;
+  --ui-text:#172033;
+  --ui-muted:#64748b;
+  --ui-shadow:0 12px 30px rgba(30,41,59,.10);
+}
+body{
+  background:
+    radial-gradient(circle at 10% 0%,rgba(124,58,237,.10),transparent 28%),
+    radial-gradient(circle at 95% 5%,rgba(21,94,239,.10),transparent 30%),
+    #f5f7fb !important;
+}
+#loginScreen{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.8) !important;
+  border-radius:24px !important;
+  box-shadow:0 22px 55px rgba(15,23,42,.16) !important;
+  animation:dkFadeUp .55s ease both;
+}
+#loginScreen:before{
+  content:"";
+  position:absolute; width:180px; height:180px; border-radius:50%;
+  background:linear-gradient(135deg,rgba(21,94,239,.13),rgba(124,58,237,.08));
+  top:-90px; right:-70px; pointer-events:none;
+}
+.app-header{
+  position:relative;
+  border-bottom:0 !important;
+  padding:14px 16px !important;
+  margin:-5px -5px 18px !important;
+  border-radius:18px;
+  color:#fff;
+  background:linear-gradient(135deg,#123c78,#155eef 55%,#7c3aed);
+  box-shadow:0 12px 28px rgba(21,94,239,.20);
+  overflow:hidden;
+}
+.app-header:after{
+  content:""; position:absolute; inset:-80px auto auto 55%;
+  width:180px; height:180px; border-radius:50%;
+  background:rgba(255,255,255,.10); pointer-events:none;
+}
+.app-title h2,.app-title p{color:#fff !important}
+.app-logo{
+  background:rgba(255,255,255,.18) !important;
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:12px !important;
+}
+.dashboard-grid{gap:16px !important}
+.tool-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(148,163,184,.22) !important;
+  border-radius:18px !important;
+  padding:18px !important;
+  background:rgba(255,255,255,.92) !important;
+  box-shadow:0 5px 18px rgba(15,23,42,.06) !important;
+  transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s,border-color .22s !important;
+  animation:dkFadeUp .5s ease both;
+}
+.tool-card:before{
+  content:""; position:absolute; left:0; top:0; width:100%; height:3px;
+  background:linear-gradient(90deg,var(--ui-primary),var(--ui-primary2));
+  transform:scaleX(0); transform-origin:left; transition:transform .25s ease;
+}
+.tool-card:hover{
+  transform:translateY(-6px) scale(1.01) !important;
+  box-shadow:var(--ui-shadow) !important;
+  border-color:rgba(21,94,239,.35) !important;
+}
+.tool-card:hover:before{transform:scaleX(1)}
+.tool-icon{
+  width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+  border-radius:14px;background:var(--ui-soft);font-size:23px !important;
+  transition:transform .25s ease;
+}
+.tool-card:hover .tool-icon{transform:translateY(-2px) rotate(-3deg) scale(1.06)}
+.tool-title{font-size:15px !important;color:#173b72 !important}
+.tool-desc{color:var(--ui-muted) !important}
+button,.tool-card,.back-btn,.tool-link{ -webkit-tap-highlight-color:transparent; }
+button{
+  border-radius:11px !important;
+  transition:transform .12s ease,box-shadow .2s ease,filter .2s ease !important;
+  box-shadow:0 5px 12px rgba(15,23,42,.08);
+}
+button:hover{filter:brightness(1.04);box-shadow:0 8px 18px rgba(15,23,42,.13)}
+button:active,.tool-card:active{transform:scale(.97) !important}
+input,select{
+  border-radius:10px !important;
+  transition:border-color .2s,box-shadow .2s,transform .15s;
+}
+input:focus,select:focus{
+  border-color:var(--ui-primary) !important;
+  box-shadow:0 0 0 4px rgba(21,94,239,.10);
+  transform:translateY(-1px);
+}
+.tab-content{
+  border:0 !important;
+  border-radius:18px !important;
+  box-shadow:0 8px 26px rgba(15,23,42,.06);
+  animation:dkFadeUp .28s ease both;
+}
+#backBar{
+  padding:6px 0;
+}
+.back-btn{border-radius:10px !important}
+.dk-ripple{
+  position:absolute;border-radius:50%;pointer-events:none;
+  width:12px;height:12px;background:rgba(21,94,239,.20);
+  transform:translate(-50%,-50%) scale(0);
+  animation:dkRipple .55s ease-out forwards;
+}
+@keyframes dkRipple{to{transform:translate(-50%,-50%) scale(18);opacity:0}}
+@keyframes dkFadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:700px){
+  body{padding:7px !important}
+  .container{padding:10px !important;border-radius:16px !important}
+  .app-header{margin:-2px -2px 14px !important;padding:12px !important;border-radius:15px !important}
+  .dashboard-grid{grid-template-columns:1fr 1fr !important;gap:10px !important}
+  .tool-card{padding:13px !important;min-height:118px}
+  .tool-icon{width:40px;height:40px;font-size:20px !important}
+  .tool-title{font-size:13px !important}
+  .tool-desc{font-size:10.5px !important}
+}
+@media(max-width:430px){
+  .dashboard-grid{grid-template-columns:1fr !important}
+}
+@media print{
+  .tool-card,.tab-content,#loginScreen,.app-header{animation:none !important}
+  .dk-ripple{display:none !important}
+}
+</style>
+<style id="dakhala-login-cleanup">
+#loginScreen{width:min(390px,calc(100vw - 28px)) !important;max-width:390px !important;margin:38px auto !important;padding:28px 24px 22px !important;box-sizing:border-box !important;text-align:center !important}
+.dk-login-icon{width:62px;height:62px;margin:0 auto 12px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:31px;background:linear-gradient(135deg,#eaf2ff,#f3eaff)}
+.dk-login-title{margin:0 !important;font-size:19px !important;line-height:1.35;color:#173b72 !important}
+.dk-login-subtitle{margin:6px 0 20px !important;color:#64748b;font-size:12px}
+#loginScreen .form-group{text-align:left;margin-bottom:13px !important}
+#loginScreen label{font-size:13px;margin-bottom:5px}
+#loginScreen input{height:44px !important;padding:10px 12px !important;font-size:14px !important}
+.dk-login-hint{font-size:10px;color:#7b8794;margin-top:4px}
+.dk-login-button{height:44px !important;margin-top:4px !important;background:linear-gradient(135deg,#16a34a,#0f8a3a) !important;font-size:14px !important;font-weight:700 !important}
+.dk-login-help{margin-top:14px;text-align:left;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;padding:9px 11px;font-size:11px;color:#475569}
+.dk-login-help summary{cursor:pointer;font-weight:700;color:#334155}
+.dk-login-help div div{margin-top:6px;line-height:1.4}
+.dk-login-support{display:inline-block;margin-top:13px;color:#155eef !important;font-size:11px;text-decoration:none;font-weight:700}
+@media(max-width:430px){#loginScreen{margin:22px auto !important;padding:24px 18px 18px !important}}
+</style>
+
+<style id="dakhala-final-polish">.dk-use-card{margin:14px auto 0;max-width:720px;text-align:left;background:linear-gradient(135deg,#fff,#f4f8ff);border:1px solid #dbe7ff;border-radius:16px;padding:15px;box-shadow:0 8px 25px rgba(30,64,175,.08)}.dk-use-title{text-align:center;font-size:15px;font-weight:900;color:#173b7a;margin-bottom:10px}.dk-use-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.dk-use-grid>div{padding:9px 10px;border-radius:11px;background:#fff;border:1px solid #e8edf5}.dk-use-grid b{display:block;font-size:12px}.dk-use-grid span{display:block;margin-top:3px;font-size:10.5px;color:#64748b}.dk-credits{margin:14px auto 4px;max-width:720px;text-align:center;padding:13px 10px;border-top:1px solid #d7dee9;border-bottom:1px solid #d7dee9;color:#475569;font-size:10.5px;line-height:1.5}.dk-credits-names{font-size:14px;font-weight:900;color:#173b7a}.dk-credits-names span{padding:0 6px;color:#94a3b8}.dk-rights{margin-top:6px;font-weight:800}.dk-notice-wrap{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none}.dk-notice{min-width:280px;max-width:92vw;padding:15px 20px;border-radius:16px;background:#fff;border:1px solid #dbe4f0;box-shadow:0 18px 55px rgba(15,23,42,.22);text-align:center;font-weight:800;font-size:14px;animation:dkNoticeIn .28s ease both}.dk-notice.err{border-color:#f2b8b8}.dk-notice.warn{border-color:#f6d58a}@keyframes dkNoticeIn{from{opacity:0;transform:translateY(-18px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes dkNoticeOut{to{opacity:0;transform:translateY(-10px) scale(.97)}}#lcCard{font-size:14px!important;line-height:1.22!important}#lcCard #printLogo{max-height:70px!important;width:auto!important}#lcCard .lc-table td{padding:3px 5px!important;font-size:14px!important}#lcCard input{font-size:14px!important}@media(max-width:700px){.dk-use-grid{grid-template-columns:1fr}}@media print{.dk-notice-wrap{display:none!important}}</style>
+
+<style id="dk-login-one-screen-credits">
+/* Login Page: 100% view मध्ये पूर्ण माहिती एका स्क्रीनमध्ये */
+#loginScreen{
+  max-width:860px!important;
+  margin:12px auto!important;
+  padding:16px 22px!important;
+  border-radius:22px!important;
+}
+#loginScreen .form-group{margin-bottom:7px!important}
+#loginScreen .dk-login-icon{font-size:30px!important;margin-bottom:2px!important}
+#loginScreen .dk-login-title{margin:2px 0!important;font-size:21px!important;line-height:1.2!important}
+#loginScreen .dk-login-subtitle{margin:3px 0 8px!important;font-size:11px!important}
+#loginScreen .dk-login-hint{font-size:9px!important;margin-top:1px!important}
+#loginScreen input{padding:6px 9px!important}
+#loginScreen button{padding:7px 10px!important}
+#loginScreen .dk-use-card{
+  max-width:none!important;
+  margin:9px auto 0!important;
+  padding:9px 11px!important;
+  border-radius:14px!important;
+}
+#loginScreen .dk-use-title{font-size:14px!important;margin-bottom:7px!important}
+#loginScreen .dk-use-grid{grid-template-columns:repeat(3,1fr)!important;gap:6px!important}
+#loginScreen .dk-use-grid>div{padding:6px 7px!important;border-radius:9px!important}
+#loginScreen .dk-use-grid b{font-size:11px!important}
+#loginScreen .dk-use-grid span{font-size:9px!important;line-height:1.25!important;margin-top:1px!important}
+#loginScreen .dk-login-support{margin-top:7px!important;display:inline-block!important;font-size:10px!important}
+#loginScreen .dk-credits{
+  max-width:none!important;
+  margin:8px auto 0!important;
+  padding:9px 10px!important;
+  border-top:1px solid #cbd5e1!important;
+  border-bottom:1px solid #cbd5e1!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+  border-radius:12px!important;
+  background:linear-gradient(135deg,#f8fbff,#eef4ff)!important;
+  box-shadow:0 6px 18px rgba(21,94,239,.08)!important;
+}
+#loginScreen .dk-credits>b{
+  display:block;
+  font-size:11px!important;
+  color:#334155!important;
+  margin-bottom:2px!important;
+}
+#loginScreen .dk-credits-names{
+  font-size:23px!important;
+  line-height:1.15!important;
+  font-weight:1000!important;
+  letter-spacing:.3px!important;
+  color:#123c78!important;
+  text-shadow:0 1px 0 #fff!important;
+}
+#loginScreen .dk-credits-names span{
+  padding:0 8px!important;
+  color:#7c3aed!important;
+  font-weight:900!important;
+}
+#loginScreen .dk-credits>div:not(.dk-credits-names):not(.dk-rights){
+  font-size:9px!important;
+  color:#64748b!important;
+}
+#loginScreen .dk-rights{
+  margin-top:3px!important;
+  font-size:9px!important;
+  color:#475569!important;
+}
+/* छोट्या laptop screens साठी आणखी compact */
+@media (max-height:800px) and (min-width:701px){
+  body{padding:5px!important}
+  #loginScreen{margin:5px auto!important;padding:11px 18px!important}
+  #loginScreen .dk-login-icon{font-size:25px!important}
+  #loginScreen .dk-login-title{font-size:18px!important}
+  #loginScreen .dk-use-card{margin-top:6px!important;padding:7px 9px!important}
+  #loginScreen .dk-credits{margin-top:6px!important;padding:7px!important}
+  #loginScreen .dk-credits-names{font-size:21px!important}
+}
+@media(max-width:700px){
+  #loginScreen .dk-use-grid{grid-template-columns:1fr!important}
+  #loginScreen .dk-credits-names{font-size:19px!important}
+}
+</style>
+
+<style id="dk-desktop-login-fit">
+/* Desktop/Laptop priority: 100% zoom वर login page एका viewport मध्ये */
+@media (min-width:701px){
+  html,body{min-height:100%;height:100%;overflow:hidden!important}
+  body{padding:4px!important}
+  #loginScreen{
+    width:min(980px,calc(100vw - 24px))!important;
+    max-width:980px!important;
+    margin:4px auto!important;
+    padding:12px 22px!important;
+    box-sizing:border-box!important;
+  }
+  #loginScreen .dk-login-icon{font-size:26px!important;line-height:1!important}
+  #loginScreen .dk-login-title{font-size:20px!important;margin:2px 0!important}
+  #loginScreen .dk-login-subtitle{font-size:10px!important;margin:2px 0 6px!important}
+  #loginScreen .form-group{margin-bottom:5px!important}
+  #loginScreen label{font-size:11px!important;margin-bottom:2px!important}
+  #loginScreen input{padding:5px 9px!important;height:31px!important}
+  #loginScreen .dk-login-hint{font-size:8px!important;line-height:1!important}
+  #loginScreen button{padding:6px 10px!important;height:32px!important}
+  #loginScreen .dk-use-card{
+    margin:7px auto 0!important;
+    padding:8px 10px!important;
+    border-radius:13px!important;
+  }
+  #loginScreen .dk-use-title{font-size:13px!important;margin-bottom:5px!important}
+  #loginScreen .dk-use-grid{
+    grid-template-columns:repeat(3,1fr)!important;
+    gap:5px!important;
+  }
+  #loginScreen .dk-use-grid>div{padding:5px 7px!important;border-radius:8px!important}
+  #loginScreen .dk-use-grid b{font-size:10px!important;line-height:1.15!important}
+  #loginScreen .dk-use-grid span{font-size:8.5px!important;line-height:1.15!important;margin-top:1px!important}
+  #loginScreen .dk-login-support{margin-top:5px!important;font-size:9px!important}
+  #loginScreen .dk-credits{
+    margin:6px auto 0!important;
+    padding:7px 10px!important;
+    border-radius:11px!important;
+  }
+  #loginScreen .dk-credits>b{font-size:10px!important;margin-bottom:1px!important}
+  #loginScreen .dk-credits-names{
+    font-size:24px!important;
+    line-height:1.05!important;
+    letter-spacing:.5px!important;
+  }
+  #loginScreen .dk-credits-names span{padding:0 9px!important}
+  #loginScreen .dk-credits>div:not(.dk-credits-names):not(.dk-rights){
+    font-size:8px!important;line-height:1.1!important
+  }
+  #loginScreen .dk-rights{margin-top:2px!important;font-size:8px!important;line-height:1.1!important}
+}
+/* Very short laptop screens */
+@media (min-width:701px) and (max-height:700px){
+  #loginScreen{
+    margin:2px auto!important;
+    padding:8px 18px!important;
+  }
+  #loginScreen .dk-login-icon{font-size:21px!important}
+  #loginScreen .dk-login-title{font-size:17px!important}
+  #loginScreen .dk-use-card{margin-top:4px!important;padding:6px 8px!important}
+  #loginScreen .dk-credits{margin-top:4px!important;padding:5px 8px!important}
+  #loginScreen .dk-credits-names{font-size:20px!important}
+}
+</style>
 </head>
 <body>
 
 <!-- Login Screen -->
 <div id="loginScreen" class="no-print">
-    <div style="font-size: 35px; margin-bottom: 10px;">🔐</div>
-    <h3 style="color: var(--primary-color); margin-top: 0;">Portal Login</h3>
-    <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter Master Admin or School credentials.</p>
-    
+    <div class="dk-login-icon">🔐</div>
+    <h2 class="dk-login-title">शाळा व्यवस्थापन व दाखला पोर्टल</h2>
+    <p class="dk-login-subtitle">सुरक्षित Login करून पुढे जा</p>
+
     <div class="form-group">
-        <label>Username:</label>
-        <input type="text" id="loginUser" placeholder="Enter username">
+        <label for="loginUser">Username</label>
+        <input type="text" id="loginUser" placeholder="Username टाका" inputmode="latin" autocomplete="username"
+               oninput="forceEnglishCredential(this)"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('loginPass').focus();}">
+        <div class="dk-login-hint">Username फक्त English मध्ये</div>
     </div>
+
     <div class="form-group">
-        <label>Password:</label>
-        <input type="password" id="loginPass" placeholder="Enter password">
+        <label for="loginPass">Password</label>
+        <input type="password" id="loginPass" placeholder="Password टाका" inputmode="latin" autocomplete="current-password"
+               oninput="forceEnglishCredential(this)"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();handleLogin();}">
+        <div class="dk-login-hint">Password फक्त English मध्ये</div>
     </div>
-    <button onclick="handleLogin()" style="margin-top: 10px; background: #27ae60; padding: 9px;">Login</button>
+
+    <button type="button" id="loginButton" onclick="handleLogin()" class="dk-login-button">🔓 Login</button>
+
+    <details class="dk-login-help">
+      <summary>📘 Login करण्यापूर्वी माहिती</summary>
+      <div>
+        <div>1. Username आणि Password English मध्ये टाका.</div>
+        <div>2. Password नंतर <b>Enter</b> दाबल्यास Login होईल.</div>
+        <div>3. Login झाल्यावरच शाळेची माहिती/विद्यार्थी Entry दिसेल.</div>
+      </div>
+    </details>
+
+    <a class="dk-login-support" href="tel:9333411111">📞 मदतीसाठी: ९३३३४१११११</a>
+    <div class="dk-use-card"><div class="dk-use-title">📣 प्रणालीची माहिती व वापर पद्धत</div><div class="dk-use-grid"><div><b>📝 Student Data Entry</b><span>विद्यार्थ्याची माहिती भरा आणि Cloud वर Save करा.</span></div><div><b>📜 दाखला</b><span>विद्यार्थी शोधा, आवश्यक दिनांक भरा आणि Print करा.</span></div><div><b>🪪 Bonafide</b><span>विद्यार्थी निवडा आणि Bonafide Print करा.</span></div><div><b>📷 Teacher Photo</b><span>दिलेल्या लिंकवरून विद्यार्थ्याचा फोटो अपलोड करता येतो.</span></div><div><b>🖨️ Print / PDF</b><span>A4 Paper आणि योग्य Printer setting तपासा.</span></div><div><b>📊 Print Report</b><span>दाखला/Bonafide कोणाचा Print झाला ते पाहता येते.</span></div></div></div><div class="dk-credits"><b>निर्मिती व विकासासाठी योगदान:</b><div class="dk-credits-names">सुजित पाटील <span>•</span> महेश जाधव</div><div>या प्रणालीच्या संकल्पना, विकास, परीक्षण आणि कार्यान्वयनासाठी संयुक्त योगदान.</div><div class="dk-rights">© सर्व हक्क राखीव — Sujit Patil &amp; Mahesh Jadhav</div></div>
 </div>
 
 <!-- Main Application Container -->
@@ -260,6 +777,18 @@
                 <div class="tool-desc">विद्यार्थ्यांचे बोनाफाईड प्रमाणपत्र तयार करा.</div>
                 <a class="tool-link">सुरू करा &rarr;</a>
             </div>
+            <div class="tool-card" id="cardTeacherPhoto" onclick="openTab('tabTeacherPhoto')" style="display:none;">
+                <div class="tool-icon">📷</div>
+                <div class="tool-title">विद्यार्थी फोटो Upload</div>
+                <div class="tool-desc">वर्गनिहाय विद्यार्थ्यांचे फोटो मोबाईलवरून घ्या व सेव्ह करा.</div>
+                <a class="tool-link">सुरू करा &rarr;</a>
+            </div>
+            <div class="tool-card" id="cardPrintReport" onclick="openTab('tabPrintReport')" style="background:#eaf2f8;border-color:#3498db;">
+                <div class="tool-icon">📊</div>
+                <div class="tool-title">प्रिंट रिपोर्ट</div>
+                <div class="tool-desc">दाखला व Bonafide कोणत्या विद्यार्थ्यांचे प्रिंट केले याचा अहवाल.</div>
+                <a class="tool-link">रिपोर्ट पहा / PDF &rarr;</a>
+            </div>
             <div class="tool-card" id="cardIdCard" onclick="openTab('tabIdCard')" style="display:none;">
                 <div class="tool-icon">🪪</div>
                 <div class="tool-title">विद्यार्थी ओळखपत्र</div>
@@ -273,6 +802,104 @@
         <button class="back-btn" onclick="goHome()">&larr; Back to Dashboard</button>
     </div>
 
+
+    <!-- ===== ADD-ON: Bonafide Certificate ===== -->
+    <div id="tabBonafide" class="tab-content">
+        <h3>📜 बोनाफाईड सर्टिफिकेट</h3>
+        <p style="font-size:12px;color:#666;">रजिस्टर नंबर किंवा विद्यार्थ्याचे नाव शोधा. उपलब्ध फोटो असल्यास तोच Bonafide वर दिसेल.</p>
+
+        <div class="bona-controls no-print">
+            <div class="form-group" style="margin:0;">
+                <label>रजिस्टर नंबर / विद्यार्थ्याचे नाव</label>
+                <input id="bonaSearch" type="text" placeholder="उदा. 12435 किंवा विद्यार्थ्याचे नाव" oninput="searchBonafideStudents()">
+                <div id="bonaResults" class="bona-search-results" style="display:none;"></div>
+            </div>
+            <button onclick="generateBonafide()" style="width:auto;">📜 बोनाफाईड तयार करा</button>
+        </div>
+
+        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <input id="bonaAcademicYear" value="" placeholder="शैक्षणिक वर्ष (उदा. २०२६-२७)" style="max-width:220px;">
+            <input id="bonaIssueDate" type="date" style="max-width:190px;">
+            <button onclick="printBonafide()" style="width:auto;background:#27ae60;">🖨️ Print / PDF</button>
+        </div>
+
+        <div id="bonaPrintArea" class="bona-preview-wrap bona-print-area">
+            <div id="bonaCard" class="bona-format" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- ===== PRINT HISTORY REPORT ===== -->
+    <div id="tabPrintReport" class="tab-content">
+        <h3>📊 प्रिंट रिपोर्ट / Print History</h3>
+        <p style="font-size:12px;color:#666;">दाखला व Bonafide चे कोणत्या विद्यार्थ्यांचे Print केले आहेत याची Cloud मध्ये जतन केलेली नोंद.</p>
+
+        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:end;">
+            <div class="form-group" style="margin:0;min-width:150px;">
+                <label>प्रकार</label>
+                <select id="printReportType" onchange="loadPrintHistoryReport()">
+                    <option value="">सर्व</option>
+                    <option value="दाखला">दाखला</option>
+                    <option value="Bonafide">Bonafide</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin:0;min-width:150px;">
+                <label>दिनांकापासून</label>
+                <input id="printReportFrom" type="date" onchange="loadPrintHistoryReport()">
+            </div>
+            <div class="form-group" style="margin:0;min-width:150px;">
+                <label>दिनांकापर्यंत</label>
+                <input id="printReportTo" type="date" onchange="loadPrintHistoryReport()">
+            </div>
+            <button onclick="printPrintHistoryReport()" style="width:auto;background:#8e44ad;">🖨️ रिपोर्ट PDF / Print</button>
+            <button onclick="loadPrintHistoryReport()" style="width:auto;background:#27ae60;">🔄 Refresh</button>
+        </div>
+
+        <div id="printReportSummary" style="margin:10px 0;font-weight:700;"></div>
+        <div style="overflow:auto;">
+            <table class="data-table" id="printHistoryTable">
+                <thead></thead>
+                <tbody><tr><td style="padding:15px;">रिपोर्ट Loading...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== ADD-ON: Class Teacher Photo Upload ===== -->
+    <div id="tabTeacherPhoto" class="tab-content"><div class="public-photo-title">📷 वर्गशिक्षक विद्यार्थी फोटो अपलोड</div>
+        <h3>📷 विद्यार्थ्यांचा फोटो Upload</h3>
+        <p style="font-size:12px;color:#666;">वर्ग निवडा → विद्यार्थी निवडा/रजिस्टर नंबर शोधा → मोबाईलवरून फोटो काढा → सेव्ह करा.</p>
+
+        <div class="teacher-photo-grid no-print">
+            <div>
+                <div class="form-group">
+                    <label>वर्ग निवडा</label>
+                    <select id="teacherClassSelect" onchange="loadTeacherClassStudents()">
+                        <option value="">-- वर्ग निवडा --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>रजिस्टर नंबर / नाव शोधा</label>
+                    <input id="teacherStudentSearch" type="text" placeholder="रजिस्टर नंबर किंवा नाव" oninput="filterTeacherStudents()">
+                </div>
+                <div id="teacherStudentList" class="teacher-student-list"></div>
+            </div>
+
+            <div class="teacher-photo-box">
+                <div id="teacherSelectedInfo" style="font-weight:700;">विद्यार्थी निवडा</div>
+                <input id="teacherPhotoFile" type="file" accept="image/*" capture="user" onchange="previewTeacherPhoto(event)" style="margin-top:10px;">
+                <img id="teacherPhotoPreview" class="teacher-photo-preview" style="display:none;"><div class="photo-ai-note">✨ Smart Photo Clear: प्रकाश, कॉन्ट्रास्ट, शार्पनेस आणि फोटोचा आकार आपोआप सुधारला जाईल.</div>
+                <button onclick="saveTeacherStudentPhoto()" class="no-print" style="max-width:220px;margin:auto;">📷 फोटो सेव्ह करा</button>
+                <button onclick="removeTeacherStudentPhoto()" class="no-print" style="max-width:220px;margin:8px auto 0;background:#c0392b;">🗑️ फोटो काढून टाका</button>
+            </div>
+        </div>
+
+        <div class="photo-link-box no-print">
+            <strong>🔗 वर्गशिक्षकांसाठी लिंक</strong>
+            <div style="font-size:12px;color:#666;margin:4px 0;">ही लिंक वर्गशिक्षकांना देता येईल. लिंक उघडल्यानंतर शाळेच्या लॉगिनने प्रवेश करून फोटो Upload करता येईल.</div>
+            <input id="teacherPhotoShareLink" readonly onclick="this.select()">
+            <button onclick="copyTeacherPhotoLink()" style="margin-top:6px;width:auto;">🔗 लिंक Copy करा</button>
+        </div>
+    </div>
+
     <!-- Tab: School Management (Master Admin Only) -->
     <div id="tabSchoolMgmt" class="tab-content">
         <h3>🏛️ शाळा व्यवस्थापन, लॉगिन नाव बदल व एक्सेल डेटा (Master Admin Panel)</h3>
@@ -283,8 +910,8 @@
             <div class="form-group"><label>शाळेचे नाव (School Name):</label><input type="text" id="newSchoolName" placeholder="Enter school name"></div>
             <div class="form-group"><label>युडायस कोड (UDISE Code):</label><input type="text" id="newSchoolUdise" placeholder="Enter UDISE code"></div>
             <div class="form-group"><label>अधिकृत मोबाईल नंबर (Mobile Number):</label><input type="text" id="newSchoolMobile" placeholder="Enter official mobile number"></div>
-            <div class="form-group"><label>युजरनेम (Username):</label><input type="text" id="newSchoolUser" placeholder="Enter login username"></div>
-            <div class="form-group"><label>पासवर्ड (Password):</label><input type="text" id="newSchoolPass" placeholder="Enter login password"></div>
+            <div class="form-group"><label>युजरनेम (Username) — फक्त English:</label><input type="text" id="newSchoolUser" placeholder="Enter login username (English only)" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)"></div>
+            <div class="form-group"><label>पासवर्ड (Password) — फक्त English:</label><input type="text" id="newSchoolPass" placeholder="Enter login password (English only)" inputmode="latin" autocomplete="new-password" oninput="forceEnglishCredential(this)"></div>
             <button onclick="registerNewSchool()" style="background: #27ae60; margin-top: 5px;">नवीन शाळा जोडा (Register School)</button>
         </div>
 
@@ -359,6 +986,7 @@
                 <div class="form-group"><label>आधार क्रमांक :</label><input type="text" id="entAadhaar" placeholder="आधार क्रमांक"></div>
             </div>
             <div class="form-group"><label>विद्यार्थ्याचे पूर्ण नाव :</label><input type="text" id="entName" placeholder="उदा. आवटी शुभम परशुराम"></div>
+            <div class="form-group"><label>लिंग :</label><select id="entGender"><option value="">-- निवडा --</option><option value="Male">Male</option><option value="Female">Female</option></select></div>
             <div class="form-group"><label>आईचे नाव :</label><input type="text" id="entMother" placeholder="उदा. भाग्यश्री"></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div class="form-group"><label>राष्ट्रीयत्व :</label><input type="text" id="entNat" value="भारतीय"></div>
@@ -374,8 +1002,8 @@
                 <div class="form-group"><label>देश :</label><input type="text" id="entCountry" value="भारत"></div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group"><label>जन्मदिनांक (अंकी YYYY-MM-DD) :</label><input type="text" id="entDob" placeholder="उदा. 2010-05-01"></div>
-                <div class="form-group"><label>प्रवेश दिनांक :</label><input type="text" id="entAdmDate" placeholder="उदा. 2022-07-30"></div>
+                <div class="form-group"><label>जन्मदिनांक (DD-MM-YYYY) :</label><input type="text" id="entDob" placeholder="उदा. 01-05-2010" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
+                <div class="form-group"><label>प्रवेश दिनांक (DD-MM-YYYY) :</label><input type="text" id="entAdmDate" placeholder="उदा. 30-07-2022" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
                 <div class="form-group"><label>प्रवेश इयत्ता :</label><input type="text" id="entAdmClass" placeholder="७ वी"></div>
@@ -560,6 +1188,7 @@
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-top: 2px;">
                         <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block; font-weight:bold;"></span>
+                        
                         <span>माध्यम : <span id="outMedium">मराठी</span></span>
                         <span>अनु क्र. : <input type="text" id="outAnu" readonly style="width:50px; display:inline-block; font-weight:bold;" value="-"></span>
                     </div>
@@ -575,7 +1204,7 @@
                 
                 <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 2px;">
                     <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
-                    <div>यु.आय.डिज. नं. (आधार क्र.) : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
+                    <div>आधार क्रमांक : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
                 </div>
 
                 <table class="lc-table">
@@ -591,7 +1220,7 @@
                     </tr>
                     <tr>
                         <td><strong style="display:inline-block; width:80px;">धर्म :</strong> <input type="text" id="outReligion" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
-                        <td><strong style="display:inline-block; width:100px;">जात व उपजात :</strong> <input type="text" id="outCaste" readonly style="display:inline-block; width:calc(100% - 105px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:100px;">जात व पोटजात :</strong> <input type="text" id="outCaste" readonly style="display:inline-block; width:calc(100% - 105px); font-weight:bold;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:135px;">जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace" readonly style="display:inline-block; width:calc(100% - 140px); font-weight:bold;"></td>
@@ -600,14 +1229,14 @@
                         <td colspan="2"><strong style="display:inline-block; width:50px;">राज्य :</strong> <input type="text" id="outState" readonly style="width:150px; display:inline-block; font-weight:bold;"> &nbsp;|&nbsp; <strong>देश :</strong> <input type="text" id="outCountry" readonly style="width:100px; display:inline-block; font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:120px;">जन्मदिनांक (अंकात) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:120px;">जन्मदिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
                         <td><strong style="display:inline-block; width:135px;">जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" readonly style="color: #000; font-weight: bold; display:inline-block; width:calc(100% - 140px);"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:110px;">यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly style="display:inline-block; width:calc(100% - 115px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:190px;">या शाळेत प्रवेश घेतल्याचा दिनांक :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:calc(100% - 195px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:190px;">या शाळेत प्रवेश घेतल्याचा दिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:calc(100% - 195px); font-weight:bold;"></td>
                         <td><strong style="display:inline-block; width:80px;">प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
                     </tr>
                     <tr>
@@ -615,7 +1244,10 @@
                         <td><strong style="display:inline-block; width:70px;">वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली" style="display:inline-block; width:calc(100% - 75px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:220px;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block; width:calc(100% - 225px); font-weight:bold;"></td>
+                        <td colspan="2"><strong style="display:inline-block;width:180px;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" readonly placeholder="DD-MM-YYYY" maxlength="10" style="width:150px;font-weight:bold;background:#fff;border:none;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong style="display:inline-block;width:290px;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block;width:calc(100% - 295px);font-weight:bold;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:140px;">शाळा सोडल्याचे कारण :</strong> <input type="text" id="outLeavingReason" class="editable-field" value="शिक्षण पूर्ण / संतोषजनक" style="display:inline-block; width:calc(100% - 145px);"></td>
@@ -637,14 +1269,14 @@
                 </div>
 
                 <div style="margin-top: 5px; display: flex; justify-content: space-between; font-size: 11px; font-weight: bold;">
-                    <div>तारीख : <span id="currentDate"></span></div>
+                    <div>तारीख : <input type="text" id="currentDate" class="editable-field required-print-date" placeholder="DD-MM-YYYY" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)" style="width:105px;font-weight:bold;border-bottom:1px solid #000;"></div>
                 </div>
                 <div style="margin-top: 4px; font-size: 9px; font-weight: bold; text-align: center; border-top: 1px dashed #000; padding-top: 2px;">
                     (टिप- शाळा सोडल्याचे दाखल्यामध्ये अनाधिकृतरित्या बदल केल्यास संबंधितावर कायदेशीर कारवाई करण्यात येईल.)
                 </div>
             </div>
         </div>
-        <button class="no-print" id="printBtn" onclick="document.fonts.ready.then(function(){ window.print(); })" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ Print / PDF</button>
+        <button class="no-print" id="printBtn" onclick="printDakhalaCurrent()" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ Print / PDF</button>
     </div>
 </div>
 
@@ -652,6 +1284,7 @@
 <div id="bulkPrintArea" style="display:none;"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCN270jqcwG3Jiv2AnGev2Sq305c6IfKGw",
@@ -665,24 +1298,73 @@
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+  let _dkNoticeTimer=null;function showDkNotice(message,type='ok'){const old=document.getElementById('dkNoticeWrap');if(old)old.remove();const wrap=document.createElement('div');wrap.id='dkNoticeWrap';wrap.className='dk-notice-wrap';const box=document.createElement('div');box.className='dk-notice '+(type==='err'?'err':type==='warn'?'warn':'ok');box.innerHTML=String(message||'').replace(/\n/g,'<br>');wrap.appendChild(box);document.body.appendChild(wrap);clearTimeout(_dkNoticeTimer);_dkNoticeTimer=setTimeout(()=>{box.style.animation='dkNoticeOut .2s ease both';setTimeout(()=>wrap.remove(),190)},3200);}window.alert=function(message){showDkNotice(message,/❌|Error|Failed/i.test(String(message))?'err':/⚠️|कृपया/i.test(String(message))?'warn':'ok');};
 
   let registeredSchoolsList = [];
   let currentSchoolProfile = {};
   let excelData = [];
+  function normalizeLoadedStudentRows(){
+      if(!Array.isArray(excelData)||!excelData.length)return;
+      for(let i=1;i<excelData.length;i++){
+          const row=excelData[i];
+          if(!Array.isArray(row))continue;
+          while(row.length<21)row.push("");
+          if(row[20] && !["Male","Female"].includes(String(row[20]).trim())) row[20]="";
+      }
+  }
   let schoolLogoBase64 = "";
 
   function getActiveUser() { return sessionStorage.getItem('activeUser'); }
   function getActiveRole() { return sessionStorage.getItem('activeRole'); }
 
+  // Login credentials नेहमी English/ASCII मध्येच ठेवतो.
+  function forceEnglishCredential(el) {
+      if(!el) return;
+      const marathiDigits = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'};
+      el.value = String(el.value || '').replace(/[०-९]/g, ch => marathiDigits[ch] || ch).replace(/[^\x00-\x7F]/g, '');
+  }
+  function forceEnglishCredentialValue(value) {
+      const marathiDigits = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'};
+      return String(value || '').replace(/[०-९]/g, ch => marathiDigits[ch] || ch).replace(/[^\x00-\x7F]/g, '');
+  }
+
   window.onload = async function() {
+      const urlParams=new URLSearchParams(window.location.search);
+      const publicTeacherPhoto=urlParams.get('teacherPhoto')==='1';
+      const publicSchool=urlParams.get('school')||'';
+      if(publicTeacherPhoto && publicSchool){
+          document.body.classList.add('public-teacher-mode');
+          document.getElementById('loginScreen').style.display='none';
+          document.getElementById('mainAppContainer').style.display='block';
+          document.documentElement.classList.add('app-logged-in');
+          document.body.classList.add('app-logged-in');
+          try{
+              const doc=await db.collection("portalData").doc("profile_"+publicSchool).get();
+              if(!doc.exists) throw new Error('not found');
+              const data=doc.data()||{}; currentSchoolProfile=data.info||{}; schoolLogoBase64=currentSchoolProfile.logo||'';
+              excelData=(typeof data.excel==='string')?JSON.parse(data.excel):(data.excel||[]);
+               normalizeLoadedStudentRows();
+              sessionStorage.setItem('activeUser',publicSchool); sessionStorage.setItem('activeRole','teacherPhoto');
+              await openTab('tabTeacherPhoto'); document.getElementById('backBar').style.display='none';
+          }catch(e){
+              document.body.classList.remove('public-teacher-mode'); document.getElementById('mainAppContainer').style.display='none'; document.getElementById('loginScreen').style.display='block';
+              alert('वर्गशिक्षक फोटो लिंक चुकीची किंवा कालबाह्य आहे.');
+          }
+          return;
+      }
       let currentUser = getActiveUser();
       let currentRole = getActiveRole();
       if(currentUser) {
           document.getElementById('loginScreen').style.display = 'none';
           document.getElementById('mainAppContainer').style.display = 'block';
+          document.documentElement.classList.add('app-logged-in');
+          document.body.classList.add('app-logged-in');
           await fetchCloudData(currentUser, currentRole);
           setupDashboard(currentRole, currentUser);
           goHome();
+          if(new URLSearchParams(window.location.search).get('teacherPhoto') === '1') {
+              setTimeout(() => openTab('tabTeacherPhoto'), 100);
+          }
       }
 
       document.getElementById('loginPass').addEventListener('keypress', function(e) {
@@ -719,6 +1401,7 @@
               schoolLogoBase64 = currentSchoolProfile.logo || "";
               let rawExcel = profileDoc.data().excel;
               excelData = (typeof rawExcel === 'string') ? JSON.parse(rawExcel) : (rawExcel || []);
+               normalizeLoadedStudentRows();
           } else {
               currentSchoolProfile = {};
               schoolLogoBase64 = "";
@@ -727,36 +1410,94 @@
       } catch(error) { console.error("Error fetching data: ", error); }
   }
 
+  // ===== Secure Master Admin Login =====
+  // Plain-text admin password is not stored in the source code.
+const MASTER_ADMIN_SALT = '6rqu37SgqEZFR-eCIfGeD3x1';
+const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d19581faf6e1e65651ff6f4c';
+  let adminFailedAttempts = Number(sessionStorage.getItem('adminFailedAttempts') || '0');
+  let adminLockUntil = Number(sessionStorage.getItem('adminLockUntil') || '0');
+
+  async function sha256Hex(value) {
+      const data = new TextEncoder().encode(value);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  async function verifyMasterPassword(password) {
+      const hash = await sha256Hex(MASTER_ADMIN_SALT + password);
+      return hash === MASTER_ADMIN_PASSWORD_HASH;
+  }
+
   async function handleLogin() {
       let u = document.getElementById('loginUser').value.trim();
-      let p = document.getElementById('loginPass').value.trim();
+      let p = document.getElementById('loginPass').value;
 
+      // Master Admin: 5 चुकीचे प्रयत्न => 5 मिनिटे लॉक.
+      if(u === 'admin') {
+          const now = Date.now();
+          if(now < adminLockUntil) {
+              const remaining = Math.ceil((adminLockUntil - now) / 60000);
+              alert('सुरक्षेसाठी Admin Login तात्पुरते लॉक आहे. ' + remaining + ' मिनिटांनी पुन्हा प्रयत्न करा.');
+              return;
+          }
+
+          if(await verifyMasterPassword(p)) {
+              adminFailedAttempts = 0;
+              adminLockUntil = 0;
+              sessionStorage.removeItem('adminFailedAttempts');
+              sessionStorage.removeItem('adminLockUntil');
+              sessionStorage.setItem('activeUser', 'admin');
+              sessionStorage.setItem('activeRole', 'master');
+              sessionStorage.setItem('loginAt', String(Date.now()));
+              document.getElementById('loginScreen').style.display = 'none';
+              document.getElementById('mainAppContainer').style.display = 'block';
+          document.documentElement.classList.add('app-logged-in');
+          document.body.classList.add('app-logged-in');
+              await fetchCloudData('admin', 'master');
+              setupDashboard('master', 'admin');
+              goHome();
+              if(new URLSearchParams(window.location.search).get('teacherPhoto') === '1') {
+                  setTimeout(() => openTab('tabTeacherPhoto'), 100);
+              }
+              return;
+          }
+
+          adminFailedAttempts++;
+          sessionStorage.setItem('adminFailedAttempts', String(adminFailedAttempts));
+          if(adminFailedAttempts >= 5) {
+              adminLockUntil = Date.now() + 5 * 60 * 1000;
+              sessionStorage.setItem('adminLockUntil', String(adminLockUntil));
+              adminFailedAttempts = 0;
+              sessionStorage.setItem('adminFailedAttempts', '0');
+              alert('५ चुकीच्या प्रयत्नांनंतर Admin Login ५ मिनिटांसाठी लॉक केले आहे.');
+          } else {
+              alert('Admin username किंवा password चुकीचा आहे. उरलेले प्रयत्न: ' + (5 - adminFailedAttempts));
+          }
+          return;
+      }
+
+      // School login system unchanged.
       try {
           let schoolsDoc = await db.collection("portalData").doc("registeredSchools").get();
           if(schoolsDoc.exists) registeredSchoolsList = schoolsDoc.data().list || [];
       } catch(e) {}
-
-      if(u === 'admin' && p === 'admin123') {
-          sessionStorage.setItem('activeUser', 'admin');
-          sessionStorage.setItem('activeRole', 'master');
-          document.getElementById('loginScreen').style.display = 'none';
-          document.getElementById('mainAppContainer').style.display = 'block';
-          await fetchCloudData('admin', 'master');
-          setupDashboard('master', 'admin');
-          goHome();
-          return;
-      }
 
       let foundSchool = registeredSchoolsList.find(s => s.username === u && s.password === p);
       if(foundSchool) {
           sessionStorage.setItem('activeUser', foundSchool.username);
           sessionStorage.setItem('activeRole', 'school');
           sessionStorage.setItem('currentSchoolName', foundSchool.name);
+          sessionStorage.setItem('loginAt', String(Date.now()));
           document.getElementById('loginScreen').style.display = 'none';
           document.getElementById('mainAppContainer').style.display = 'block';
+          document.documentElement.classList.add('app-logged-in');
+          document.body.classList.add('app-logged-in');
           await fetchCloudData(foundSchool.username, 'school');
           setupDashboard('school', foundSchool.username);
           goHome();
+          if(new URLSearchParams(window.location.search).get('teacherPhoto') === '1') {
+              setTimeout(() => openTab('tabTeacherPhoto'), 100);
+          }
       } else {
           alert("Invalid username or password!");
       }
@@ -767,6 +1508,7 @@
           document.getElementById('roleSubTitle').innerText = 'डिजिटल साथीदार प्रशासकीय प्रणाली (Master Admin)';
           document.getElementById('cardSchoolMgmt').style.display = 'block';
           document.getElementById('cardBonafide').style.display = 'block';
+          document.getElementById('cardTeacherPhoto').style.display = 'block';
           document.getElementById('cardIdCard').style.display = 'block';
           loadSchoolTable();
       } else {
@@ -774,6 +1516,7 @@
           document.getElementById('roleSubTitle').innerText = 'शाळा लॉगिन : ' + sName;
           document.getElementById('cardSchoolMgmt').style.display = 'none';
           document.getElementById('cardBonafide').style.display = 'block';
+          document.getElementById('cardTeacherPhoto').style.display = 'block';
           document.getElementById('cardIdCard').style.display = 'block';
           loadSchoolInfo(username);
       }
@@ -812,6 +1555,10 @@
           }
       } else if(tabName === 'tabGenRegister') {
           switchGenSubTab('verify');
+      } else if(tabName === 'tabBonafide') {
+          prepareBonafideDefaults();
+      } else if(tabName === 'tabTeacherPhoto') {
+          prepareTeacherPhotoModule();
       }
   }
 
@@ -844,17 +1591,41 @@
   }
 
   // Helper to correctly format Excel serial date numbers to readable DD/MM/YYYY
+  function formatEntryDateInput(el) {
+      if(!el) return;
+      let v = String(el.value || '').replace(/[^0-9]/g, '').slice(0, 8);
+      if(v.length > 4) v = v.slice(0,2) + '-' + v.slice(2,4) + '-' + v.slice(4);
+      else if(v.length > 2) v = v.slice(0,2) + '-' + v.slice(2);
+      el.value = v;
+  }
+
+  function normalizeStudentDate(val) {
+      if(!val) return '';
+      let v = String(val).trim().replace(/\s+/g,'');
+      let p = v.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+      if(p) return p[1].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[3];
+      p = v.match(/^(\d{8})$/);
+      if(p) return p[1].slice(6,8) + '-' + p[1].slice(4,6) + '-' + p[1].slice(0,4);
+      p = v.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+      if(p) return p[3].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[1];
+      return v;
+  }
+
   function formatExcelDate(val) {
       if(!val) return "";
+      let s = String(val).trim();
+      // YYYYMMDD / YYYY-MM-DD / DD-MM-YYYY सर्वांना print साठी DD-MM-YYYY मध्ये बदला.
+      let normalized = normalizeStudentDate(s);
+      if(/^\\d{2}-\\d{2}-\\d{4}$/.test(normalized)) return normalized;
       let num = Number(val);
       if(!isNaN(num) && num > 30000 && num < 60000) {
           let d = new Date((num - (25569 + 2)) * 86400 * 1000);
           let day = String(d.getDate()).padStart(2, '0');
           let month = String(d.getMonth() + 1).padStart(2, '0');
           let year = d.getFullYear();
-          return `${day}/${month}/${year}`;
+          return `${day}-${month}-${year}`;
       }
-      return val.toString();
+      return s;
   }
 
   // Helper to get Marathi words for dates
@@ -922,10 +1693,13 @@
       }
 
       let headers = excelData[0] || [];
+      if(headers.length <= 20) headers[20] = 'लिंग';
+      for(let ri=1; ri<excelData.length; ri++){ if(!Array.isArray(excelData[ri])) excelData[ri]=[]; while(excelData[ri].length < 21) excelData[ri].push(''); }
       let headHtml = '<th>अ.क्र.</th>';
       for(let h of headers) {
           headHtml += `<th>${h || 'कॉलम'}</th>`;
       }
+      headHtml += '<th class="no-print">📷 फोटो</th>';
       thead.innerHTML = headHtml;
 
       let matches = [];
@@ -952,17 +1726,40 @@
                   displayVal = formatExcelDate(val);
               } else if (cIdx === 15) {
                   displayVal = dateToMarathiWords(m.row[14]);
-              } else if (cIdx === 17) {
+              } else if (cIdx === 19) {
                   displayVal = formatExcelDate(val);
               }
-              trHtml += `<td><input type="text" value="${displayVal}" onchange="updateGenCell(${m.rowIndex}, ${cIdx}, this.value)" style="border:none; background:transparent; width:100%; min-width:110px;"></td>`;
+
+              if (cIdx === 19) {
+                  trHtml += `<td style="min-width:145px;">
+                      <input type="text"
+                          value="${displayVal || ''}"
+                          placeholder="DD-MM-YYYY"
+                          maxlength="10"
+                          inputmode="numeric"
+                          oninput="formatEntryDateInput(this)"
+                          onchange="updateGenCell(${m.rowIndex}, 19, this.value)"
+                          style="border:1px solid #d5dbdb; background:#fffdf5; width:100%; min-width:125px; font-weight:600;">
+                  </td>`;
+              } else {
+                  trHtml += `<td><input type="text" value="${displayVal}" onchange="updateGenCell(${m.rowIndex}, ${cIdx}, this.value)" style="border:none; background:transparent; width:100%; min-width:110px;"></td>`;
+              }
           }
+          trHtml += `<td class="photo-action no-print" id="genPhotoCell_${m.rowIndex}">फोटो तपासत आहे...</td>`;
           tbody.innerHTML += `<tr>${trHtml}</tr>`;
+          loadGenPhotoCell(m.rowIndex, m.row[0]);
       });
   }
 
   function updateGenCell(rowIdx, colIdx, val) {
       if(excelData[rowIdx]) {
+          if(colIdx === 19) {
+              val = normalizeStudentDate(String(val||'').trim());
+              if(val && !/^\d{2}-\d{2}-\d{4}$/.test(val)) {
+                  alert('⚠️ शाळा सोडल्याचा दिनांक DD-MM-YYYY या स्वरूपात टाका. उदा. 26-09-2026');
+                  return;
+              }
+          }
           excelData[rowIdx][colIdx] = val;
       }
   }
@@ -973,11 +1770,14 @@
       let targetUser = (role === 'master' && window.adminEditingTarget) ? window.adminEditingTarget : user;
 
       try {
-          await db.collection("portalData").doc("profile_" + targetUser).set({
-              info: currentSchoolProfile || {},
-              excel: JSON.stringify(excelData)
-          }, { merge: true });
-          alert("जनरल रजिस्टरमधील बदल यशस्वीरित्या क्लाउडवर सेव्ह झाले!");
+          const docRef = db.collection("portalData").doc("profile_" + targetUser);
+          await docRef.set({ info: currentSchoolProfile || {}, excel: JSON.stringify(excelData) }, { merge: true });
+          const verifySnap = await docRef.get();
+          if(!verifySnap.exists) throw new Error("Firebase document verification failed.");
+          const verifyData = verifySnap.data() || {};
+          const verifyExcel = typeof verifyData.excel === 'string' ? JSON.parse(verifyData.excel) : (verifyData.excel || []);
+          if(JSON.stringify(verifyExcel) !== JSON.stringify(excelData)) throw new Error("Firebase verification failed: saved data does not match.");
+          alert("☁️ Firebase Cloud Save Confirmed ✅\nजनरल रजिस्टरमधील बदल प्रत्यक्ष Cloud मधून तपासून सेव्ह झाल्याचे निश्चित झाले!");
       } catch(e) {
           alert("Error saving: " + e.message);
       }
@@ -1103,9 +1903,40 @@
       checks.forEach(ch => ch.checked = master.checked);
   }
 
+  async function printDakhalaCurrent(){
+    if(!validateDakhalaPrintFields()) return;
+    const source=document.getElementById('lcCard');
+    if(!source || source.style.display==='none'){
+        alert('प्रथम विद्यार्थी निवडा आणि दाखला तयार करा.');
+        return;
+    }
+
+    // Popup blocker टाळण्यासाठी स्वतंत्र window न उघडता browser चा native print वापरतो.
+    // सध्याचा Dakhala print CSS फक्त #tabDakhala दाखवेल.
+    const printBtn=document.getElementById('printBtn');
+    if(printBtn) printBtn.style.display='none';
+
+    try{
+        await document.fonts.ready;
+        await new Promise(resolve=>setTimeout(resolve,120));
+        window.focus();
+        window.print();
+    }catch(e){
+        console.error('Dakhala print error:',e);
+        alert('प्रिंट सुरू करताना त्रुटी आली. कृपया पुन्हा प्रयत्न करा.');
+    }finally{
+        if(printBtn) printBtn.style.display='block';
+    }
+}
+
   function printOneFromBulk(idx) {
       let row = window._bulkRows ? window._bulkRows[idx] : null;
       if (!row) return;
+      if(!normalizeStudentDate(String(row[19]||'').trim())){
+          alert('⚠️ या विद्यार्थ्याचा शाळा सोडल्याचा दिनांक जनरल रजिस्टरमध्ये भरलेला नाही. प्रथम जनरल रजिस्टरमध्ये दुरुस्ती करा.');
+          return;
+      }
+      if (!validateDakhalaPrintFields()) return;
       document.body.classList.remove('bulk-print-mode');
       window._bulkPrintActive = false;
       let commonReason = document.getElementById('commonLeavingReason').value.trim();
@@ -1125,6 +1956,14 @@
       });
 
       if (selectedRows.length === 0) { alert("कृपया प्रिंट करण्यासाठी किमान एका विद्यार्थ्याची निवड (टिक) करा!"); return; }
+      const missingDateRows = selectedRows.filter(row => !normalizeStudentDate(String(row[19]||'').trim()));
+      if(missingDateRows.length){
+          alert('⚠️ निवडलेल्या '+missingDateRows.length+' विद्यार्थ्यांच्या जनरल रजिस्टरमध्ये शाळा सोडल्याचा दिनांक भरलेला नाही. आधी जनरल रजिस्टरमध्ये तो भरा.');
+          return;
+      }
+      const leaveEl=document.getElementById('outLeavingDate');
+      if(leaveEl) leaveEl.value=normalizeStudentDate(String(selectedRows[0][19]||'').trim());
+      if (!validateDakhalaPrintFields()) return;
       if (!confirm(selectedRows.length + " विद्यार्थ्यांचे दाखले एकत्र प्रिंट करायचे आहेत का?")) return;
 
       const template = document.getElementById('lcCard');
@@ -1190,6 +2029,8 @@
       root.querySelector('#outPrevSchool').value = foundRow[16] || "-";
       root.querySelector('#outAdmissionDate').value = formatExcelDate(foundRow[17]);
       root.querySelector('#outAdmClass').value = foundRow[18] || "";
+      root.querySelector('#outLeavingDate').value = formatExcelDate(foundRow[19] || "");
+      const now=new Date(); root.querySelector('#currentDate').value=String(now.getDate()).padStart(2,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+now.getFullYear();
 
       if(customReason !== undefined) root.querySelector('#outLeavingReason').value = customReason;
       if(customRemark !== undefined) root.querySelector('#outRemark').value = customRemark;
@@ -1419,13 +2260,15 @@
                   <td><strong>${s.name}</strong></td>
                   <td>Udise: ${s.udise||'-'}<br>Mob: ${s.mobile||'-'}</td>
                   <td>
-                      User: <input type="text" id="editUser_${index}" value="${s.username}" style="width:100px; display:inline-block; padding:2px;"><br>
-                      Pass: <input type="text" id="editPass_${index}" value="${s.password}" style="width:100px; display:inline-block; padding:2px; margin-top:2px;"><br>
+                      User: <input type="text" id="editUser_${index}" value="${forceEnglishCredentialValue(s.username)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px; display:inline-block; padding:2px;"><br>
+                      Pass: <input type="password" id="editPass_${index}" value="${forceEnglishCredentialValue(s.password)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px; display:inline-block; padding:2px; margin-top:2px;"><br>
                       <button onclick="updateSchoolCredentials(${index})" style="background:#2980b9; padding:2px 6px; font-size:10px; width:auto; margin-top:3px;">💾 Update Login</button>
                   </td>
                   <td>
                       <input type="file" id="adminExcel_${s.username}" accept=".xlsx, .xls, .csv" style="font-size:11px; margin-bottom:4px;"><br>
                       <button onclick="uploadSchoolExcel('${s.username}')" style="background:#27ae60; padding:3px 8px; font-size:11px; width:auto;">📤 Upload Excel</button>
+                      <button onclick="downloadExcelSample()" style="background:#2980b9; padding:3px 8px; font-size:11px; width:auto;">📥 Sample</button>
+                      <button onclick="exportSchoolExcel('${s.username}')" style="background:#8e44ad; padding:3px 8px; font-size:11px; width:auto;">📤 Export</button>
                   </td>
                   <td>
                       <button onclick="deleteSchool(${index})" style="background:#c0392b; padding:4px 8px; font-size:11px; width:auto;">Delete</button>
@@ -1451,38 +2294,81 @@
       }
   }
 
-  async function uploadSchoolExcel(targetUsername) {
-      let fileInput = document.getElementById('adminExcel_' + targetUsername);
-      if(!fileInput.files || fileInput.files.length === 0) {
-          alert("कृपया आधी फाईल निवडा!");
-          return;
-      }
-      let file = fileInput.files[0];
-      let reader = new FileReader();
-      reader.onload = async function(evt) {
-          try {
-              let data = new Uint8Array(evt.target.result);
-              let workbook = XLSX.read(data, {type: 'array'});
-              let parsedData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {header: 1});
-              
-              let docRef = db.collection("portalData").doc("profile_" + targetUsername);
-              let docSnap = await docRef.get();
-              let existingInfo = docSnap.exists ? (docSnap.data().info || {}) : {};
+  function getExpectedExcelHeaders(){return ["जनरल रजिस्टर क्रमांक","माध्यम","PEN आयडी","आधार क्रमांक","विद्यार्थ्याचे पूर्ण नाव","आईचे नाव","राष्ट्रीयत्व","मातृभाषा","धर्म","जात","पोटजात","जन्मस्थळ","राज्य","देश","जन्मदिनांक","जन्मदिनांक (अक्षरी)","यापूर्वीची शाळा","प्रवेश दिनांक","प्रवेश इयत्ता","शाळा सोडल्याचा दिनांक","लिंग"];}
 
-              await docRef.set({
-                  info: existingInfo,
-                  excel: JSON.stringify(parsedData)
-              }, { merge: true });
+  function excelColumnName(n){let s='';n++;while(n){let r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s;}
 
-              alert("शाळा '" + targetUsername + "' साठी एक्सेल डेटा यशस्वीरित्या अपलोड झाला!");
-          } catch(err) {
-              alert("Error uploading: " + err.message);
-          }
-      };
-      reader.readAsArrayBuffer(file);
+  function dateValueForValidation(v){
+      if(v instanceof Date && !isNaN(v.getTime())) return String(v.getDate()).padStart(2,'0')+'-'+String(v.getMonth()+1).padStart(2,'0')+'-'+v.getFullYear();
+      return normalizeStudentDate(v);
   }
 
-  async function deleteSchool(index) {
+  function isValidStudentDate(v){
+      const s=dateValueForValidation(v),m=s.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+      if(!m)return false;
+      const d=Number(m[1]),mo=Number(m[2]),y=Number(m[3]);
+      if(y<1900||y>2100||mo<1||mo>12||d<1||d>31)return false;
+      const dt=new Date(y,mo-1,d);
+      return dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d;
+  }
+
+  function validateUploadedExcel(rows){
+      const expected=getExpectedExcelHeaders(),errors=[];
+      if(!rows||!rows.length)return["Excel रिकामी आहे."];
+      const h=(rows[0]||[]).map(v=>String(v??'').trim());
+      expected.forEach((x,i)=>{if(h[i]!==x)errors.push("Header "+excelColumnName(i)+" चुकीचा. अपेक्षित: '"+x+"' ; मिळाले: '"+(h[i]||"(रिकामा)")+"'");});
+      if(h.length>expected.length)errors.push("अनावश्यक अतिरिक्त column: "+h.slice(expected.length).join(", "));
+      rows.slice(1).forEach((row,idx)=>{
+          const er=idx+2;if(row.every(v=>String(v??'').trim()===''))return;
+          if(!String(row[0]??'').trim())errors.push("Row "+er+" : रजिस्टर नंबर रिकामा आहे.");
+          if(!String(row[4]??'').trim())errors.push("Row "+er+" : विद्यार्थ्याचे पूर्ण नाव रिकामे आहे.");
+          [14,17,19].forEach(i=>{const v=row[i];if(String(v??'').trim()&&!isValidStudentDate(v))errors.push("Row "+er+" : "+expected[i]+" '"+String(v)+"' चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या.");});
+          const gender=String(row[20]??'').trim();if(gender&&!["Male","Female"].includes(gender))errors.push("Row "+er+" : लिंग चुकीचे आहे — फक्त Male किंवा Female निवडा.");
+          const aadhaar=String(row[3]??'').replace(/\s/g,'');if(aadhaar&&!/^\d{12}$/.test(aadhaar))errors.push("Row "+er+" : आधार क्रमांक 12 अंकी असावा.");
+          if(errors.length>=80)return;
+      });return errors.slice(0,80);
+  }
+
+  async function downloadExcelSample(){
+      try{
+          if(typeof ExcelJS==='undefined'){alert("Excel Template module load झाला नाही. कृपया पेज Refresh करून पुन्हा प्रयत्न करा.");return;}
+          const wb=new ExcelJS.Workbook(),ws=wb.addWorksheet("StudentData"),headers=getExpectedExcelHeaders();
+          ws.addRow(headers);
+          ws.addRow(["1","मराठी","PEN001","123456789012","नमुना विद्यार्थी","नमुना आई","भारतीय","मराठी","हिंदू","General","","गाव, तालुका, जिल्हा","महाराष्ट्र","भारत",new Date(2010,5,15),"","नमुना मागील शाळा",new Date(2020,6,30),"10 वी",new Date(2026,2,31),"Male"]);
+          ws.views=[{state:'frozen',ySplit:1}];ws.autoFilter={from:'A1',to:'U1'};
+          ws.getRow(1).eachCell(cell=>{cell.font={bold:true};cell.alignment={vertical:'middle',horizontal:'center',wrapText:true};cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:'D9EAF7'}};});
+          ws.getRow(1).height=30;
+          [15,18,20].forEach(col=>{ws.getColumn(col).numFmt='dd-mm-yyyy';});
+          ws.getColumn(15).width=15;ws.getColumn(18).width=15;ws.getColumn(20).width=22;ws.getColumn(21).width=12;
+          for(let i=1;i<=21;i++)if(![15,18,20,21].includes(i))ws.getColumn(i).width=18;
+          for(let row=2;row<=1001;row++){
+              ws.getCell(row,21).dataValidation={type:'list',allowBlank:true,formulae:['"Male,Female"']};
+              [15,18,20].forEach(col=>{ws.getCell(row,col).numFmt='dd-mm-yyyy';});
+          }
+          const buffer=await wb.xlsx.writeBuffer(),blob=new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),a=document.createElement('a');
+          a.href=URL.createObjectURL(blob);a.download='Dakhala_General_Register_Student_Template.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      }catch(err){alert("Excel Template तयार करताना Error: "+err.message);}
+  }
+
+  async function exportSchoolExcel(targetUsername){
+      try{const snap=await db.collection("portalData").doc("profile_"+targetUsername).get();if(!snap.exists||!snap.data().excel){alert("या शाळेसाठी Cloud वर Excel data उपलब्ध नाही.");return;}const raw=snap.data().excel,rows=typeof raw==='string'?JSON.parse(raw):raw;if(!Array.isArray(rows)||!rows.length){alert("Export करण्यासाठी data उपलब्ध नाही.");return;}const wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,"StudentData");XLSX.writeFile(wb,"Dakhala_Backup_"+targetUsername+"_"+new Date().toISOString().slice(0,10)+".xlsx");alert("Cloud मधील data Excel backup म्हणून download झाला.");}catch(err){alert("Export error: "+err.message);}
+  }
+
+  async function uploadSchoolExcel(targetUsername){
+      let fileInput=document.getElementById('adminExcel_'+targetUsername);if(!fileInput.files||!fileInput.files.length){alert("कृपया आधी फाईल निवडा!");return;}
+      let reader=new FileReader();reader.onload=async function(evt){try{
+          let workbook=XLSX.read(new Uint8Array(evt.target.result),{type:'array',cellDates:true});if(!workbook.SheetNames.length)throw new Error("Excel मध्ये कोणतीही sheet नाही.");
+          let parsedData=XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]],{header:1,defval:"",raw:true}),errors=validateUploadedExcel(parsedData);
+          if(errors.length){alert("❌ Excel Upload थांबवला. खालील चुका दुरुस्त करा:\n\n• "+errors.join("\n• "));return;}
+          parsedData.slice(1).forEach(row=>{[14,17,19].forEach(i=>{if(row[i] instanceof Date)row[i]=dateValueForValidation(row[i]);});row[15]="";while(row.length<21)row.push("");row[20]=String(row[20]||"").trim();});
+          if(!confirm("ही Excel '"+targetUsername+"' च्या Cloud data ला replace करेल. Backup/Export घेतले आहे का?\n\nOK = Upload करा"))return;
+          let docRef=db.collection("portalData").doc("profile_"+targetUsername),snap=await docRef.get(),data=snap.exists?snap.data():{},oldExcel=data.excel||null;
+          await docRef.set({info:data.info||{},excelBackup:oldExcel,excelBackupAt:new Date().toISOString(),excel:JSON.stringify(parsedData)},{merge:true});
+          alert("✅ Excel यशस्वीरित्या Upload झाला. जुना Cloud data backup म्हणून जतन केला आहे.");fileInput.value="";
+      }catch(err){alert("❌ Excel Upload Error: "+err.message);}};reader.readAsArrayBuffer(file);
+  }
+
+async function deleteSchool(index) {
       if(confirm("Delete school?")) {
           registeredSchoolsList.splice(index, 1);
           await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
@@ -1562,20 +2448,54 @@
       let adm = document.getElementById('entAdmDate').value.trim();
       let admClass = document.getElementById('entAdmClass').value.trim();
       let prevSchool = document.getElementById('entPrevSchool').value.trim();
+       let gender = document.getElementById('entGender').value.trim();
 
       if(!reg || !name) { alert("कृपया किमान रजिस्टर नंबर आणि विद्यार्थ्याचे नाव भरा!"); return; }
+       if(dob && !isValidStudentDate(dob)) { alert("जन्मदिनांक चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या."); return; }
+       if(adm && !isValidStudentDate(adm)) { alert("प्रवेश दिनांक चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या."); return; }
+       if(gender && !["Male","Female"].includes(gender)) { alert("लिंग फक्त Male किंवा Female असावे."); return; }
 
-      let newRow = [reg, med, studId, aadhaar, name, mother, nat, lang, rel, caste, "", bp, state, country, dob, "", prevSchool, adm, admClass, "१० वी", "अ"];
+      let newRow = [reg, med, studId, aadhaar, name, mother, nat, lang, rel, caste, "", bp, state, country, dob, "", prevSchool, adm, admClass, "", gender];
       excelData.push(newRow);
 
-      let user = getActiveUser() || 'admin';
+      let role = getActiveRole();
+      let user = (role === 'master' && window.adminEditingTarget) ? window.adminEditingTarget : (getActiveUser() || 'admin');
+
       try {
-          await db.collection("portalData").doc("profile_" + user).set({
-              info: currentSchoolProfile || {},
-              excel: JSON.stringify(excelData)
-          }, { merge: true });
-          alert("विद्यार्थ्याची माहिती यशस्वीरित्या सेव्ह झाली!");
-      } catch(e) { alert("Error: " + e.message); }
+          const docRef = db.collection("portalData").doc("profile_" + user);
+          await docRef.set({ info: currentSchoolProfile || {}, excel: JSON.stringify(excelData) }, { merge: true });
+
+          const verifySnap = await docRef.get();
+          if(!verifySnap.exists) {
+              excelData.pop();
+              alert("❌ Firebase Cloud Verification Failed!\nDocument सापडला नाही. माहिती पुन्हा सेव्ह करा.");
+              return;
+          }
+          const verifyData = verifySnap.data() || {};
+          const verifyExcel = typeof verifyData.excel === 'string' ? JSON.parse(verifyData.excel) : (verifyData.excel || []);
+          const found = verifyExcel.some(row => Array.isArray(row) && String(row[0] || '').trim() === String(reg).trim() && String(row[4] || '').trim() === String(name).trim());
+
+          if(found) {
+              alert("☁️ Firebase Cloud Save Confirmed ✅\n\nविद्यार्थी: " + name + "\nरजिस्टर नं.: " + reg + "\n\nFirebase मध्ये माहिती प्रत्यक्ष तपासून सेव्ह झाल्याचे निश्चित झाले.");
+              clearStudentEntryForm();
+          } else {
+              excelData.pop();
+              alert("❌ Firebase Cloud Verification Failed!\n\nमाहिती Cloud वर सापडली नाही. कृपया पुन्हा Save करा.");
+          }
+      } catch(e) {
+          excelData.pop();
+          alert("❌ Firebase Save Error:\n" + e.message);
+      }
+  }
+
+  function clearStudentEntryForm(){const ids=['entReg','entStudId','entAadhaar','entName','entMother','entBirthPlace','entState','entCountry','entDob','entAdmDate','entAdmClass','entPrevSchool','entRel','entCaste'];ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});const med=document.getElementById('entMed');if(med)med.value='मराठी';const nat=document.getElementById('entNat');if(nat)nat.value='भारतीय';const lang=document.getElementById('entLang');if(lang)lang.value='मराठी';const gender=document.getElementById('entGender');if(gender)gender.value='';setTimeout(()=>document.getElementById('entName')?.focus(),150);}
+function validateDakhalaPrintFields(){
+      const leave=document.getElementById('outLeavingDate'),date=document.getElementById('currentDate');
+      const missing=[];
+      if(!leave || !normalizeStudentDate(leave.value.trim())) missing.push('जनरल रजिस्टरमध्ये शाळा सोडल्याचा दिनांक');
+      if(!date || !normalizeStudentDate(date.value.trim())) missing.push('सहीखालील दिनांक');
+      if(missing.length){ alert('⚠️ प्रिंट करण्यापूर्वी खालील माहिती पूर्ण असणे आवश्यक आहे:\n\n• '+missing.join('\n• ')); return false; }
+      date.value=normalizeStudentDate(date.value.trim()); return true;
   }
 
   function toMarathiDigits(str) {
@@ -1643,6 +2563,503 @@
       }
       fitLcToScreen();
   });
+
+  // =========================================================
+  // ADD-ON ONLY: BONAFIDE + STUDENT PHOTO
+  // Existing Entry Form / LC / GR / School Info code is not replaced.
+  // Photos are stored separately in Firestore so old excelData rows are untouched.
+  // =========================================================
+  let selectedBonafideStudent = null;
+  let selectedTeacherStudent = null;
+  let teacherPhotoDataUrl = "";
+
+  function currentAcademicYearMarathi() {
+      const d = new Date();
+      const y = d.getMonth() >= 5 ? d.getFullYear() : d.getFullYear() - 1;
+      return toMarathiDigits(String(y) + "-" + String((y + 1)).slice(-2));
+  }
+
+  function prepareBonafideDefaults() {
+      const ay = document.getElementById('bonaAcademicYear');
+      const dt = document.getElementById('bonaIssueDate');
+      if(ay && !ay.value) ay.value = currentAcademicYearMarathi();
+      if(dt && !dt.value) {
+          const d = new Date();
+          dt.value = d.toISOString().slice(0,10);
+      }
+  }
+
+  function searchBonafideStudents() {
+      const q = normalizeSearchText(document.getElementById('bonaSearch').value);
+      const box = document.getElementById('bonaResults');
+      if(!q || excelData.length <= 1) { box.style.display='none'; box.innerHTML=''; return; }
+      const matches = [];
+      for(let i=1;i<excelData.length;i++){
+          const r=excelData[i]||[];
+          if(normalizeSearchText(r[0]).includes(q) || normalizeSearchText(r[4]).includes(q)){
+              matches.push({rowIndex:i,row:r});
+              if(matches.length>=15) break;
+          }
+      }
+      if(!matches.length){
+          box.innerHTML='<div class="bona-result">विद्यार्थी सापडला नाही.</div>';
+          box.style.display='block';
+          return;
+      }
+      box.innerHTML=matches.map(m =>
+          `<div class="bona-result" onclick="selectBonafideStudent(${m.rowIndex})"><strong>${m.row[0]||''}</strong> — ${m.row[4]||''} <span style="float:right">${m.row[18]||''}</span></div>`
+      ).join('');
+      box.style.display='block';
+  }
+
+  function selectBonafideStudent(rowIndex) {
+      selectedBonafideStudent = {rowIndex:rowIndex,row:excelData[rowIndex]};
+      const r=selectedBonafideStudent.row;
+      document.getElementById('bonaSearch').value = `${r[0]||''} — ${r[4]||''}`;
+      document.getElementById('bonaResults').style.display='none';
+      generateBonafide();
+  }
+
+  function escBona(v) {
+      return (v===undefined || v===null) ? '' : String(v)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+  }
+
+  function getIssueDateMarathi() {
+      const v=document.getElementById('bonaIssueDate').value;
+      if(!v) return '';
+      const p=v.split('-');
+      return p.length===3 ? `${toMarathiDigits(p[2])} ${marathiMonthsFull[parseInt(p[1],10)]||''} ${toMarathiDigits(p[0])}` : v;
+  }
+
+  async function getStudentPhoto(reg) {
+      const user = (getActiveRole()==='master' && window.adminEditingTarget) ? window.adminEditingTarget : (getActiveUser()||'admin');
+      if(!reg) return '';
+      try {
+          const d=await db.collection("portalData").doc("studentPhotos_"+user).collection("photos").doc(safePhotoDocId(reg)).get();
+          return d.exists ? (d.data().photo || '') : '';
+      } catch(e) {
+          console.warn('Photo read error',e);
+          return '';
+      }
+  }
+
+  function safePhotoDocId(reg) {
+      return String(reg||'').trim().replace(/[\/\\#\?\[\]\s]+/g,'_').slice(0,120) || 'blank';
+  }
+
+  async function generateBonafide() {
+      if(!selectedBonafideStudent) {
+          const q=normalizeSearchText(document.getElementById('bonaSearch').value);
+          if(q) {
+              for(let i=1;i<excelData.length;i++){
+                  const r=excelData[i]||[];
+                  if(normalizeSearchText(r[0])===q || normalizeSearchText(r[4])===q || normalizeSearchText(r[0]).includes(q) || normalizeSearchText(r[4]).includes(q)){
+                      selectedBonafideStudent={rowIndex:i,row:r}; break;
+                  }
+              }
+          }
+      }
+      if(!selectedBonafideStudent){ alert('कृपया प्रथम विद्यार्थी शोधून निवडा.'); return; }
+      const r=selectedBonafideStudent.row;
+      const photo=await getStudentPhoto(r[0]);
+      const logo=schoolLogoBase64 || currentSchoolProfile.logo || '';
+      const photoHtml=photo ? `<img class="bona-photo" src="${photo}" alt="">` : '';
+      const inst=escBona(currentSchoolProfile.inst||'');
+      const school=escBona(currentSchoolProfile.school||'');
+      const address=escBona(currentSchoolProfile.address||'');
+      const academic=escBona(document.getElementById('bonaAcademicYear').value||currentAcademicYearMarathi());
+      const issueDate=escBona(getIssueDateMarathi());
+
+      const card=document.getElementById('bonaCard');
+      card.innerHTML=`
+        <div class="bona-head">
+          ${logo ? `<img class="bona-logo" src="${logo}" alt="">` : ''}
+          ${photoHtml}
+          <h1>${inst}</h1>
+          <h2>${school}</h2>
+          <h3>${address}</h3>
+          <div class="bona-title">बोनाफाईड सर्टिफिकेट</div>
+        </div>
+        <div class="bona-body">
+          <div class="bona-line">दाखला देण्यात येतो कि, <span class="bona-field">${escBona(r[4])}</span> हा/ही या विद्यालयाचा/विद्यालयाची विद्यार्थी/विद्यार्थिनी आहे.</div>
+          <div class="bona-line">तो/ती सन <span class="bona-field">${academic}</span> या शैक्षणिक वर्षात इयत्ता <span class="bona-field">${escBona(r[18])}</span> मध्ये शिकत आहे. विद्यालयाच्या जनरल रजिस्टर मधील रजिस्टर नंबर <span class="bona-field">${escBona(r[0])}</span> नुसार त्याची/तिची माहिती खालीलप्रमाणे आहे.</div>
+          <div class="bona-line">आईचे नाव : <span class="bona-field">${escBona(r[5])}</span>
+            <span style="display:inline-block;margin-left:35mm;">धर्म : <span class="bona-field">${escBona(r[8])}</span></span>
+            <span style="display:inline-block;margin-left:18mm;">जात : <span class="bona-field">${escBona(r[9])}</span></span>
+          </div>
+          <div class="bona-line">जन्मतारीख : <span class="bona-field">${escBona(formatExcelDate(r[14]))}</span>
+            <span style="display:inline-block;margin-left:30mm;">अक्षरी : <span class="bona-field">${escBona(dateToMarathiWords(r[14]))}</span></span>
+          </div>
+          <div class="bona-line">जन्मस्थळ : <span class="bona-field">${escBona(r[11])}</span></div>
+        </div>
+        <div class="bona-footer">
+          <div class="sign">दिनांक : ${issueDate}</div>
+          <div class="sign">वर्गशिक्षक सही</div>
+          <div class="sign">मुख्याध्यापक</div>
+        </div>`;
+      card.style.display='block';
+  }
+
+  async function printBonafide() {
+      const source = document.getElementById('bonaCard');
+      if(!source) {
+          alert('Bonafide area सापडला नाही.');
+          return;
+      }
+
+      if(!source.innerHTML.trim()) {
+          await generateBonafide();
+      }
+      if(!source.innerHTML.trim()) return;
+
+      // Main page चे print CSS वापरायचे नाही. फक्त Bonafide card स्वतंत्र print page मध्ये पाठवतो.
+      const printWindow = window.open('', '_blank', 'width=900,height=700');
+      if(!printWindow) {
+          alert('Print window उघडता आली नाही. Browser मध्ये pop-up allow करा.');
+          return;
+      }
+
+      const card = source.cloneNode(true);
+
+      // Card ची ID वेगळी ठेवतो, त्यामुळे जुन्या #bonaCard print rules लागू होणार नाहीत.
+      card.removeAttribute('id');
+
+      // फक्त Bonafide साठी आवश्यक CSS — main page मधील @media print पूर्णपणे टाळले आहे.
+      const printCss = `
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 210mm !important;
+            min-height: 297mm !important;
+            background: #fff !important;
+            color: #000 !important;
+        }
+
+        body {
+            font-family: 'Sakal Marathi','Nirmala UI','Mangal','Noto Sans Devanagari',Arial,sans-serif !important;
+        }
+
+        .bona-format {
+            display: block !important;
+            position: relative !important;
+            visibility: visible !important;
+            width: 190mm !important;
+            height: 132mm !important;
+            min-height: 132mm !important;
+            max-height: 132mm !important;
+            margin: 8mm auto 0 !important;
+            padding: 6mm 7mm 5mm !important;
+            border: 3px double #000 !important;
+            background: #fff !important;
+            color: #000 !important;
+            overflow: hidden !important;
+            font-family: 'Sakal Marathi','Nirmala UI','Mangal','Noto Sans Devanagari',Arial,sans-serif !important;
+            font-size: 15px !important;
+            line-height: 1.48 !important;
+        }
+
+        .bona-head {
+            position: relative !important;
+            width: 100% !important;
+            min-height: 38mm !important;
+            padding: 0 39mm !important;
+            margin: 0 !important;
+            text-align: center !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            align-items: center !important;
+        }
+
+        .bona-head h1,
+        .bona-head h2,
+        .bona-head h3,
+        .bona-head p {
+            margin: 0 !important;
+            line-height: 1.28 !important;
+            max-width: 100% !important;
+        }
+
+        .bona-head h1 { font-size: 17px !important; font-weight: 700 !important; }
+        .bona-head h2 { font-size: 17px !important; font-weight: 800 !important; margin-top: 1mm !important; }
+        .bona-head h3 { font-size: 14px !important; font-weight: 700 !important; margin-top: 1mm !important; }
+        .bona-title { font-size: 18px !important; font-weight: 800 !important; margin-top: 2mm !important; }
+
+        .bona-logo {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 30mm !important;
+            height: 30mm !important;
+            object-fit: contain !important;
+            z-index: 2 !important;
+        }
+
+        .bona-photo {
+            position: absolute !important;
+            right: 0 !important;
+            top: 0 !important;
+            width: 27mm !important;
+            height: 35mm !important;
+            object-fit: cover !important;
+            object-position: center top !important;
+            z-index: 3 !important;
+        }
+
+        .bona-body {
+            position: relative !important;
+            z-index: 1 !important;
+            margin-top: 2mm !important;
+            text-align: left !important;
+            font-weight: 600 !important;
+        }
+
+        .bona-line {
+            margin: 1.2mm 0 !important;
+        }
+
+        .bona-field {
+            font-weight: 800 !important;
+        }
+
+        .bona-footer {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: flex-end !important;
+            margin-top: 9mm !important;
+            font-weight: 700 !important;
+        }
+
+        .bona-footer .sign {
+            width: 30% !important;
+            text-align: center !important;
+        }
+
+        .bona-photo:not([src]),
+        .bona-photo[src=""] {
+            display: none !important;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        @media print {
+            html, body {
+                width: 210mm !important;
+                min-height: 297mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #fff !important;
+            }
+
+            .bona-format {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+        }
+      `;
+
+      printWindow.document.open();
+      printWindow.document.write(
+        '<!DOCTYPE html>' +
+        '<html lang="mr">' +
+        '<head>' +
+        '<meta charset="UTF-8">' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+        '<title>Bonafide Print</title>' +
+        '<style>' + printCss + '</style>' +
+        '</head>' +
+        '<body></body>' +
+        '</html>'
+      );
+      printWindow.document.close();
+
+      // Clone झालेला card print window मध्ये घालतो.
+      printWindow.document.body.appendChild(card);
+
+      // Logo/photo data-url असतील तर त्यांचे rendering पूर्ण होईपर्यंत थांबतो.
+      const images = Array.from(printWindow.document.images);
+      await Promise.all(images.map(img => {
+          if(img.complete) return Promise.resolve();
+          return new Promise(resolve => {
+              img.onload = resolve;
+              img.onerror = resolve;
+          });
+      }));
+
+      setTimeout(() => {
+          printWindow.focus();
+          printWindow.print();
+      }, 700);
+
+      printWindow.onafterprint = function() {
+          setTimeout(() => {
+              try { printWindow.close(); } catch(e) {}
+          }, 300);
+      };
+  }
+
+
+  function prepareTeacherPhotoModule() {
+      fillTeacherClassSelect();
+      const link=document.getElementById('teacherPhotoShareLink');
+      if(link) link.value=window.location.href.split('?')[0]+'?teacherPhoto=1&school='+encodeURIComponent(getActiveUser()||'');
+      filterTeacherStudents();
+  }
+
+  function fillTeacherClassSelect() {
+      const sel=document.getElementById('teacherClassSelect');
+      if(!sel) return;
+      const old=sel.value;
+      const set=new Set();
+      for(let i=1;i<excelData.length;i++){
+          const c=(excelData[i]||[])[18];
+          if(c) set.add(String(c).trim());
+      }
+      const classes=Array.from(set);
+      classes.sort((a,b)=>a.localeCompare(b,'mr'));
+      sel.innerHTML='<option value="">-- वर्ग निवडा --</option>'+classes.map(c=>`<option value="${escBona(c)}">${escBona(c)}</option>`).join('');
+      if(classes.includes(old)) sel.value=old;
+  }
+
+  function loadTeacherClassStudents() {
+      document.getElementById('teacherStudentSearch').value='';
+      filterTeacherStudents();
+  }
+
+  function filterTeacherStudents() {
+      const sel=document.getElementById('teacherClassSelect');
+      const q=normalizeSearchText(document.getElementById('teacherStudentSearch').value||'');
+      const box=document.getElementById('teacherStudentList');
+      if(!box) return;
+      const cls=normalizeSearchText(sel ? sel.value : '');
+      const rows=[];
+      for(let i=1;i<excelData.length;i++){
+          const r=excelData[i]||[];
+          if(cls && normalizeSearchText(r[18])!==cls) continue;
+          if(q && !normalizeSearchText(r[0]).includes(q) && !normalizeSearchText(r[4]).includes(q)) continue;
+          rows.push({rowIndex:i,row:r});
+          if(rows.length>=100) break;
+      }
+      if(!cls){ box.innerHTML='<div style="padding:12px;color:#777;">प्रथम वर्ग निवडा.</div>'; return; }
+      if(!rows.length){ box.innerHTML='<div style="padding:12px;color:#777;">विद्यार्थी सापडला नाही.</div>'; return; }
+      box.innerHTML=rows.map(x=>`<div class="teacher-student" onclick="selectTeacherStudent(${x.rowIndex})"><span><strong>${escBona(x.row[0])}</strong> — ${escBona(x.row[4])}</span><span>${escBona(x.row[18])}</span></div>`).join('');
+  }
+
+  async function selectTeacherStudent(rowIndex) {
+      const r=excelData[rowIndex];
+      selectedTeacherStudent={rowIndex:rowIndex,row:r};
+      document.getElementById('teacherSelectedInfo').innerHTML=`रजिस्टर नं. <strong>${escBona(r[0])}</strong> — ${escBona(r[4])}<br><span style="font-size:12px;color:#777;">इयत्ता: ${escBona(r[18])}</span>`;
+      teacherPhotoDataUrl=await getStudentPhoto(r[0]);
+      const img=document.getElementById('teacherPhotoPreview');
+      if(teacherPhotoDataUrl){img.src=teacherPhotoDataUrl;img.style.display='block';}
+      else {img.removeAttribute('src');img.style.display='none';}
+  }
+
+  function previewTeacherPhoto(e) {
+      const file=e.target.files && e.target.files[0];
+      if(!file || !selectedTeacherStudent) return;
+      const reader=new FileReader();
+      reader.onload=function(ev){
+          resizeStudentPhoto(ev.target.result).then(data=>{
+              teacherPhotoDataUrl=data;
+              const img=document.getElementById('teacherPhotoPreview');
+              img.src=data; img.style.display='block';
+          }).catch(()=>{teacherPhotoDataUrl=ev.target.result;document.getElementById('teacherPhotoPreview').src=teacherPhotoDataUrl;document.getElementById('teacherPhotoPreview').style.display='block';});
+      };
+      reader.readAsDataURL(file);
+  }
+
+  function resizeStudentPhoto(src) {
+      return new Promise((resolve,reject)=>{
+          const img=new Image();
+          img.onload=function(){
+              const targetW=450,targetH=600,canvas=document.createElement('canvas'); canvas.width=targetW; canvas.height=targetH;
+              const ctx=canvas.getContext('2d',{willReadFrequently:true}); ctx.fillStyle='#fff'; ctx.fillRect(0,0,targetW,targetH);
+              const scale=Math.max(targetW/img.width,targetH/img.height),w=img.width*scale,h=img.height*scale,x=(targetW-w)/2,y=(targetH-h)/2;
+              ctx.drawImage(img,x,y,w,h);
+              const im=ctx.getImageData(0,0,targetW,targetH),d=im.data; let sum=0,n=0;
+              for(let i=0;i<d.length;i+=16){sum+=(d[i]+d[i+1]+d[i+2])/3;n++}
+              const bright=(128-sum/n)*0.22,contrast=1.12;
+              for(let i=0;i<d.length;i+=4){d[i]=Math.max(0,Math.min(255,(d[i]-128)*contrast+128+bright));d[i+1]=Math.max(0,Math.min(255,(d[i+1]-128)*contrast+128+bright));d[i+2]=Math.max(0,Math.min(255,(d[i+2]-128)*contrast+128+bright))}
+              ctx.putImageData(im,0,0); resolve(canvas.toDataURL('image/jpeg',0.88));
+          }; img.onerror=reject; img.src=src;
+      });
+  }
+
+  async function saveTeacherStudentPhoto() {
+      if(!selectedTeacherStudent){alert('कृपया विद्यार्थी निवडा.');return;}
+      if(!teacherPhotoDataUrl){alert('कृपया फोटो काढा किंवा निवडा.');return;}
+      const publicUser=new URLSearchParams(window.location.search).get('school');
+      const user=publicUser || ((getActiveRole()==='master' && window.adminEditingTarget) ? window.adminEditingTarget : (getActiveUser()||'admin'));
+      try{
+          await db.collection("portalData").doc("studentPhotos_"+user).collection("photos").doc(safePhotoDocId(selectedTeacherStudent.row[0])).set({
+              photo:teacherPhotoDataUrl,
+              reg:String(selectedTeacherStudent.row[0]||''),
+              name:String(selectedTeacherStudent.row[4]||''),
+              className:String(selectedTeacherStudent.row[18]||''),
+              updatedAt:new Date().toISOString()
+          });
+          alert('विद्यार्थ्याचा फोटो यशस्वीरित्या सेव्ह झाला.');
+      }catch(e){alert('फोटो सेव्ह करताना Error: '+e.message);}
+  }
+
+  async function removeTeacherStudentPhoto() {
+      if(!selectedTeacherStudent){alert('कृपया विद्यार्थी निवडा.');return;}
+      if(!confirm('या विद्यार्थ्याचा फोटो काढून टाकायचा आहे का?')) return;
+      const user=(getActiveRole()==='master' && window.adminEditingTarget) ? window.adminEditingTarget : (getActiveUser()||'admin');
+      try{
+          await db.collection("portalData").doc("studentPhotos_"+user).collection("photos").doc(safePhotoDocId(selectedTeacherStudent.row[0])).delete();
+          teacherPhotoDataUrl='';
+          document.getElementById('teacherPhotoPreview').removeAttribute('src');
+          document.getElementById('teacherPhotoPreview').style.display='none';
+          alert('फोटो काढून टाकला.');
+      }catch(e){alert('फोटो काढताना Error: '+e.message);}
+  }
+
+  async function loadGenPhotoCell(rowIndex,reg) {
+      const cell=document.getElementById('genPhotoCell_'+rowIndex);
+      if(!cell) return;
+      const photo=await getStudentPhoto(reg);
+      if(photo) cell.innerHTML=`<img src="${photo}" class="photo-mini" alt=""> <button onclick="openTeacherPhotoForReg('${String(reg||'').replace(/'/g,"\\'")}')">बदल</button>`;
+      else cell.innerHTML=`<button onclick="openTeacherPhotoForReg('${String(reg||'').replace(/'/g,"\\'")}')">📷 फोटो Upload</button>`;
+  }
+
+  function openTeacherPhotoForReg(reg) {
+      openTab('tabTeacherPhoto').then(()=>{
+          const r=normalizeSearchText(reg);
+          for(let i=1;i<excelData.length;i++){
+              if(normalizeSearchText(excelData[i][0])===r){ 
+                  const cls=excelData[i][18]||'';
+                  document.getElementById('teacherClassSelect').value=cls;
+                  filterTeacherStudents();
+                  selectTeacherStudent(i);
+                  break;
+              }
+          }
+      });
+  }
+
+  function copyTeacherPhotoLink() {
+      const input=document.getElementById('teacherPhotoShareLink');
+      if(!input) return;
+      const link=input.value || (window.location.href.split('?')[0]+'?teacherPhoto=1&school='+encodeURIComponent(getActiveUser()||''));
+      navigator.clipboard.writeText(link).then(()=>alert('वर्गशिक्षकांची फोटो लिंक Copy झाली.')).catch(()=>{
+          input.select(); document.execCommand('copy'); alert('लिंक Copy झाली.');
+      });
+  }
 </script>
 
 </body>
