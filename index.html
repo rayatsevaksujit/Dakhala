@@ -1429,79 +1429,111 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
   async function handleLogin() {
-      let u = document.getElementById('loginUser').value.trim();
-      let p = document.getElementById('loginPass').value;
+      const userEl=document.getElementById('loginUser');
+      const passEl=document.getElementById('loginPass');
+      const u=forceEnglishCredentialValue(userEl ? userEl.value.trim() : '');
+      const p=forceEnglishCredentialValue(passEl ? passEl.value : '');
 
-      // Master Admin: 5 चुकीचे प्रयत्न => 5 मिनिटे लॉक.
-      if(u === 'admin') {
-          const now = Date.now();
-          if(now < adminLockUntil) {
-              const remaining = Math.ceil((adminLockUntil - now) / 60000);
-              alert('सुरक्षेसाठी Admin Login तात्पुरते लॉक आहे. ' + remaining + ' मिनिटांनी पुन्हा प्रयत्न करा.');
-              return;
+      if(!u || !p){ alert('कृपया Username आणि Password भरा.'); return; }
+
+      // Master Admin login
+      if(u.toLowerCase()==='admin'){
+          const now=Date.now();
+          if(now < adminLockUntil){
+              // Correct password असल्यास जुन्या lock मुळे कायम अडथळा येऊ नये.
+              if(await verifyMasterPassword(p)){
+                  adminFailedAttempts=0; adminLockUntil=0;
+                  sessionStorage.removeItem('adminFailedAttempts');
+                  sessionStorage.removeItem('adminLockUntil');
+              }else{
+                  const remaining=Math.ceil((adminLockUntil-now)/60000);
+                  alert('सुरक्षेसाठी Admin Login तात्पुरते लॉक आहे. '+remaining+' मिनिटांनी पुन्हा प्रयत्न करा.');
+                  return;
+              }
           }
 
-          if(await verifyMasterPassword(p)) {
-              adminFailedAttempts = 0;
-              adminLockUntil = 0;
+          if(await verifyMasterPassword(p)){
+              adminFailedAttempts=0; adminLockUntil=0;
               sessionStorage.removeItem('adminFailedAttempts');
               sessionStorage.removeItem('adminLockUntil');
-              sessionStorage.setItem('activeUser', 'admin');
-              sessionStorage.setItem('activeRole', 'master');
-              sessionStorage.setItem('loginAt', String(Date.now()));
-              document.getElementById('loginScreen').style.display = 'none';
-              document.getElementById('mainAppContainer').style.display = 'block';
-          document.documentElement.classList.add('app-logged-in');
-          document.body.classList.add('app-logged-in');
-              await fetchCloudData('admin', 'master');
-              setupDashboard('master', 'admin');
-              goHome();
-              if(new URLSearchParams(window.location.search).get('teacherPhoto') === '1') {
-                  setTimeout(() => openTab('tabTeacherPhoto'), 100);
+              sessionStorage.setItem('activeUser','admin');
+              sessionStorage.setItem('activeRole','master');
+              sessionStorage.setItem('loginAt',String(Date.now()));
+              document.getElementById('loginScreen').style.display='none';
+              document.getElementById('mainAppContainer').style.display='block';
+              document.documentElement.classList.add('app-logged-in');
+              document.body.classList.add('app-logged-in');
+              try{
+                  await fetchCloudData('admin','master');
+                  setupDashboard('master','admin');
+                  goHome();
+                  if(new URLSearchParams(window.location.search).get('teacherPhoto')==='1'){
+                      setTimeout(()=>openTab('tabTeacherPhoto'),100);
+                  }
+              }catch(e){
+                  console.error('Admin post-login error:',e);
+                  alert('Login झाले, पण Cloud data load करताना त्रुटी आली: '+(e.message||e));
               }
               return;
           }
 
           adminFailedAttempts++;
-          sessionStorage.setItem('adminFailedAttempts', String(adminFailedAttempts));
-          if(adminFailedAttempts >= 5) {
-              adminLockUntil = Date.now() + 5 * 60 * 1000;
-              sessionStorage.setItem('adminLockUntil', String(adminLockUntil));
-              adminFailedAttempts = 0;
-              sessionStorage.setItem('adminFailedAttempts', '0');
+          sessionStorage.setItem('adminFailedAttempts',String(adminFailedAttempts));
+          if(adminFailedAttempts>=5){
+              adminLockUntil=Date.now()+5*60*1000;
+              sessionStorage.setItem('adminLockUntil',String(adminLockUntil));
+              adminFailedAttempts=0;
+              sessionStorage.setItem('adminFailedAttempts','0');
               alert('५ चुकीच्या प्रयत्नांनंतर Admin Login ५ मिनिटांसाठी लॉक केले आहे.');
-          } else {
-              alert('Admin username किंवा password चुकीचा आहे. उरलेले प्रयत्न: ' + (5 - adminFailedAttempts));
+          }else{
+              alert('Admin username किंवा password चुकीचा आहे. उरलेले प्रयत्न: '+(5-adminFailedAttempts));
           }
           return;
       }
 
-      // School login system unchanged.
-      try {
-          let schoolsDoc = await db.collection("portalData").doc("registeredSchools").get();
-          if(schoolsDoc.exists) registeredSchoolsList = schoolsDoc.data().list || [];
-      } catch(e) {}
-
-      let foundSchool = registeredSchoolsList.find(s => s.username === u && s.password === p);
-      if(foundSchool) {
-          sessionStorage.setItem('activeUser', foundSchool.username);
-          sessionStorage.setItem('activeRole', 'school');
-          sessionStorage.setItem('currentSchoolName', foundSchool.name);
-          sessionStorage.setItem('loginAt', String(Date.now()));
-          document.getElementById('loginScreen').style.display = 'none';
-          document.getElementById('mainAppContainer').style.display = 'block';
+      // School login
+      try{
+          const schoolsDoc=await db.collection('portalData').doc('registeredSchools').get();
+          if(!schoolsDoc.exists){
+              alert('❌ registeredSchools data Firebase मध्ये सापडला नाही.');
+              return;
+          }
+          const list=schoolsDoc.data().list;
+          registeredSchoolsList=Array.isArray(list)?list:[];
+          const foundSchool=registeredSchoolsList.find(s=>{
+              const su=String(s&&s.username||'').trim();
+              const sp=String(s&&s.password||'');
+              return su===u && sp===p;
+          });
+          if(!foundSchool){
+              alert('❌ School Username किंवा Password चुकीचा आहे.');
+              return;
+          }
+          sessionStorage.setItem('activeUser',foundSchool.username);
+          sessionStorage.setItem('activeRole','school');
+          sessionStorage.setItem('currentSchoolName',foundSchool.name||foundSchool.username);
+          sessionStorage.setItem('loginAt',String(Date.now()));
+          document.getElementById('loginScreen').style.display='none';
+          document.getElementById('mainAppContainer').style.display='block';
           document.documentElement.classList.add('app-logged-in');
           document.body.classList.add('app-logged-in');
-          await fetchCloudData(foundSchool.username, 'school');
-          setupDashboard('school', foundSchool.username);
-          goHome();
-          if(new URLSearchParams(window.location.search).get('teacherPhoto') === '1') {
-              setTimeout(() => openTab('tabTeacherPhoto'), 100);
+          try{
+              await fetchCloudData(foundSchool.username,'school');
+              setupDashboard('school',foundSchool.username);
+              goHome();
+              if(new URLSearchParams(window.location.search).get('teacherPhoto')==='1'){
+                  setTimeout(()=>openTab('tabTeacherPhoto'),100);
+              }
+          }catch(e){
+              console.error('School post-login error:',e);
+              alert('Login झाले, पण शाळेचा Cloud data load करताना त्रुटी आली: '+(e.message||e));
           }
-      } else {
-          alert("Invalid username or password!");
+      }catch(e){
+          console.error('School login Firebase error:',e);
+          alert('❌ Firebase Login Error: '+(e.message||e));
       }
   }
+
 
   function setupDashboard(role, username) {
       if(role === 'master') {
