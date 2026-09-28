@@ -1589,6 +1589,11 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           }
       } else if(tabName === 'tabGenRegister') {
           switchGenSubTab('verify');
+      } else if(tabName === 'tabDakhala') {
+          const countEl=document.getElementById('studentSearchCount');
+          if(countEl)countEl.innerText=(Array.isArray(excelData)&&excelData.length>0)?('एकूण विद्यार्थी: '+Math.max(0,excelData.length-1)):'';
+          const noEl=document.getElementById('outDakhalaNo'),next=getDakhalaNextNo();
+          if(noEl&&!noEl.value&&next)noEl.value=String(next);
       } else if(tabName === 'tabBonafide') {
           prepareBonafideDefaults();
       } else if(tabName === 'tabTeacherPhoto') {
