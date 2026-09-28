@@ -1187,6 +1187,7 @@ input:focus,select:focus{
                         <span id="pEmail">इ-मेल : ramanandnagar.srvsr@gmail.com</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-top: 2px;">
+                        <span>दाखला नं. : <input type="text" id="outDakhalaNo" class="editable-field dakhala-number-field" inputmode="numeric" maxlength="10" style="width:75px;display:inline-block;font-weight:bold;" oninput="formatDakhalaNumberInput(this)"></span>
                         <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block; font-weight:bold;"></span>
                         
                         <span>माध्यम : <span id="outMedium">मराठी</span></span>
@@ -1936,30 +1937,18 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
   async function printDakhalaCurrent(){
-    if(!validateDakhalaPrintFields()) return;
+    if(!validateDakhalaPrintFields())return;
     const source=document.getElementById('lcCard');
-    if(!source || source.style.display==='none'){
-        alert('प्रथम विद्यार्थी निवडा आणि दाखला तयार करा.');
-        return;
-    }
-
-    // Popup blocker टाळण्यासाठी स्वतंत्र window न उघडता browser चा native print वापरतो.
-    // सध्याचा Dakhala print CSS फक्त #tabDakhala दाखवेल.
+    if(!source||source.style.display==='none'){alert('प्रथम विद्यार्थी निवडा आणि दाखला तयार करा.');return;}
     const printBtn=document.getElementById('printBtn');
-    if(printBtn) printBtn.style.display='none';
-
     try{
-        await document.fonts.ready;
-        await new Promise(resolve=>setTimeout(resolve,120));
-        window.focus();
-        window.print();
-    }catch(e){
-        console.error('Dakhala print error:',e);
-        alert('प्रिंट सुरू करताना त्रुटी आली. कृपया पुन्हा प्रयत्न करा.');
-    }finally{
-        if(printBtn) printBtn.style.display='block';
-    }
-}
+        const usedNo=await reserveDakhalaNumber();if(!usedNo)return;
+        if(printBtn)printBtn.style.display='none';
+        await document.fonts.ready;await new Promise(r=>setTimeout(r,120));window.focus();window.print();
+        const el=document.getElementById('outDakhalaNo');if(el)el.value=String(usedNo+1);
+    }catch(e){console.error('Dakhala print error:',e);alert('दाखला नंबर सेव्ह/प्रिंट करताना त्रुटी आली: '+(e.message||e));}
+    finally{if(printBtn)printBtn.style.display='block';}
+  }
 
   function printOneFromBulk(idx) {
       let row = window._bulkRows ? window._bulkRows[idx] : null;
@@ -2021,6 +2010,35 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       document.fonts.ready.then(() => window.print());
   }
 
+  function normalizeDakhalaNumberValue(v){
+      const s=String(v||'').replace(/[०-९]/g,ch=>({'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'}[ch]||ch)).replace(/[^0-9]/g,'');
+      return s?parseInt(s,10):0;
+  }
+  function formatDakhalaNumberInput(el){
+      if(!el)return;
+      el.value=String(el.value||'').replace(/[^0-9०-९]/g,'').slice(0,10);
+      window._dakhalaCurrentNo=normalizeDakhalaNumberValue(el.value);
+  }
+  function getDakhalaNextNo(){
+      const n=Number(window._dakhalaNextNo||currentSchoolProfile.dakhalaNextNo||0);
+      return Number.isFinite(n)&&n>0?Math.floor(n):0;
+  }
+  async function saveDakhalaNextNo(nextNo){
+      nextNo=Math.floor(Number(nextNo)||0);if(nextNo<=0)return;
+      window._dakhalaNextNo=nextNo;
+      currentSchoolProfile=currentSchoolProfile||{};
+      currentSchoolProfile.dakhalaNextNo=nextNo;
+      const role=getActiveRole(),user=(role==='master'&&window.adminEditingTarget)?window.adminEditingTarget:(getActiveUser()||'admin');
+      await db.collection('portalData').doc('profile_'+user).set({info:currentSchoolProfile},{merge:true});
+  }
+  async function reserveDakhalaNumber(){
+      const el=document.getElementById('outDakhalaNo');if(!el)return 0;
+      let used=normalizeDakhalaNumberValue(el.value);
+      if(!used){const next=getDakhalaNextNo();if(next){el.value=String(next);used=next;}}
+      if(!used){alert('कृपया प्रथम दाखला नंबर टाका. उदा. 201 किंवा 8');el.focus();return 0;}
+      await saveDakhalaNextNo(used+1);return used;
+  }
+
   function fillCertificateElement(root, foundRow, customReason, customRemark) {
       root.querySelector('#pInst').innerText = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
       root.querySelector('#pSchool').innerText = currentSchoolProfile.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)";
@@ -2038,6 +2056,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           printLogo.style.display = 'none';
       }
 
+      const dNoEl=root.querySelector('#outDakhalaNo');if(dNoEl){const chosen=normalizeDakhalaNumberValue(dNoEl.value)||getDakhalaNextNo();dNoEl.value=chosen?String(chosen):'';}
       root.querySelector('#outReg').value = toMarathiDigits(foundRow[0] || "");
       root.querySelector('#outMedium').innerText = foundRow[1] || currentSchoolProfile.medium || "मराठी";
       root.querySelector('#editStudentId').value = toMarathiDigits(foundRow[2] || "");
@@ -2072,43 +2091,19 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
   // ===== Search Functions for LC Tab =====
   function onSearchTyping() {
-      let mode = document.getElementById('searchMode').value;
-      let box = document.getElementById('liveSuggestions');
-      let query = document.getElementById('regNo').value.trim();
-
-      if(mode === 'reg' || !query || excelData.length === 0) {
-          box.style.display = 'none';
-          box.innerHTML = '';
-          return;
+      const mode=document.getElementById('searchMode').value, box=document.getElementById('liveSuggestions');
+      const query=document.getElementById('regNo').value.trim();
+      if(!query||excelData.length<=1){box.style.display='none';box.innerHTML='';return;}
+      const nq=normalizeSearchText(query),matches=[];
+      for(let i=1;i<excelData.length;i++){
+          const row=excelData[i]||[],reg=normalizeSearchText(row[0]||''),name=normalizeSearchText(row[4]||''),cls=normalizeSearchText(row[18]||'');
+          const ok=mode==='name'?name.includes(nq):(mode==='class'?cls.includes(nq):(reg.includes(nq)||name.includes(nq)));
+          if(ok){matches.push(row);if(matches.length>=30)break;}
       }
-
-      let nq = normalizeSearchText(query);
-      let colIndex = (mode === 'name') ? 4 : 18;
-      let matches = [];
-      for(let row of excelData.slice(1)) {
-          if(row[colIndex] !== undefined && normalizeSearchText(row[colIndex]).includes(nq)) {
-              matches.push(row);
-              if(matches.length >= 20) break;
-          }
-      }
-
-      if(matches.length === 0) {
-          box.style.display = 'none';
-          box.innerHTML = '';
-          return;
-      }
-
-      window._liveMatches = matches;
-      box.innerHTML = matches.map((row, idx) => {
-          let name = row[4] || '-';
-          let cls = row[18] || '-';
-          let reg = row[0] || '-';
-          return `<div onclick="pickLiveSuggestion(${idx})" style="padding:6px 10px; cursor:pointer; border-bottom:1px solid #eee; font-size:13px;"
-                       onmouseover="this.style.background='#eaf2f8'" onmouseout="this.style.background='#fff'">
-                      <strong>${name}</strong> — रजि.नं. ${reg} (${cls})
-                  </div>`;
-      }).join('');
-      box.style.display = 'block';
+      if(!matches.length){box.style.display='none';box.innerHTML='';return;}
+      window._liveMatches=matches;
+      box.innerHTML=matches.map((row,idx)=>'<div onclick="pickLiveSuggestion('+idx+')" style="padding:7px 10px;cursor:pointer;border-bottom:1px solid #eee;font-size:13px;"><strong>'+escBona(row[4]||'-')+'</strong> — रजि.नं. '+escBona(row[0]||'-')+' ('+escBona(row[18]||'-')+')</div>').join('');
+      box.style.display='block';
   }
 
   function pickLiveSuggestion(idx) {
