@@ -3412,7 +3412,8 @@ function validateDakhalaPrintFields(){
       let tr='<td>'+(n+1)+'</td>';for(let c=0;c<headers.length;c++){let val=m.row[c]??'',displayVal=val;if(c===14)displayVal=formatExcelDate(val);else if(c===15)displayVal=dateToMarathiWords(m.row[14]);else if(c===18)displayVal=canonicalClassName(val);else if(c===19)displayVal=formatExcelDate(val);
         if(c===20)tr+='<td><select onchange="updateGenCell('+m.rowIndex+',20,this.value)" style="min-width:110px;"><option value="">-- निवडा --</option><option value="Male" '+(val==='Male'?'selected':'')+'>पुरुष</option><option value="Female" '+(val==='Female'?'selected':'')+'>स्त्री</option></select></td>';
         else if(c===19)tr+='<td><input type="text" value="'+escBona(displayVal||'')+'" placeholder="DD-MM-YYYY" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)" onchange="updateGenCell('+m.rowIndex+',19,this.value)" style="min-width:125px;font-weight:600;"></td>';
-        else if(c===18)tr+='<td><input type="text" value="'+escBona(displayVal||'')+'" onchange="updateGenCell('+m.rowIndex+',18,this.value)" style="min-width:110px;font-weight:600;"></td>';
+        else if(c===23)tr+='<td><input type="tel" value="'+escBona(displayVal||'')+'" placeholder="ऐच्छिक" maxlength="10" inputmode="numeric" onchange="updateGenCell('+m.rowIndex+',23,this.value)" style="min-width:130px;">';
+        else if(c===18||c===21)tr+='<td><input type="text" value="'+escBona(displayVal||'')+'" onchange="updateGenCell('+m.rowIndex+','+c+',this.value)" style="min-width:110px;font-weight:600;"></td>';
         else if(c===0)tr+='<td><input type="text" value="'+escBona(displayVal||'')+'" onchange="updateGenCell('+m.rowIndex+',0,this.value)" style="min-width:100px;font-weight:600;"></td>';
         else tr+='<td><input type="text" value="'+escBona(displayVal||'')+'" onchange="updateGenCell('+m.rowIndex+','+c+',this.value)" style="min-width:110px;"></td>';
       }
