@@ -2563,11 +2563,15 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
   function validateUploadedExcel(rows){
-      const expected=getExpectedExcelHeaders(),errors=[];
+      const expected=getExpectedExcelHeaders(),legacy=expected.slice(0,21),errors=[];
       if(!rows||!rows.length)return["Excel रिकामी आहे."];
       const h=(rows[0]||[]).map(v=>String(v??'').trim());
-      expected.forEach((x,i)=>{if(h[i]!==x)errors.push("Header "+excelColumnName(i)+" चुकीचा. अपेक्षित: '"+x+"' ; मिळाले: '"+(h[i]||"(रिकामा)")+"'");});
-      if(h.length>expected.length)errors.push("अनावश्यक अतिरिक्त column: "+h.slice(expected.length).join(", "));
+      const schema=(h.length===legacy.length&&legacy.every((x,i)=>h[i]===x))||(h.length===expected.length&&expected.every((x,i)=>h[i]===x));
+      if(!schema){
+          const compare=h.length===legacy.length?legacy:expected;
+          compare.forEach((x,i)=>{if(h[i]!==x)errors.push("Header "+excelColumnName(i)+" चुकीचा. अपेक्षित: '"+x+"' ; मिळाले: '"+(h[i]||"(रिकामा)")+"'");});
+          if(h.length!==legacy.length&&h.length!==expected.length)errors.push("Excel मध्ये जुने 21 किंवा नवीन 24 ठरलेले कॉलम असणे आवश्यक आहे.");
+      }
       rows.slice(1).forEach((row,idx)=>{
           const er=idx+2;if(row.every(v=>String(v??'').trim()===''))return;
           if(!String(row[0]??'').trim())errors.push("Row "+er+" : रजिस्टर नंबर रिकामा आहे.");
