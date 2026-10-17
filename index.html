@@ -1161,10 +1161,15 @@ html, body{max-width:100%; overflow-x:hidden}
                 <div class="form-group"><label>जन्मदिनांक (DD-MM-YYYY) :</label><input type="text" id="entDob" placeholder="उदा. 01-05-2010" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
                 <div class="form-group"><label>प्रवेश दिनांक (DD-MM-YYYY) :</label><input type="text" id="entAdmDate" placeholder="उदा. 30-07-2022" maxlength="10" inputmode="numeric" oninput="formatEntryDateInput(this)"></div>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
-                <div class="form-group"><label>प्रवेश इयत्ता :</label><input type="text" id="entAdmClass" placeholder="७ वी"></div>
-                <div class="form-group"><label>यापूर्वीची शाळा :</label><input type="text" id="entPrevSchool" placeholder="मागील शाळेचे नाव"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group"><label>प्रवेश इयत्ता :</label><input type="text" id="entAdmClass" placeholder="प्रवेश घेताना उदा. ५ वी"></div>
+                <div class="form-group"><label>चालू इयत्ता :</label><input type="text" id="entCurrentClass" placeholder="सध्याची इयत्ता उदा. ७ वी"></div>
             </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group"><label>चालू तुकडी :</label><input type="text" id="entCurrentDivision" placeholder="उदा. अ / ब"></div>
+                <div class="form-group"><label>विद्यार्थ्याचा मोबाईल नंबर (ऐच्छिक) :</label><input type="tel" id="entStudentMobile" placeholder="१० अंकी मोबाईल नंबर" inputmode="numeric" maxlength="10"></div>
+            </div>
+            <div class="form-group"><label>यापूर्वीची शाळा :</label><input type="text" id="entPrevSchool" placeholder="मागील शाळेचे नाव"></div>
             <button onclick="saveManualStudent()" style="background: #27ae60; margin-top: 10px;">💾 विद्यार्थी माहिती सेव्ह करा</button>
         </div>
     </div>
