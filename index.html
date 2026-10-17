@@ -2017,6 +2017,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
   // ===== Class ALL PASS Functions =====
   function loadClassStudentsForPromotion() {
+      upgradeStudentRows(excelData);
       let selectedClass = document.getElementById('promoteClassSelect').value;
       let tbody = document.getElementById('promoteTableBody');
       if(!tbody) return;
@@ -2029,8 +2030,9 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       let students = [];
       for(let i = 1; i < excelData.length; i++) {
           let row = excelData[i];
-          if(row[18] && row[18].toString().trim() === selectedClass) {
-              students.push({ rowIndex: i, reg: row[0], name: row[4], currentClass: row[18] });
+          const currentClass=studentCurrentClass(row);
+          if(currentClass && currentClass === selectedClass) {
+              students.push({ rowIndex: i, reg: row[0], name: row[4], currentClass: currentClass });
           }
       }
 
@@ -2078,7 +2080,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           if(chk && chk.checked) {
               let newCls = document.getElementById(`targetClass_${idx}`).value.trim();
               if(newCls) {
-                  excelData[st.rowIndex][18] = newCls;
+                  upgradeStudentRows(excelData);
+                   excelData[st.rowIndex][21] = canonicalClassName(newCls);
                   promotedCount++;
               }
           }
@@ -2548,6 +2551,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
   function excelColumnName(n){let s='';n++;while(n){let r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s;}
+  function studentCurrentClass(row){return canonicalClassName((row||[])[21]||(row||[])[18]||'');}
 
   function dateValueForValidation(v){
       if(v instanceof Date && !isNaN(v.getTime())) return String(v.getDate()).padStart(2,'0')+'-'+String(v.getMonth()+1).padStart(2,'0')+'-'+v.getFullYear();
@@ -3423,15 +3427,16 @@ function validateDakhalaPrintFields(){
     });
   };
   window.fillTeacherClassSelect=function(){
+    upgradeStudentRows(excelData);
     const sel=document.getElementById('teacherClassSelect');if(!sel)return;const old=canonicalClassName(sel.value),set=new Set();
-    for(let i=1;i<excelData.length;i++){const c=canonicalClassName((excelData[i]||[])[18]);if(c)set.add(c);}
+    for(let i=1;i<excelData.length;i++){const c=studentCurrentClass(excelData[i]);if(c)set.add(c);}
     const classes=Array.from(set).sort((a,b)=>a.localeCompare(b,'mr'));sel.innerHTML='<option value="">-- वर्ग निवडा --</option>'+classes.map(c=>'<option value="'+escBona(c)+'">'+escBona(c)+'</option>').join('');if(classes.includes(old))sel.value=old;
   };
   window.filterTeacherStudents=function(){
     const sel=document.getElementById('teacherClassSelect'),q=normalizeSearchText(document.getElementById('teacherStudentSearch').value||''),box=document.getElementById('teacherStudentList');if(!box)return;
-    const cls=normalizeSearchText(sel?sel.value:''),rows=[];for(let i=1;i<excelData.length;i++){const r=excelData[i]||[];if(cls&&normalizeSearchText(canonicalClassName(r[18]))!==cls)continue;if(q&&!normalizeSearchText(r[0]).includes(q)&&!normalizeSearchText(r[4]).includes(q))continue;rows.push({rowIndex:i,row:r});if(rows.length>=100)break;}
+    const cls=normalizeSearchText(sel?sel.value:''),rows=[];for(let i=1;i<excelData.length;i++){const r=excelData[i]||[];if(cls&&normalizeSearchText(studentCurrentClass(r))!==cls)continue;if(q&&!normalizeSearchText(r[0]).includes(q)&&!normalizeSearchText(r[4]).includes(q))continue;rows.push({rowIndex:i,row:r});if(rows.length>=100)break;}
     if(!cls){box.innerHTML='<div style="padding:12px;color:#777;">प्रथम वर्ग निवडा.</div>';return;}if(!rows.length){box.innerHTML='<div style="padding:12px;color:#777;">विद्यार्थी सापडला नाही.</div>';return;}
-    box.innerHTML=rows.map(x=>'<div class="teacher-student" onclick="selectTeacherStudent('+x.rowIndex+')"><span><strong>'+escBona(x.row[0])+'</strong> — '+escBona(x.row[4])+'</span><span>'+escBona(canonicalClassName(x.row[18]))+'</span></div>').join('');
+    box.innerHTML=rows.map(x=>'<div class="teacher-student" onclick="selectTeacherStudent('+x.rowIndex+')"><span><strong>'+escBona(x.row[0])+'</strong> — '+escBona(x.row[4])+'</span><span>'+escBona(studentCurrentClass(x.row))+'</span></div>').join('');
   };
   window.standardizeAllStudentClasses=async function(){
     const changes=[];for(let i=1;i<excelData.length;i++){const old=String((excelData[i]||[])[18]||'').trim(),neu=canonicalClassName(old);if(old&&neu&&old!==neu)changes.push({i,old,neu});}
