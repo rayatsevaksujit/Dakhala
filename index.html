@@ -3360,13 +3360,13 @@ function validateDakhalaPrintFields(){
   window.saveManualStudent=async function(){
     const g=id=>document.getElementById(id);
     const reg=g('entReg').value.trim(),med=g('entMed').value.trim(),studId=g('entStudId').value.trim(),aadhaar=g('entAadhaar').value.trim(),name=g('entName').value.trim(),mother=g('entMother').value.trim(),nat=g('entNat').value.trim(),lang=g('entLang').value.trim(),rel=g('entRel').value.trim(),caste=g('entCaste').value.trim(),bp=g('entBirthPlace').value.trim(),state=g('entState').value.trim(),country=g('entCountry').value.trim(),dob=g('entDob').value.trim(),adm=g('entAdmDate').value.trim(),admClass=canonicalClassName(g('entAdmClass').value.trim()),prevSchool=g('entPrevSchool').value.trim(),gender=g('entGender').value.trim();
-    const currentClass=canonicalClassName(g('entCurrentClass').value.trim()||g('entAdmClass').value.trim()),currentDivision=g('entCurrentDivision').value.trim(),studentMobile=g('entStudentMobile').value.trim().replace(/[\\s-]/g,'');
+    const currentClass=canonicalClassName(g('entCurrentClass').value.trim()||g('entAdmClass').value.trim()),currentDivision=g('entCurrentDivision').value.trim(),studentMobile=g('entStudentMobile').value.trim().replaceAll(' ','').replaceAll('-','');
     if(!reg||!name){alert('कृपया किमान रजिस्टर नंबर आणि विद्यार्थ्याचे नाव भरा!');return;}
     if(hasDuplicateReg(reg,-1)){alert('⚠️ हा General Register Number यापूर्वी वापरलेला आहे. नवीन विद्यार्थ्यासाठी दुसरा नंबर टाका.');g('entReg').focus();return;}
     if(dob&&!isValidStudentDate(dob)){alert('जन्मदिनांक चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या.');return;}
     if(adm&&!isValidStudentDate(adm)){alert('प्रवेश दिनांक चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या.');return;}
     if(!currentClass){alert('कृपया चालू इयत्ता भरा.');g('entCurrentClass').focus();return;}
-    if(studentMobile&&!/^[6-9]\\d{9}$/.test(studentMobile)){alert('विद्यार्थ्याचा मोबाईल नंबर दिला असल्यास 6 ते 9 ने सुरू होणारा 10 अंकी नंबर द्या.');g('entStudentMobile').focus();return;}
+    if(studentMobile&&!/^[6-9][0-9]{9}$/.test(studentMobile)){alert('विद्यार्थ्याचा मोबाईल नंबर दिला असल्यास 6 ते 9 ने सुरू होणारा 10 अंकी नंबर द्या.');g('entStudentMobile').focus();return;}
     upgradeStudentRows(excelData);
     const newRow=[reg,med,studId,aadhaar,name,mother,nat,lang,rel,caste,'',bp,state,country,dob,'',prevSchool,adm,admClass,'',gender,currentClass,currentDivision,studentMobile];
     excelData.push(newRow);
@@ -3382,7 +3382,8 @@ function validateDakhalaPrintFields(){
   window.updateGenCell=function(rowIdx,colIdx,val){
     if(!excelData[rowIdx])return;
     if(colIdx===0){val=String(val||'').trim();if(!val){alert('रजिस्टर नंबर रिकामा ठेवता येणार नाही.');filterGenTable();return;}if(hasDuplicateReg(val,rowIdx)){alert('⚠️ हा General Register Number यापूर्वी वापरलेला आहे. दुसरा नंबर टाका.');filterGenTable();return;}}
-    if(colIdx===18)val=canonicalClassName(val);
+    if(colIdx===18||colIdx===21)val=canonicalClassName(val);
+    if(colIdx===23){val=String(val||'').trim().replaceAll(' ','').replaceAll('-','');if(val&&!/^[6-9][0-9]{9}$/.test(val)){alert('विद्यार्थ्याचा मोबाईल नंबर दिला असल्यास 6 ते 9 ने सुरू होणारा 10 अंकी नंबर द्या.');return;}}
     if(colIdx===19){val=normalizeStudentDate(String(val||'').trim());if(val&&!/^\d{2}-\d{2}-\d{4}$/.test(val)){alert('⚠️ शाळा सोडल्याचा दिनांक DD-MM-YYYY या स्वरूपात टाका.');return;}}
     if(colIdx===20&&val&&!['Male','Female'].includes(val)){alert('लिंग फक्त पुरुष किंवा स्त्री निवडा.');return;}
     excelData[rowIdx][colIdx]=val;
@@ -3402,8 +3403,7 @@ function validateDakhalaPrintFields(){
     const q=normalizeSearchText(document.getElementById('genSearchBox').value||''),thead=document.getElementById('genTableHead'),tbody=document.getElementById('genTableBody');if(!thead||!tbody)return;
     if(!q){thead.innerHTML='';tbody.innerHTML='<tr><td colspan="25" style="text-align:center;color:#7f8c8d;padding:15px;">कृपया नाव किंवा रजिस्टर नंबर शोधा...</td></tr>';return;}
     if(excelData.length<=1){tbody.innerHTML='<tr><td colspan="25" style="text-align:center;">कोणताही डेटा उपलब्ध नाही.</td></tr>';return;}
-    excelData[0]=excelData[0]||[];while(excelData[0].length<21)excelData[0].push('');if(!excelData[0][20])excelData[0][20]='लिंग';
-    for(let i=1;i<excelData.length;i++){while((excelData[i]||[]).length<21)excelData[i].push('');}
+    upgradeStudentRows(excelData);
     const headers=excelData[0];thead.innerHTML='<th>अ.क्र.</th>'+headers.map(h=>'<th>'+escBona(h||'कॉलम')+'</th>').join('')+'<th class="no-print">📷 फोटो</th><th class="no-print">🗑️ कृती</th>';
     const matches=[];for(let i=1;i<excelData.length;i++){const row=excelData[i]||[];if(row.some(c=>normalizeSearchText(c).includes(q))){matches.push({row,rowIndex:i});if(matches.length>=50)break;}}
     if(!matches.length){tbody.innerHTML='<tr><td colspan="25" style="text-align:center;color:#7f8c8d;padding:15px;">कोणताही विद्यार्थी सापडला नाही.</td></tr>';return;}
