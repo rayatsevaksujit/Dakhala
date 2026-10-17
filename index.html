@@ -2165,23 +2165,38 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
   function fillCertificateElement(root, foundRow, customReason, customRemark) {
-      root.querySelector('#pInst').innerText = currentSchoolProfile.inst || "रयत शिक्षण संस्था, सातारा.";
-      root.querySelector('#pSchool').innerText = currentSchoolProfile.school || "स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)";
-      root.querySelector('#pAddress').innerText = "पत्ता : " + (currentSchoolProfile.address || "रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली");
-      root.querySelector('#pContact').innerText = "फोन नंबर : " + (currentSchoolProfile.phone || "०२३४६-२२६१६१");
-      root.querySelector('#pEmail').innerText = "इ-मेल : " + (currentSchoolProfile.email || "ramanandnagar.srvsr@gmail.com");
-      root.querySelector('#pRecognition').innerText = "शाळा मान्यता क्रमांक: " + (currentSchoolProfile.recognition || "S-४८ (B), Poone, 21 May 1949") + " | यु-डायस क्रमांक : २७३५०८०४००५";
-      root.querySelector('#pIndexNums').innerText = "एस.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.sscIndex || "--") + " | एच.एस.सी. इंडेक्स नंबर : " + (currentSchoolProfile.hscIndex || "--");
+      const profile = currentSchoolProfile || {};
+      const setSchoolText = (selector, value) => {
+          const el = root.querySelector(selector);
+          if(el) el.innerText = value;
+      };
+      // शाळेची माहिती logged-in शाळेच्या School Info मधूनच घ्या.
+      // माहिती रिकामी असल्यास दुसऱ्या शाळेचा default मजकूर दाखवू नका.
+      setSchoolText('#pInst', profile.inst || '');
+      setSchoolText('#pSchool', profile.school || '');
+      setSchoolText('#pAddress', profile.address ? 'पत्ता : ' + profile.address : '');
+      setSchoolText('#pContact', profile.phone ? 'फोन नंबर : ' + profile.phone : '');
+      setSchoolText('#pEmail', profile.email ? 'इ-मेल : ' + profile.email : '');
+      const recognitionParts = [];
+      if(profile.recognition) recognitionParts.push('शाळा मान्यता क्रमांक: ' + profile.recognition);
+      if(profile.udise) recognitionParts.push('यु-डायस क्रमांक : ' + profile.udise);
+      setSchoolText('#pRecognition', recognitionParts.join(' | '));
+      const indexParts = [];
+      if(profile.sscIndex) indexParts.push('एस.एस.सी. इंडेक्स नंबर : ' + profile.sscIndex);
+      if(profile.hscIndex) indexParts.push('एच.एस.सी. इंडेक्स नंबर : ' + profile.hscIndex);
+      setSchoolText('#pIndexNums', indexParts.join(' | '));
 
       let printLogo = root.querySelector('#printLogo');
-      if(schoolLogoBase64) {
-          printLogo.src = schoolLogoBase64;
+      const logoForThisSchool = profile.logo || '';
+      if(printLogo && logoForThisSchool) {
+          printLogo.src = logoForThisSchool;
           printLogo.style.display = 'block';
-      } else {
+      } else if(printLogo) {
+          printLogo.removeAttribute('src');
           printLogo.style.display = 'none';
       }
 
-      const dNoEl=root.querySelector('#outDakhalaNo');if(dNoEl){const chosen=normalizeDakhalaNumberValue(dNoEl.value)||getDakhalaNextNo();dNoEl.value=chosen?String(chosen):'';}
+            const dNoEl=root.querySelector('#outDakhalaNo');if(dNoEl){const chosen=normalizeDakhalaNumberValue(dNoEl.value)||getDakhalaNextNo();dNoEl.value=chosen?String(chosen):'';}
       root.querySelector('#outReg').value = toMarathiDigits(foundRow[0] || "");
       root.querySelector('#outMedium').innerText = foundRow[1] || currentSchoolProfile.medium || "मराठी";
       root.querySelector('#editStudentId').value = toMarathiDigits(foundRow[2] || "");
