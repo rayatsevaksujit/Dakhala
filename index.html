@@ -920,11 +920,11 @@ html, body{max-width:100%; overflow-x:hidden}
                     <div class="tool-desc">जुना विद्यार्थी डेटा सुरक्षित ठेवून अपलोड, डुप्लिकेट तपासणी व स्पष्ट Error रिपोर्ट.</div>
                     <span class="dk-coming-label">लवकरच उपलब्ध</span>
                 </div>
-                <div class="tool-card dk-coming-card">
+                <div class="tool-card dk-coming-card" role="button" tabindex="0" onclick="openTab('tabDataCompleteness')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTab('tabDataCompleteness')}" style="cursor:pointer;">
                     <div class="tool-icon">🧹</div>
                     <div class="tool-title">डेटा तपासणी व दुरुस्ती</div>
-                    <div class="tool-desc">रिकामे लिंग, जन्मदिनांक, जात व इतर अपूर्ण नोंदी शोधून दुरुस्त करता येतील.</div>
-                    <span class="dk-coming-label">लवकरच उपलब्ध</span>
+                    <div class="tool-desc">विद्यार्थ्यांची अपूर्ण माहिती पाहा, जनरल रजिस्टरमध्ये जाऊन दुरुस्त करा.</div>
+                    <span class="dk-coming-label">आता सुरू • अपूर्ण नोंदी पाहा</span>
                 </div>
                 <div class="tool-card dk-coming-card">
                     <div class="tool-icon">📊</div>
@@ -1171,6 +1171,33 @@ html, body{max-width:100%; overflow-x:hidden}
             </div>
             <div class="form-group"><label>यापूर्वीची शाळा :</label><input type="text" id="entPrevSchool" placeholder="मागील शाळेचे नाव"></div>
             <button onclick="saveManualStudent()" style="background: #27ae60; margin-top: 10px;">💾 विद्यार्थी माहिती सेव्ह करा</button>
+        </div>
+    </div>
+
+    <!-- Tab: Data Completeness Review -->
+    <div id="tabDataCompleteness" class="tab-content">
+        <h3>🧹 अपूर्ण विद्यार्थी माहिती तपासणी</h3>
+        <p style="font-size:13px;color:#666;">विद्यार्थ्यांच्या नोंदी तपासून ज्या ठिकाणी माहिती रिकामी आहे ती येथे दिसेल. मोबाईल नंबर ऐच्छिक असल्याने तो रिकामा असणे ही त्रुटी मानली जाणार नाही. येथे माहिती फक्त तपासली जाते; मूळ नोंदी आपोआप बदलल्या जात नाहीत.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0;">
+            <select id="incompleteFilter" onchange="renderIncompleteStudents()" style="max-width:280px;">
+                <option value="all">सर्व अपूर्ण नोंदी</option>
+                <option value="gender">लिंग रिकामे</option>
+                <option value="dob">जन्मदिनांक रिकामा</option>
+                <option value="caste">जात रिकामी</option>
+                <option value="currentClass">चालू इयत्ता रिकामी</option>
+                <option value="admissionClass">प्रवेश इयत्ता रिकामी</option>
+                <option value="name">विद्यार्थ्याचे नाव रिकामे</option>
+                <option value="reg">जनरल रजिस्टर क्रमांक रिकामा</option>
+            </select>
+            <button type="button" onclick="renderIncompleteStudents()" style="width:auto;background:#1769aa;">🔄 पुन्हा तपासा</button>
+            <button type="button" onclick="saveGenTableToFirebase()" style="width:auto;background:#27ae60;">💾 बदल सेव्ह करा</button>
+        </div>
+        <div id="incompleteSummary" style="padding:10px;background:#f4f7fb;border-radius:8px;margin-bottom:10px;">माहिती तपासत आहे...</div>
+        <div style="max-height:520px;overflow:auto;border:1px solid #d7dce2;background:white;border-radius:8px;">
+            <table class="data-table" style="margin-top:0;min-width:720px;">
+                <thead><tr><th>अ.क्र.</th><th>जनरल रजिस्टर नं.</th><th>विद्यार्थ्याचे नाव</th><th>अपूर्ण माहिती</th><th>कृती</th></tr></thead>
+                <tbody id="incompleteStudentsBody"><tr><td colspan="5" style="text-align:center;padding:20px;">विद्यार्थी डेटा लोड झाल्यावर येथे यादी दिसेल.</td></tr></tbody>
+            </table>
         </div>
     </div>
 
@@ -1767,6 +1794,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
               document.getElementById('adminSchoolSelectorDiv').style.display = 'none';
               loadSchoolInfo(getActiveUser());
           }
+      } else if(tabName === 'tabDataCompleteness') {
+          renderIncompleteStudents();
       } else if(tabName === 'tabGenRegister') {
           switchGenSubTab('verify');
       } else if(tabName === 'tabDakhala') {
@@ -2014,6 +2043,43 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           alert("Error saving: " + e.message);
       }
   }
+
+  // ===== Incomplete Student Data Review =====
+  window.renderIncompleteStudents=function(){
+      const body=document.getElementById('incompleteStudentsBody'),summary=document.getElementById('incompleteSummary'),filter=document.getElementById('incompleteFilter');
+      if(!body||!summary)return;
+      if(!Array.isArray(excelData)||excelData.length<=1){summary.textContent='विद्यार्थी डेटा उपलब्ध नाही. आधी योग्य शाळेचा डेटा लोड झाला आहे याची खात्री करा.';body.innerHTML='<tr><td colspan="5" style="text-align:center;padding:18px;">विद्यार्थी नोंदी उपलब्ध नाहीत.</td></tr>';return;}
+      upgradeStudentRows(excelData);
+      const checks=[
+          {key:'reg',label:'जनरल रजिस्टर क्रमांक',index:0},
+          {key:'name',label:'विद्यार्थ्याचे नाव',index:4},
+          {key:'dob',label:'जन्मदिनांक',index:14},
+          {key:'caste',label:'जात',index:9},
+          {key:'gender',label:'लिंग',index:20},
+          {key:'admissionClass',label:'प्रवेश इयत्ता',index:18},
+          {key:'currentClass',label:'चालू इयत्ता',index:21}
+      ];
+      const missing=[];
+      for(let i=1;i<excelData.length;i++){
+          const row=excelData[i]||[],fields=checks.filter(c=>!String(row[c.index]??'').trim());
+          if(fields.length)missing.push({rowIndex:i,row,fields});
+      }
+      const chosen=filter?filter.value:'all';
+      const shown=chosen==='all'?missing:missing.filter(x=>x.fields.some(f=>f.key===chosen));
+      summary.innerHTML='<strong>एकूण विद्यार्थी:</strong> '+(excelData.length-1)+' &nbsp; | &nbsp; <strong>अपूर्ण नोंदी:</strong> '+missing.length+' &nbsp; | &nbsp; <strong>या फिल्टरमध्ये:</strong> '+shown.length;
+      if(!shown.length){body.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:#16803d;">✅ निवडीनुसार अपूर्ण नोंदी नाहीत.</td></tr>';return;}
+      body.innerHTML=shown.map((x,n)=>{
+          const reg=String(x.row[0]??'').trim(),name=String(x.row[4]??'').trim();
+          return '<tr><td>'+(n+1)+'</td><td>'+escBona(reg||'—')+'</td><td>'+escBona(name||'—')+'</td><td style="color:#a33;">'+x.fields.map(f=>escBona(f.label)).join(', ')+'</td><td><button type="button" style="width:auto;padding:6px 10px;background:#1769aa;" onclick="editIncompleteStudent('+x.rowIndex+')">✏️ तपासा / दुरुस्त करा</button></td></tr>';
+      }).join('');
+  };
+  window.editIncompleteStudent=function(rowIndex){
+      const row=excelData[rowIndex]||[],reg=String(row[0]??'').trim();
+      openTab('tabGenRegister');
+      const search=document.getElementById('genSearchBox');
+      if(search){search.value=reg||String(row[4]??'').trim();filterGenTable();}
+      alert('जनरल रजिस्टरमध्ये विद्यार्थ्याची नोंद उघडली आहे. आवश्यक माहिती भरा आणि “सर्व बदल क्लाउडवर सेव्ह करा” दाबा.');
+  };
 
   // ===== Class ALL PASS Functions =====
   function loadClassStudentsForPromotion() {
