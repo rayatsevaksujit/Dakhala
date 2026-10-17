@@ -153,7 +153,7 @@
 
         /* ===== A4 PRINT ===== */
         @media print {
-            @page { size: A4 portrait; margin: 10mm; }
+            @page { size: A4 portrait; margin: 14mm 8mm 8mm; }
             html, body { background: #fff !important; margin: 0; padding: 0; }
 
             body > *:not(#mainAppContainer) { display: none !important; }
@@ -180,6 +180,10 @@
             .bulk-lc-copy { page-break-after: always; }
             .bulk-lc-copy:last-child { page-break-after: auto; }
             .editable-field { border: none !important; background: transparent !important; padding: 0 !important; }
+            #lcCard { min-height: 270mm !important; }
+            #lcCard .lc-table th, #lcCard .lc-table td { padding: 1.5px 4px !important; font-size: 12px !important; }
+            #lcCard .lc-table input[type="text"] { font-size: 12px !important; }
+            #lcCard .lc-signature-row { margin-top: 30px !important; min-height: 12mm; align-items: flex-end; }
         }
     
 /* ===== ADD-ON: Bonafide + Student Photo Module ===== */
@@ -1265,10 +1269,10 @@ html, body{max-width:100%; overflow-x:hidden}
                 <!-- Official Header with Large Bold School Name & Logo -->
                 <div style="text-align: center; margin-bottom: 2px; position: relative;">
                     <div id="logoContainer" style="margin-bottom: 2px;">
-                        <img id="printLogo" src="" alt="School Logo" style="max-height: 50px; display: none; margin: 0 auto;" onload="fitLcToScreen()">
+                        <img id="printLogo" src="" alt="School Logo" style="max-height: 68px; max-width: 90px; display: none; margin: 0 auto;" onload="fitLcToScreen()">
                     </div>
-                    <div style="font-size: 13px; font-weight: bold;" id="pInst">रयत शिक्षण संस्था, सातारा.</div>
-                    <div style="font-size: 16px; font-weight: bold; color: #000;" id="pSchool">स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)</div>
+                    <div style="font-size: 14px; font-weight: bold;" id="pInst">रयत शिक्षण संस्था, सातारा.</div>
+                    <div style="font-size: 19px; font-weight: 900; color: #000;" id="pSchool">स्वामी रामानंद विद्यालय व ज्युनिअर कॉलेज, रामानंदनगर (बुर्ली)</div>
                     <div style="font-size: 11px; font-weight: bold;" id="pAddress">पत्ता : रामानंदनगर (बुर्ली), तालुका : पलूस, जिल्हा : सांगली</div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 2px;">
                         <span id="pContact">फोन नंबर : ०२३४६-२२६१६१</span>
@@ -1351,7 +1355,7 @@ html, body{max-width:100%; overflow-x:hidden}
                 </div>
 
                 <!-- Signatures Layout -->
-                <div style="margin-top: 25px; margin-bottom: 4px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; text-align: center;">
+                <div class="lc-signature-row" style="margin-top: 25px; margin-bottom: 4px; display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; text-align: center;">
                     <div style="width: 30%;">वर्गशिक्षक</div>
                     <div style="width: 30%;">लेखनिक</div>
                     <div style="width: 30%;">मुख्याध्यापक / प्राचार्य</div>
