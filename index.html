@@ -682,6 +682,42 @@ input:focus,select:focus{
   #loginScreen .dk-credits-names{font-size:20px!important}
 }
 </style>
+
+<style id="dk-desktop-login-visibility-fix">
+/* Desktop login visibility fix: prevent content clipping on laptop/desktop */
+@media (min-width:701px){
+  html, body{
+    height:auto !important;
+    min-height:100% !important;
+    overflow-x:hidden !important;
+    overflow-y:auto !important;
+  }
+  body{
+    min-height:100vh !important;
+    padding:clamp(8px,1.4vh,18px) 14px !important;
+    box-sizing:border-box !important;
+  }
+  #loginScreen{
+    width:min(920px, calc(100vw - 40px)) !important;
+    max-width:920px !important;
+    margin:clamp(8px,1.8vh,22px) auto !important;
+    padding:clamp(14px,2vh,22px) clamp(20px,3vw,36px) !important;
+    box-sizing:border-box !important;
+  }
+  #loginScreen .dk-use-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  }
+  #loginScreen .dk-use-grid>div{min-width:0 !important}
+}
+@media (min-width:701px) and (max-height:760px){
+  #loginScreen{margin:4px auto !important;padding:10px 22px !important}
+  #loginScreen .dk-use-card{margin-top:5px !important;padding:6px 9px !important}
+  #loginScreen .dk-credits{margin-top:5px !important;padding:6px 9px !important}
+}
+/* Keep small screens scrollable and prevent horizontal overflow */
+html, body{max-width:100%; overflow-x:hidden}
+</style>
+
 </head>
 <body>
 
