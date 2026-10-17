@@ -2485,7 +2485,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           let docRef=db.collection("portalData").doc("profile_"+targetUsername),snap=await docRef.get(),data=snap.exists?snap.data():{},oldExcel=data.excel||null;
           await docRef.set({info:data.info||{},excelBackup:oldExcel,excelBackupAt:new Date().toISOString(),excel:JSON.stringify(parsedData)},{merge:true});
           alert("✅ Excel यशस्वीरित्या Upload झाला. जुना Cloud data backup म्हणून जतन केला आहे.");fileInput.value="";
-      }catch(err){alert("❌ Excel Upload Error: "+err.message);}};reader.readAsArrayBuffer(file);
+      }catch(err){alert("❌ Excel Upload Error: "+err.message);}};reader.readAsArrayBuffer(fileInput.files[0]);
   }
 
 async function deleteSchool(index) {
