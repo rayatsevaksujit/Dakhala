@@ -2579,6 +2579,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           [14,17,19].forEach(i=>{const v=row[i];if(String(v??'').trim()&&!isValidStudentDate(v))errors.push("Row "+er+" : "+expected[i]+" '"+String(v)+"' चुकीची आहे. DD-MM-YYYY मध्ये वैध दिनांक द्या.");});
           const gender=String(row[20]??'').trim();if(gender&&!["Male","Female"].includes(gender))errors.push("Row "+er+" : लिंग चुकीचे आहे — फक्त Male किंवा Female निवडा.");
           const aadhaar=String(row[3]??'').replace(/\s/g,'');if(aadhaar&&!/^\d{12}$/.test(aadhaar))errors.push("Row "+er+" : आधार क्रमांक 12 अंकी असावा.");
+          const mobile=String(row[23]??'').trim().replaceAll(' ','').replaceAll('-','');if(mobile&&!/^[6-9][0-9]{9}$/.test(mobile))errors.push("Row "+er+" : विद्यार्थ्याचा मोबाईल नंबर दिला असल्यास 6 ते 9 ने सुरू होणारा 10 अंकी नंबर द्या.");
           if(errors.length>=80)return;
       });return errors.slice(0,80);
   }
@@ -2744,7 +2745,7 @@ async function deleteSchool(index) {
       }
   }
 
-  function clearStudentEntryForm(){const ids=['entReg','entStudId','entAadhaar','entName','entMother','entBirthPlace','entState','entCountry','entDob','entAdmDate','entAdmClass','entPrevSchool','entRel','entCaste'];ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});const med=document.getElementById('entMed');if(med)med.value='मराठी';const nat=document.getElementById('entNat');if(nat)nat.value='भारतीय';const lang=document.getElementById('entLang');if(lang)lang.value='मराठी';const gender=document.getElementById('entGender');if(gender)gender.value='';setTimeout(()=>document.getElementById('entName')?.focus(),150);}
+  function clearStudentEntryForm(){const ids=['entReg','entStudId','entAadhaar','entName','entMother','entBirthPlace','entState','entCountry','entDob','entAdmDate','entAdmClass','entCurrentClass','entCurrentDivision','entStudentMobile','entPrevSchool','entRel','entCaste'];ids.forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});const med=document.getElementById('entMed');if(med)med.value='मराठी';const nat=document.getElementById('entNat');if(nat)nat.value='भारतीय';const lang=document.getElementById('entLang');if(lang)lang.value='मराठी';const gender=document.getElementById('entGender');if(gender)gender.value='';setTimeout(()=>document.getElementById('entName')?.focus(),150);}
 function validateDakhalaPrintFields(){
       const leave=document.getElementById('outLeavingDate'),date=document.getElementById('currentDate');
       const missing=[];
