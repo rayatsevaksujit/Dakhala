@@ -2535,7 +2535,16 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       }
   }
 
-  function getExpectedExcelHeaders(){return ["जनरल रजिस्टर क्रमांक","माध्यम","PEN आयडी","आधार क्रमांक","विद्यार्थ्याचे पूर्ण नाव","आईचे नाव","राष्ट्रीयत्व","मातृभाषा","धर्म","जात","पोटजात","जन्मस्थळ","राज्य","देश","जन्मदिनांक","जन्मदिनांक (अक्षरी)","यापूर्वीची शाळा","प्रवेश दिनांक","प्रवेश इयत्ता","शाळा सोडल्याचा दिनांक","लिंग"];}
+  function getExpectedExcelHeaders(){return ["जनरल रजिस्टर क्रमांक","माध्यम","PEN आयडी","आधार क्रमांक","विद्यार्थ्याचे पूर्ण नाव","आईचे नाव","राष्ट्रीयत्व","मातृभाषा","धर्म","जात","पोटजात","जन्मस्थळ","राज्य","देश","जन्मदिनांक","जन्मदिनांक (अक्षरी)","यापूर्वीची शाळा","प्रवेश दिनांक","प्रवेश इयत्ता","शाळा सोडल्याचा दिनांक","लिंग","चालू इयत्ता","चालू तुकडी","विद्यार्थ्याचा मोबाईल नंबर (ऐच्छिक)"];}
+  function upgradeStudentRows(rows){
+      if(!Array.isArray(rows)||!rows.length)return rows;
+      const headers=getExpectedExcelHeaders(),legacy=headers.slice(0,21);
+      if(!Array.isArray(rows[0]))rows[0]=[];
+      while(rows[0].length<legacy.length)rows[0].push(legacy[rows[0].length]);
+      rows[0]=headers.slice();
+      for(let i=1;i<rows.length;i++){if(!Array.isArray(rows[i]))rows[i]=[];while(rows[i].length<headers.length)rows[i].push('');}
+      return rows;
+  }
 
   function excelColumnName(n){let s='';n++;while(n){let r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s;}
 
