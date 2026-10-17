@@ -718,6 +718,57 @@ input:focus,select:focus{
 html, body{max-width:100%; overflow-x:hidden}
 </style>
 
+
+<style id="dk-desktop-dashboard-size-fix">
+/* Desktop dashboard: use available screen space and improve Marathi readability */
+@media (min-width:1000px){
+  #mainAppContainer.container{
+    width:calc(100vw - 64px) !important;
+    max-width:1500px !important;
+    box-sizing:border-box !important;
+    padding:22px 24px !important;
+    margin:12px auto !important;
+  }
+  #mainAppContainer .app-header{
+    padding:18px 22px !important;
+    margin:0 0 18px !important;
+    min-height:68px;
+    box-sizing:border-box !important;
+  }
+  #mainAppContainer .app-title h2{font-size:24px !important;line-height:1.35 !important}
+  #mainAppContainer .app-title p{font-size:15px !important;line-height:1.45 !important}
+  #mainAppContainer .app-logo{width:48px !important;height:48px !important;font-size:24px !important;flex-shrink:0}
+  #mainAppContainer .dashboard-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:18px !important;
+    margin-bottom:18px !important;
+  }
+  #mainAppContainer .tool-card{
+    min-height:174px !important;
+    padding:20px !important;
+    border-radius:18px !important;
+    box-sizing:border-box !important;
+  }
+  #mainAppContainer .tool-icon{
+    width:52px !important;height:52px !important;
+    font-size:27px !important;margin-bottom:10px !important;
+  }
+  #mainAppContainer .tool-title{font-size:18px !important;line-height:1.45 !important;margin-bottom:7px !important}
+  #mainAppContainer .tool-desc{font-size:14px !important;line-height:1.55 !important;margin-bottom:12px !important}
+  #mainAppContainer .tool-link{font-size:15px !important;line-height:1.4 !important}
+  #mainAppContainer .back-btn{font-size:14px !important;padding:8px 13px !important}
+}
+@media (min-width:1000px) and (max-width:1200px){
+  #mainAppContainer .dashboard-grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+}
+@media (min-width:701px) and (max-width:999px){
+  #mainAppContainer.container{width:calc(100vw - 32px) !important;max-width:none !important}
+  #mainAppContainer .dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  #mainAppContainer .tool-title{font-size:16px !important}
+  #mainAppContainer .tool-desc{font-size:13px !important;line-height:1.45 !important}
+}
+</style>
+
 </head>
 <body>
 
