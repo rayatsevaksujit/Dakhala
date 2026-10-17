@@ -1737,26 +1737,37 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
   // Helper to correctly format Excel serial date numbers to readable DD/MM/YYYY
   function formatEntryDateInput(el) {
-      if(!el) return;
-      let v = String(el.value || '').replace(/[^0-9]/g, '').slice(0, 8);
-      if(v.length > 4) v = v.slice(0,2) + '-' + v.slice(2,4) + '-' + v.slice(4);
-      else if(v.length > 2) v = v.slice(0,2) + '-' + v.slice(2);
-      el.value = v;
-  }
+       if(!el) return;
+       const raw = String(el.value || '').trim();
+       const separated = raw.match(/^(\d{1,2})\s*[-\/]\s*(\d{1,2})\s*[-\/]\s*(\d{4})$/);
+       if(separated) {
+           el.value = separated[1].padStart(2,'0') + '-' + separated[2].padStart(2,'0') + '-' + separated[3];
+           return;
+       }
+       // While the user is still typing a slash-separated date, do not rearrange digits.
+       if(/^\d{1,2}\s*[-\/]\s*\d{0,2}(?:\s*[-\/]\s*\d{0,4})?$/.test(raw)) return;
+       let v = raw.replace(/[^0-9]/g, '').slice(0, 8);
+       if(v.length > 4) v = v.slice(0,2) + '-' + v.slice(2,4) + '-' + v.slice(4);
+       else if(v.length > 2) v = v.slice(0,2) + '-' + v.slice(2);
+       el.value = v;
+   }
 
-  function normalizeStudentDate(val) {
-      if(!val) return '';
-      let v = String(val).trim().replace(/\s+/g,'');
-      let p = v.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
-      if(p) return p[1].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[3];
-      p = v.match(/^(\d{8})$/);
-      if(p) return p[1].slice(6,8) + '-' + p[1].slice(4,6) + '-' + p[1].slice(0,4);
-      p = v.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
-      if(p) return p[3].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[1];
-      return v;
-  }
+   function normalizeStudentDate(val) {
+       if(!val) return '';
+       if(val instanceof Date && !isNaN(val.getTime())) {
+           return String(val.getDate()).padStart(2,'0') + '-' + String(val.getMonth()+1).padStart(2,'0') + '-' + val.getFullYear();
+       }
+       let v = String(val).trim().replace(/\s+/g,'');
+       let p = v.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
+       if(p) return p[1].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[3];
+       p = v.match(/^(\d{8})$/);
+       if(p) return p[1].slice(0,2) + '-' + p[1].slice(2,4) + '-' + p[1].slice(4,8);
+       p = v.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+       if(p) return p[3].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[1];
+       return v;
+   }
 
-  function formatExcelDate(val) {
+   function formatExcelDate(val) {
       if(!val) return "";
       let s = String(val).trim();
       // YYYYMMDD / YYYY-MM-DD / DD-MM-YYYY सर्वांना print साठी DD-MM-YYYY मध्ये बदला.
@@ -1799,27 +1810,29 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
   function dateToMarathiWords(val) {
-      try {
-          let d;
-          let num = Number(val);
-          if(!isNaN(num) && num > 30000 && num < 60000) {
-              d = new Date((num - (25569 + 2)) * 86400 * 1000);
-          } else if(typeof val === 'string' && val.includes('/')) {
-              let p = val.split('/');
-              d = new Date(`${p[2]}-${p[1]}-${p[0]}`);
-          } else {
-              d = new Date(val);
-          }
-          if (isNaN(d)) return val ? val.toString() : "";
+       try {
+           if(val === null || val === undefined || String(val).trim() === '') return '';
+           let d;
+           if(val instanceof Date && !isNaN(val.getTime())) {
+               d = new Date(val.getFullYear(), val.getMonth(), val.getDate());
+           } else if(typeof val === 'number' && val > 30000 && val < 60000) {
+               d = new Date((val - 25569) * 86400 * 1000);
+           } else {
+               const normalized = normalizeStudentDate(val);
+               const match = normalized.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+               if(!match) return String(val);
+               d = new Date(Number(match[3]), Number(match[2])-1, Number(match[1]));
+               if(d.getFullYear() !== Number(match[3]) || d.getMonth() !== Number(match[2])-1 || d.getDate() !== Number(match[1])) return String(val);
+           }
+           if (isNaN(d.getTime())) return String(val);
+           let dayWord = ones[d.getDate()] || d.getDate();
+           let monthWord = marathiMonthsFull[d.getMonth() + 1] || "";
+           let yearWord = convertNumberToWords(d.getFullYear());
+           return dayWord + " " + monthWord + " " + yearWord;
+       } catch(e) { return val ? String(val) : ""; }
+   }
 
-          let dayWord = ones[d.getDate()] || d.getDate();
-          let monthWord = marathiMonthsFull[d.getMonth() + 1] || "";
-          let yearWord = convertNumberToWords(d.getFullYear());
-          return `${dayWord} ${monthWord} ${yearWord}`;
-      } catch(e) { return val ? val.toString() : ""; }
-  }
-
-  // Lazy Load / Search in General Register with formatted dates and words
+   // Lazy Load / Search in General Register with formatted dates and words
   function filterGenTable() {
       let q = normalizeSearchText(document.getElementById('genSearchBox').value);
       let thead = document.getElementById('genTableHead');
