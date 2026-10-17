@@ -2581,7 +2581,6 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           const gender=String(row[20]??'').trim();if(gender&&!["Male","Female"].includes(gender))errors.push("Row "+er+" : लिंग चुकीचे आहे — फक्त Male किंवा Female निवडा.");
           const aadhaar=String(row[3]??'').replace(/\s/g,'');if(aadhaar&&!/^\d{12}$/.test(aadhaar))errors.push("Row "+er+" : आधार क्रमांक 12 अंकी असावा.");
           const mobile=String(row[23]??'').trim().replaceAll(' ','').replaceAll('-','');if(mobile&&!/^[6-9][0-9]{9}$/.test(mobile))errors.push("Row "+er+" : विद्यार्थ्याचा मोबाईल नंबर दिला असल्यास 6 ते 9 ने सुरू होणारा 10 अंकी नंबर द्या.");
-          const mobile=String(row[23]??'').trim().replaceAll(' ','').replaceAll('-','');if(mobile&&!/^[6-9][0-9]{9}$/.test(mobile))errors.push("Row "+er+" : विद्यार्थ्याचा मोबाईल नंबर दिला असल्यास 6 ते 9 ने सुरू होणारा 10 अंकी नंबर द्या.");
           if(errors.length>=80)return;
       });return errors.slice(0,80);
   }
