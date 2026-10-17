@@ -2831,11 +2831,18 @@ function validateDakhalaPrintFields(){
       if(!selectedBonafideStudent){ alert('कृपया प्रथम विद्यार्थी शोधून निवडा.'); return; }
       const r=selectedBonafideStudent.row;
       const photo=await getStudentPhoto(r[0]);
-      const logo=schoolLogoBase64 || currentSchoolProfile.logo || '';
+      const profile = currentSchoolProfile || {};
+      const logo=profile.logo || '';
       const photoHtml=photo ? `<img class="bona-photo" src="${photo}" alt="">` : '';
-      const inst=escBona(currentSchoolProfile.inst||'');
-      const school=escBona(currentSchoolProfile.school||'');
-      const address=escBona(currentSchoolProfile.address||'');
+      const inst=escBona(profile.inst||'');
+      const school=escBona(profile.school||'');
+      const address=escBona(profile.address||'');
+      const phone=escBona(profile.phone||'');
+      const email=escBona(profile.email||'');
+      const recognition=escBona(profile.recognition||'');
+      const udise=escBona(profile.udise||'');
+      const sscIndex=escBona(profile.sscIndex||'');
+      const hscIndex=escBona(profile.hscIndex||'');
       const academic=escBona(document.getElementById('bonaAcademicYear').value||currentAcademicYearMarathi());
       const issueDate=escBona(getIssueDateMarathi());
 
@@ -2847,6 +2854,11 @@ function validateDakhalaPrintFields(){
           <h1>${inst}</h1>
           <h2>${school}</h2>
           <h3>${address}</h3>
+          ${phone ? `<div class="bona-school-detail">फोन नंबर : ${phone}</div>` : ''}
+          ${email ? `<div class="bona-school-detail">इ-मेल : ${email}</div>` : ''}
+          ${recognition ? `<div class="bona-school-detail">शाळा मान्यता क्रमांक : ${recognition}</div>` : ''}
+          ${udise ? `<div class="bona-school-detail">यु-डायस क्रमांक : ${udise}</div>` : ''}
+          ${(sscIndex || hscIndex) ? `<div class="bona-school-detail">${sscIndex ? 'एस.एस.सी. इंडेक्स नंबर : ' + sscIndex : ''}${(sscIndex && hscIndex) ? ' | ' : ''}${hscIndex ? 'एच.एस.सी. इंडेक्स नंबर : ' + hscIndex : ''}</div>` : ''}
           <div class="bona-title">बोनाफाईड सर्टिफिकेट</div>
         </div>
         <div class="bona-body">
@@ -2958,6 +2970,7 @@ function validateDakhalaPrintFields(){
             max-width: 100% !important;
         }
 
+        .bona-school-detail { font-size: 10px; line-height: 1.2; margin-top: 1px; text-align: center; overflow-wrap: anywhere; }
         .bona-head h1 { font-size: 17px !important; font-weight: 700 !important; }
         .bona-head h2 { font-size: 17px !important; font-weight: 800 !important; margin-top: 1mm !important; }
         .bona-head h3 { font-size: 14px !important; font-weight: 700 !important; margin-top: 1mm !important; }
