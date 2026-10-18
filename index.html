@@ -1949,20 +1949,30 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
 
   function setupDashboard(role, username) {
+      const dashboardCards = [
+          'cardSchoolMgmt','cardSchoolInfo','cardEntry','cardDakhala','cardGenRegister',
+          'cardBonafide','cardTeacherPhoto','cardDataCompleteness','cardPrintReport','cardIdCard'
+      ];
+      const upcomingSection = document.querySelector('#homeDashboard .dk-upcoming-section');
       if(role === 'master') {
           document.getElementById('roleSubTitle').innerText = 'डिजिटल साथीदार प्रशासकीय प्रणाली (Master Admin)';
-          document.getElementById('cardSchoolMgmt').style.display = 'block';
-          document.getElementById('cardBonafide').style.display = 'block';
-          document.getElementById('cardTeacherPhoto').style.display = 'block';
-          document.getElementById('cardIdCard').style.display = 'block';
+          // Master Admin dashboard is for school management only; student/certificate actions stay in School Login.
+          dashboardCards.forEach(id => {
+              const card = document.getElementById(id);
+              if(card) card.style.display = id === 'cardSchoolMgmt' ? 'block' : 'none';
+          });
+          if(upcomingSection) upcomingSection.style.display = 'none';
+          document.getElementById('mainAppContainer').classList.remove('school-dashboard-compact');
           loadSchoolTable();
       } else {
           let sName = sessionStorage.getItem('currentSchoolName') || username;
           document.getElementById('roleSubTitle').innerText = 'शाळा लॉगिन : ' + sName;
-          document.getElementById('cardSchoolMgmt').style.display = 'none';
-          document.getElementById('cardBonafide').style.display = 'block';
-          document.getElementById('cardTeacherPhoto').style.display = 'block';
-          document.getElementById('cardIdCard').style.display = 'block';
+          dashboardCards.forEach(id => {
+              const card = document.getElementById(id);
+              if(card) card.style.display = 'block';
+          });
+          if(upcomingSection) upcomingSection.style.display = '';
+          document.getElementById('mainAppContainer').classList.add('school-dashboard-compact');
           loadSchoolInfo(username);
       }
   }
@@ -3465,7 +3475,36 @@ function validateDakhalaPrintFields(){
         '<link id="bonafide-print-marathi-font" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Marathi&display=swap">' +
         '<title>Bonafide Print</title>' +
         '<style>' + printCss + '</style>' +
-        '</head>' +
+        '
+<style id="dk-school-dashboard-compact">
+/* Compact selection cards for School Login only; visual styling, no workflow changes. */
+#mainAppContainer.school-dashboard-compact #homeDashboard .dashboard-grid:not(.dk-upcoming-grid){gap:10px!important}
+#mainAppContainer.school-dashboard-compact #homeDashboard .tool-card{
+  min-height:118px!important;padding:13px 14px!important;border-radius:12px!important;
+}
+#mainAppContainer.school-dashboard-compact #homeDashboard .tool-icon{
+  width:36px!important;height:36px!important;font-size:21px!important;margin-bottom:6px!important;
+}
+#mainAppContainer.school-dashboard-compact #homeDashboard .tool-title{
+  font-size:15px!important;line-height:1.35!important;margin-bottom:4px!important;
+}
+#mainAppContainer.school-dashboard-compact #homeDashboard .tool-desc{
+  font-size:12px!important;line-height:1.4!important;margin-bottom:6px!important;
+}
+#mainAppContainer.school-dashboard-compact #homeDashboard .tool-link{font-size:12px!important}
+#mainAppContainer.school-dashboard-compact #homeDashboard .dk-upcoming-section{padding:10px!important;margin:12px 0 8px!important}
+#mainAppContainer.school-dashboard-compact #homeDashboard .dk-upcoming-grid{gap:9px!important}
+#mainAppContainer.school-dashboard-compact #homeDashboard .dk-upcoming-grid .tool-card{min-height:100px!important;padding:11px!important}
+@media(min-width:1000px){
+  #mainAppContainer.school-dashboard-compact #homeDashboard .tool-card{min-height:126px!important}
+  #mainAppContainer.school-dashboard-compact #homeDashboard .tool-icon{width:38px!important;height:38px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #mainAppContainer.school-dashboard-compact #homeDashboard .tool-card{transition:none!important}
+}
+</style>
+
+</head>' +
         '<body></body>' +
         '</html>'
       );
