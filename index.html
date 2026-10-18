@@ -17,7 +17,7 @@
             font-display: swap;
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Rozha+One&family=Tiro+Devanagari+Marathi&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -25,6 +25,8 @@
 
     <style>
         :root {
+            --brand-blue: #1F3A8A;
+            --brand-navy: #14296B;
             --primary-color: #1b4f72;
             --secondary-color: #2980b9;
             --bg-color: #f4f6f7;
@@ -195,6 +197,47 @@
             #lcCard #logoContainer { margin-bottom: 4px !important; min-height: 32mm; display: flex; align-items: center; justify-content: center; }
             #lcCard .lc-signature-row { margin-top: 12mm !important; min-height: 10mm; align-items: flex-end; }
             #lcCard .lc-signature-row > div { padding-top: 4mm; }
+        }
+
+        /* ===== Scoped Leaving Certificate typography / color fixes ===== */
+        #lcCard, .bulk-lc-copy {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        #pInst, #pAddress, #pContact, #pEmail, #pRecognition, #pIndexNums,
+        #lcCard .lc-certificate-title, .bulk-lc-copy .lc-certificate-title {
+            color: var(--brand-blue) !important;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        #pSchool, .bulk-lc-copy #pSchool {
+            color: var(--brand-navy) !important;
+            font-family: 'Rozha One', 'Tiro Devanagari Marathi', serif !important;
+            font-size: 28px !important;
+            line-height: 1.18 !important;
+            text-align: center !important;
+            white-space: normal !important;
+            overflow-wrap: anywhere;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        #lcCard .lc-table strong, .bulk-lc-copy .lc-table strong,
+        #lcCard .lc-label, .bulk-lc-copy .lc-label {
+            color: var(--brand-blue) !important;
+            font-family: 'Noto Sans Devanagari', sans-serif !important;
+        }
+        #editStudentId, #editAadhaar, #outReg, #outPrevSchool {
+            box-sizing: border-box;
+            padding: 2px 12px !important;
+            line-height: 1.6 !important;
+            overflow: visible !important;
+            white-space: nowrap !important;
+            font-family: 'Noto Sans Devanagari', sans-serif !important;
+            color: #000 !important;
+        }
+        #lcCard input, .bulk-lc-copy input {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
     
 /* ===== ADD-ON: Bonafide + Student Photo Module ===== */
@@ -1377,10 +1420,10 @@ html, body{max-width:100%; overflow-x:hidden}
                         <span id="pEmail">इ-मेल : ramanandnagar.srvsr@gmail.com</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; margin-top: 2px;">
-                        <span>दाखला नं. : <input type="text" id="outDakhalaNo" class="editable-field dakhala-number-field" inputmode="numeric" maxlength="10" style="width:75px;display:inline-block;font-weight:bold;" oninput="formatDakhalaNumberInput(this)"></span>
-                        <span>रजिस्टर नंबर : <input type="text" id="outReg" readonly style="width:70px; display:inline-block; font-weight:bold;"></span>
+                        <span><strong class="lc-label">दाखला नं. :</strong> <input type="text" id="outDakhalaNo" class="editable-field dakhala-number-field" inputmode="numeric" maxlength="10" style="width:75px;display:inline-block;font-weight:bold;" oninput="formatDakhalaNumberInput(this)"></span>
+                        <span><strong class="lc-label">रजिस्टर नंबर :</strong> <input type="text" id="outReg" readonly style="width:70px; display:inline-block; font-weight:bold;"></span>
                         
-                        <span>माध्यम : <span id="outMedium">मराठी</span></span>
+                        <span><strong class="lc-label">माध्यम :</strong> <span id="outMedium">मराठी</span></span>
 
                     </div>
                     <div style="font-size: 10px; font-weight: bold; margin-top: 2px; border-bottom: 1px solid #000; padding-bottom: 2px;" id="pRecognition">
@@ -1391,11 +1434,11 @@ html, body{max-width:100%; overflow-x:hidden}
                     </div>
                 </div>
 
-                <div style="text-align: center; font-weight: bold; font-size: 14px; margin: 3px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
+                <div class="lc-certificate-title" style="text-align: center; font-weight: bold; font-size: 14px; margin: 3px 0; text-decoration: underline;">शाळा सोडल्याचे प्रमाणपत्र</div>
                 
-                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 2px;">
-                    <div>स्टुडंट आय डी (PEN) : <input type="text" id="editStudentId" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
-                    <div>आधार क्रमांक : <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
+                <div class="lc-meta-labels" style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 2px;">
+                    <div><strong class="lc-label">स्टुडंट आय डी (PEN) :</strong> <input type="text" id="editStudentId" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
+                    <div><strong class="lc-label">आधार क्रमांक :</strong> <input type="text" id="editAadhaar" readonly style="width:130px; padding:1px; font-weight:bold;"></div>
                 </div>
 
                 <table class="lc-table">
