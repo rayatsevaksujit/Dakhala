@@ -890,6 +890,60 @@ html, body{max-width:100%; overflow-x:hidden}
 }
 </style>
 
+
+<style id="dk-login-marathi-font-and-field-fix">
+/* Login-only refinement: compact credential fields and Marathi calligraphy */
+#loginScreen{
+  width:min(500px,calc(100vw - 28px))!important;
+  max-width:500px!important;
+  margin:12px auto!important;
+  padding:16px 20px!important;
+  overflow:hidden!important;
+}
+#loginScreen:before{display:none!important}
+#loginScreen .form-group{
+  width:min(100%,310px)!important;
+  margin:0 auto 7px!important;
+  text-align:left!important;
+}
+#loginScreen label,
+#loginScreen .dk-login-title,
+#loginScreen .dk-login-subtitle,
+#loginScreen .dk-login-hint,
+#loginScreen .dk-login-help,
+#loginScreen .dk-login-support,
+#loginScreen .dk-use-title,
+#loginScreen .dk-use-card,
+#loginScreen .dk-credits,
+#loginScreen .dk-login-button{
+  font-family:'Tiro Devanagari Marathi','Sakal Marathi','Nirmala UI','Mangal',serif!important;
+}
+#loginScreen input{
+  display:block!important;
+  width:100%!important;
+  max-width:310px!important;
+  height:36px!important;
+  padding:6px 10px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  font-family:Arial,sans-serif!important;
+  font-size:14px!important;
+}
+#loginScreen .dk-login-hint{font-size:10px!important;line-height:1.25!important}
+#loginScreen .dk-login-title{font-size:21px!important;line-height:1.35!important}
+#loginScreen .dk-login-subtitle{margin:3px 0 8px!important}
+#loginScreen .dk-login-icon{width:46px!important;height:46px!important;margin:0 auto 5px!important;border-radius:14px!important}
+#loginScreen .dk-login-button{width:min(100%,310px)!important;height:37px!important;margin:5px auto 0!important;display:block!important}
+#loginScreen .dk-login-help{margin:9px auto 0!important;max-width:420px!important}
+#loginScreen .dk-login-support{margin-top:8px!important}
+#loginScreen .dk-use-card{margin-top:8px!important}
+@media(max-width:700px){
+  #loginScreen{width:calc(100vw - 24px)!important;max-width:500px!important;padding:14px 14px!important;margin:8px auto!important}
+  #loginScreen .form-group{width:min(100%,310px)!important}
+  #loginScreen .dk-login-title{font-size:19px!important}
+}
+</style>
+
 </head>
 <body>
 
