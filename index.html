@@ -942,6 +942,50 @@ html, body{max-width:100%; overflow-x:hidden}
 }
 </style>
 
+
+<style id="dk-dashboard-professional-blue-refresh">
+/* Visual-only refresh for the home dashboard. No form, data, or print logic changes. */
+#homeDashboard .dashboard-grid{gap:14px!important}
+#homeDashboard .tool-card{
+  position:relative!important;
+  overflow:hidden!important;
+  background:linear-gradient(145deg,#fff 0%,#f8fbff 100%)!important;
+  border:1px solid #d7e4f5!important;
+  border-left:4px solid #2f65b9!important;
+  border-radius:13px!important;
+  box-shadow:0 3px 12px rgba(25,65,125,.07)!important;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important;
+}
+#homeDashboard .tool-card:after{
+  content:"";position:absolute;right:-24px;top:-28px;width:82px;height:82px;
+  border-radius:50%;background:rgba(58,111,190,.055);pointer-events:none;
+}
+#homeDashboard .tool-card:hover{
+  transform:translateY(-3px)!important;
+  box-shadow:0 9px 22px rgba(25,65,125,.13)!important;
+  border-color:#8bb2eb!important;border-left-color:#174a9a!important;
+}
+#homeDashboard .tool-icon{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:44px;height:44px;border-radius:12px;
+  background:#eaf2ff;color:#173e7e;
+}
+#homeDashboard .tool-title{color:#173e7e!important;font-weight:750!important}
+#homeDashboard .tool-desc{color:#53657d!important}
+#homeDashboard .tool-link{color:#245bb0!important;font-weight:750!important}
+#homeDashboard .tool-card[style*="background: #fef9e7"]{border-left-color:#d79a21!important}
+#homeDashboard .tool-card[style*="background: #f4ecf7"]{border-left-color:#4775b9!important}
+#homeDashboard .tool-card[style*="background:#eaf7ef"]{border-left-color:#25845d!important}
+#homeDashboard .tool-card[style*="background:#eaf2f8"]{border-left-color:#3b75b9!important}
+#homeDashboard .tool-card:focus-visible{outline:3px solid #7da9ed!important;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){
+  #homeDashboard .tool-card{transition:none!important;animation:none!important}
+  #homeDashboard .tool-card:hover{transform:none!important}
+}
+</style>
+
+
+
 </head>
 <body>
 
