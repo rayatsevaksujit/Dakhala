@@ -16,6 +16,14 @@
             font-style: normal;
             font-display: swap;
         }
+        /* User-provided font file should be placed at fonts/DakhlaFont.ttf */
+        @font-face {
+            font-family: 'DakhlaFont';
+            src: url('fonts/DakhlaFont.ttf') format('truetype');
+            font-weight: 100 900;
+            font-style: normal;
+            font-display: swap;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Rozha+One&family=Tiro+Devanagari+Marathi&display=swap" rel="stylesheet">
     
@@ -200,15 +208,15 @@
         }
 
         /* ===== Scoped Leaving Certificate typography / color fixes ===== */
-        #lcCard, .bulk-lc-copy {
+        #lcCard, #lcCard *, .bulk-lc-copy, .bulk-lc-copy * {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
-            font-family: 'Noto Sans Devanagari', sans-serif;
+            font-family: 'DakhlaFont', 'Noto Sans Devanagari', sans-serif;
         }
         #pInst, #pAddress, #pContact, #pEmail, #pRecognition, #pIndexNums,
         #lcCard .lc-certificate-title, .bulk-lc-copy .lc-certificate-title {
             color: var(--brand-blue) !important;
-            font-family: 'Noto Sans Devanagari', sans-serif;
+            font-family: 'DakhlaFont', 'Noto Sans Devanagari', sans-serif !important;
         }
         #pSchool, .bulk-lc-copy #pSchool {
             color: var(--brand-navy) !important;
@@ -224,24 +232,48 @@
         #lcCard .lc-table strong, .bulk-lc-copy .lc-table strong,
         #lcCard .lc-label, .bulk-lc-copy .lc-label {
             color: var(--brand-blue) !important;
-            font-family: 'Noto Sans Devanagari', sans-serif !important;
+            font-family: 'DakhlaFont', 'Noto Sans Devanagari', sans-serif !important;
         }
-        #lcCard .lc-table td:has(#outPrevSchool),
-        .bulk-lc-copy .lc-table td:has(#outPrevSchool) {
+        /* Keep Devanagari pre-base i-matra visible; retain the original table borders. */
+        #lcCard .lc-table th, #lcCard .lc-table td,
+        .bulk-lc-copy .lc-table th, .bulk-lc-copy .lc-table td {
             overflow: visible !important;
+            line-height: 1.6 !important;
         }
-        #editStudentId, #editAadhaar, #outReg, #outPrevSchool {
-            box-sizing: border-box;
-            padding: 2px 12px !important;
+        #lcCard input, .bulk-lc-copy input,
+        #lcCard .lc-print-value, .bulk-lc-copy .lc-print-value {
+            box-sizing: border-box !important;
+            padding-left: 8px !important;
             line-height: 1.6 !important;
             overflow: visible !important;
-            white-space: nowrap !important;
-            font-family: 'Noto Sans Devanagari', sans-serif !important;
+            font-family: 'DakhlaFont', 'Noto Sans Devanagari', sans-serif !important;
             color: #000 !important;
-        }
-        #lcCard input, .bulk-lc-copy input {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+        }
+        #editStudentId, #editAadhaar, #outReg, #outPrevSchool {
+            padding: 2px 12px !important;
+            white-space: nowrap !important;
+        }
+        #lcCard #logoContainer, .bulk-lc-copy #logoContainer {
+            min-height: 42mm !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            overflow: visible !important;
+        }
+        #lcCard #printLogo, .bulk-lc-copy #printLogo {
+            max-height: 162.5px !important;
+            max-width: 188.5px !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+        }
+        #pRecognition, #pIndexNums, .bulk-lc-copy #pRecognition, .bulk-lc-copy #pIndexNums {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            line-height: 1.6 !important;
+            overflow: visible !important;
         }
     
 /* ===== ADD-ON: Bonafide + Student Photo Module ===== */
@@ -2252,6 +2284,27 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       checks.forEach(ch => ch.checked = master.checked);
   }
 
+  // Replace certificate value inputs with text spans during print to avoid clipping Devanagari matras.
+  function convertLcValuesToPrintText(root) {
+      if (!root) return () => {};
+      const restore = [];
+      root.querySelectorAll('input[type="text"]').forEach(input => {
+          const span = document.createElement('span');
+          span.className = 'lc-print-value';
+          span.textContent = input.value || '';
+          span.style.cssText = input.getAttribute('style') || '';
+          span.style.display = 'inline-block';
+          span.style.boxSizing = 'border-box';
+          span.style.paddingLeft = '8px';
+          span.style.lineHeight = '1.6';
+          span.style.overflow = 'visible';
+          span.style.whiteSpace = 'pre-wrap';
+          input.parentNode.replaceChild(span, input);
+          restore.push(() => { if (span.parentNode) span.parentNode.replaceChild(input, span); });
+      });
+      return () => restore.reverse().forEach(fn => fn());
+  }
+
   async function printDakhalaCurrent(){
     if(!validateDakhalaPrintFields())return;
     const source=document.getElementById('lcCard');
@@ -2260,13 +2313,20 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
     try{
         const usedNo=await reserveDakhalaNumber();if(!usedNo)return;
         if(printBtn)printBtn.style.display='none';
-        await document.fonts.ready;await new Promise(r=>setTimeout(r,120));window.focus();window.print();
+        const restorePrintValues=convertLcValuesToPrintText(source);
+        try {
+            await document.fonts.ready;
+            await new Promise(r=>setTimeout(r,120));
+            window.focus();window.print();
+        } finally {
+            restorePrintValues();
+        }
         const el=document.getElementById('outDakhalaNo');if(el)el.value=String(usedNo+1);
     }catch(e){console.error('Dakhala print error:',e);alert('दाखला नंबर सेव्ह/प्रिंट करताना त्रुटी आली: '+(e.message||e));}
     finally{if(printBtn)printBtn.style.display='block';}
   }
 
-  function printOneFromBulk(idx) {
+  async function printOneFromBulk(idx) {
       let row = window._bulkRows ? window._bulkRows[idx] : null;
       if (!row) return;
       if(!normalizeStudentDate(String(row[19]||'').trim())){
@@ -2279,7 +2339,10 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       let commonReason = document.getElementById('commonLeavingReason').value.trim();
       let commonRemark = document.getElementById('commonRemark').value.trim();
       renderLC(row, commonReason, commonRemark);
-      document.fonts.ready.then(() => window.print());
+      const source=document.getElementById('lcCard');
+      const restorePrintValues=convertLcValuesToPrintText(source);
+      try { await document.fonts.ready; window.print(); }
+      finally { restorePrintValues(); }
   }
 
   function printAllBulk() {
@@ -2319,6 +2382,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           clone.style.width = '';
           fillCertificateElement(clone, row, commonReason, commonRemark);
           area.appendChild(clone);
+          convertLcValuesToPrintText(clone);
       });
 
       document.body.classList.add('bulk-print-mode');
