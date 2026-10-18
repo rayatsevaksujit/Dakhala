@@ -1951,17 +1951,18 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
    }
 
    function formatExcelDate(val) {
-      if(!val) return "";
-      let s = String(val).trim();
+      if(val === null || val === undefined || String(val).trim() === "") return "";
+      const s = String(val).trim();
       // YYYYMMDD / YYYY-MM-DD / DD-MM-YYYY सर्वांना print साठी DD-MM-YYYY मध्ये बदला.
-      let normalized = normalizeStudentDate(s);
+      const normalized = normalizeStudentDate(s);
       if(/^\d{2}-\d{2}-\d{4}$/.test(normalized)) return normalized;
-      let num = Number(val);
-      if(!isNaN(num) && num > 30000 && num < 60000) {
-          let d = new Date((num - (25569 + 2)) * 86400 * 1000);
-          let day = String(d.getDate()).padStart(2, '0');
-          let month = String(d.getMonth() + 1).padStart(2, '0');
-          let year = d.getFullYear();
+      // Excel serial dates use the same 25569 epoch offset everywhere (UTC avoids timezone shifts).
+      const num = Number(s);
+      if(Number.isFinite(num) && num > 30000 && num < 60000) {
+          const d = new Date(Math.round((num - 25569) * 86400 * 1000));
+          const day = String(d.getUTCDate()).padStart(2, '0');
+          const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+          const year = d.getUTCFullYear();
           return `${day}-${month}-${year}`;
       }
       return s;
@@ -1995,22 +1996,22 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   function dateToMarathiWords(val) {
        try {
            if(val === null || val === undefined || String(val).trim() === '') return '';
-           let d;
+           let normalized;
            if(val instanceof Date && !isNaN(val.getTime())) {
-               d = new Date(val.getFullYear(), val.getMonth(), val.getDate());
-           } else if(typeof val === 'number' && val > 30000 && val < 60000) {
-               d = new Date((val - 25569) * 86400 * 1000);
+               normalized = String(val.getDate()).padStart(2, '0') + '-' +
+                   String(val.getMonth() + 1).padStart(2, '0') + '-' + val.getFullYear();
            } else {
-               const normalized = normalizeStudentDate(val);
-               const match = normalized.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-               if(!match) return String(val);
-               d = new Date(Number(match[3]), Number(match[2])-1, Number(match[1]));
-               if(d.getFullYear() !== Number(match[3]) || d.getMonth() !== Number(match[2])-1 || d.getDate() !== Number(match[1])) return String(val);
+               // Use the exact same date normalization as the numeric certificate field.
+               normalized = formatExcelDate(val);
            }
-           if (isNaN(d.getTime())) return String(val);
-           let dayWord = ones[d.getDate()] || d.getDate();
-           let monthWord = marathiMonthsFull[d.getMonth() + 1] || "";
-           let yearWord = convertNumberToWords(d.getFullYear());
+           const match = String(normalized).match(/^(\d{2})-(\d{2})-(\d{4})$/);
+           if(!match) return String(val);
+           const day = Number(match[1]), month = Number(match[2]), year = Number(match[3]);
+           const d = new Date(year, month - 1, day);
+           if(d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) return String(val);
+           const dayWord = ones[day] || String(day);
+           const monthWord = marathiMonthsFull[month] || "";
+           const yearWord = convertNumberToWords(year);
            return dayWord + " " + monthWord + " " + yearWord;
        } catch(e) { return val ? String(val) : ""; }
    }
