@@ -1025,6 +1025,15 @@ html, body{max-width:100%; overflow-x:hidden}
 #tabSchoolMgmt{overflow-x:auto}
 @media(max-width:700px){#tabSchoolMgmt .dk-admin-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#tabSchoolMgmt .dk-admin-stat{padding:11px}#tabSchoolMgmt .dk-admin-stat strong{font-size:23px}#tabSchoolMgmt .dk-admin-toolbar button{width:100%}}
 </style>
+<style id="dk-admin-student-counts-support">
+#tabSchoolMgmt .dk-admin-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+#tabSchoolMgmt .data-table{min-width:980px}
+.dk-school-support{margin:14px 0 8px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border:1px solid #b7e4ca;border-radius:13px;background:linear-gradient(135deg,#f0fdf4,#fff)}
+.dk-school-support strong{display:block;color:#166534;font-size:14px}
+.dk-school-support p{margin:4px 0 0;color:#475569;font-size:12px}
+.dk-school-support button{flex-shrink:0}
+@media(max-width:700px){#tabSchoolMgmt .dk-admin-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.dk-school-support button{width:100%!important}}
+</style>
 </head>
 <body>
 
@@ -1033,6 +1042,7 @@ html, body{max-width:100%; overflow-x:hidden}
     <div class="dk-login-icon">🔐</div>
     <h2 class="dk-login-title">शाळा व्यवस्थापन व दाखला पोर्टल</h2>
     <p class="dk-login-subtitle">सुरक्षित Login करून पुढे जा</p>
+    <a class="dk-login-support" href="https://wa.me/919333411111?text=%E0%A4%A8%E0%A4%AE%E0%A4%B8%E0%A5%8D%E0%A4%95%E0%A4%BE%E0%A4%B0%2C%20Dakhala%20%E0%A4%B8%E0%A5%89%E0%A4%AB%E0%A5%8D%E0%A4%9F%E0%A4%B5%E0%A5%87%E0%A4%85%E0%A4%B0%E0%A4%B8%E0%A4%BE%E0%A4%A0%E0%A5%80%20%E0%A4%AE%E0%A4%B2%E0%A4%BE%20%E0%A4%B8%E0%A4%AA%E0%A5%8B%E0%A4%B0%E0%A5%8D%E0%A4%9F%20%E0%A4%B9%E0%A4%B5%E0%A4%BE%20%E0%A4%86%E0%A4%B9%E0%A5%87." target="_blank" rel="noopener noreferrer">💬 WhatsApp सपोर्टला मेसेज करा</a>
 
     <div class="form-group">
         <label for="loginUser">Username</label>
@@ -1144,6 +1154,10 @@ html, body{max-width:100%; overflow-x:hidden}
                 <div class="tool-desc">शाळेच्या विद्यार्थ्यांसाठी आयडी कार्ड प्रिंट करा.</div>
                 <a class="tool-link">जनरेट करा &rarr;</a>
             </div>
+        </div>
+        <div id="dkSchoolSupport" class="dk-school-support" style="display:none;">
+          <div><strong>💬 शाळा लॉगिन सपोर्ट</strong><p>लॉगिन, Excel Upload किंवा विद्यार्थी माहितीबाबत मदत हवी असल्यास WhatsApp वर थेट मेसेज करा.</p></div>
+          <button type="button" onclick="contactDakhalaSupport()" style="background:#16804a;width:auto;">WhatsApp मेसेज करा ↗</button>
         </div>
 
         <section class="dk-upcoming-section" aria-label="लवकरच उपलब्ध होणाऱ्या सुविधा">
@@ -1305,6 +1319,8 @@ html, body{max-width:100%; overflow-x:hidden}
         <p style="font-size: 12px; color: #666; margin-bottom: 12px;">शाळांचा आढावा, शोध, लॉगिन व्यवस्थापन आणि डेटा बॅकअप. विद्यार्थी/शाळा डेटा बदलण्यासाठी संबंधित कृतीच वापरा.</p>
         <div id="dk-admin-summary" class="dk-admin-summary" aria-live="polite">
           <div class="dk-admin-stat"><span>नोंदणीकृत शाळा</span><strong id="dkAdminTotal">—</strong></div>
+          <div class="dk-admin-stat"><span>एकूण विद्यार्थी</span><strong id="dkAdminStudentTotal">मोजत आहे…</strong></div>
+          <div class="dk-admin-stat"><span>दुरुस्ती बाकी असलेले विद्यार्थी</span><strong id="dkAdminIncompleteTotal">मोजत आहे…</strong></div>
           <div class="dk-admin-stat"><span>Username उपलब्ध</span><strong id="dkAdminLoginCount">—</strong></div>
           <div class="dk-admin-stat"><span>UDISE नोंदलेले</span><strong id="dkAdminUdiseCount">—</strong></div>
           <div class="dk-admin-stat"><span>मोबाईल नोंदलेले</span><strong id="dkAdminMobileCount">—</strong></div>
@@ -1332,6 +1348,7 @@ html, body{max-width:100%; overflow-x:hidden}
                     <th>अ.क्र.</th>
                     <th>शाळेचे नाव</th>
                     <th>युडायस व मोबाईल</th>
+                    <th>विद्यार्थी / दुरुस्ती बाकी</th>
                     <th>लॉगिन युजरनेम / पासवर्ड बदल</th>
                     <th>एक्सेल डेटा फाईल (Excel Upload)</th>
                     <th>कृती</th>
@@ -1998,6 +2015,14 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
 
+  function contactDakhalaSupport() {
+      const username=getActiveUser()||'';
+      const profile=currentSchoolProfile||{};
+      const schoolName=sessionStorage.getItem('currentSchoolName')||profile.school||username||'शाळा';
+      const message='नमस्कार, Dakhala सॉफ्टवेअर सपोर्ट हवा आहे. शाळेचे नाव: '+schoolName+'; Username: '+username+'. कृपया मदत करा.';
+      window.open('https://wa.me/919333411111?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
+  }
+
   function setupDashboard(role, username) {
       const dashboardCards = [
           'cardSchoolMgmt','cardSchoolInfo','cardEntry','cardDakhala','cardGenRegister',
@@ -2012,6 +2037,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
               if(card) card.style.display = id === 'cardSchoolMgmt' ? 'block' : 'none';
           });
           if(upcomingSection) upcomingSection.style.display = 'none';
+          const support=document.getElementById('dkSchoolSupport'); if(support) support.style.display='none';
           document.getElementById('mainAppContainer').classList.remove('school-dashboard-compact');
           loadSchoolTable();
       } else {
@@ -2022,6 +2048,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
               if(card) card.style.display = 'block';
           });
           if(upcomingSection) upcomingSection.style.display = '';
+          const support=document.getElementById('dkSchoolSupport'); if(support) support.style.display='flex';
           document.getElementById('mainAppContainer').classList.add('school-dashboard-compact');
           loadSchoolInfo(username);
       }
@@ -2853,13 +2880,52 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       } catch(e) { alert("Error: " + e.message); }
   }
 
+  let dkAdminStudentStats = {};
+  let dkAdminStatsLoaded = false;
+  function getAdminStudentCounts(rows) {
+      if(typeof rows==='string') { try { rows=JSON.parse(rows); } catch(e) { rows=[]; } }
+      if(!Array.isArray(rows)||rows.length<=1) return {total:0,incomplete:0};
+      const checks=[0,4,14,9,20,18,21];
+      let incomplete=0,total=0;
+      for(let i=1;i<rows.length;i++) {
+          const row=Array.isArray(rows[i])?rows[i]:[];
+          if(!row.some(v=>String(v??'').trim()!=='')) continue;
+          total++;
+          if(checks.some(index=>!String(row[index]??'').trim())) incomplete++;
+      }
+      return {total,incomplete};
+  }
+  async function loadAdminStudentStats(force=false) {
+      if(dkAdminStatsLoaded&&!force) return;
+      dkAdminStatsLoaded=true;
+      const list=Array.isArray(registeredSchoolsList)?registeredSchoolsList.slice():[];
+      const results=await Promise.all(list.map(async school=>{
+          if(!school||!school.username) return {username:'',total:null,incomplete:null};
+          try {
+              const snap=await db.collection('portalData').doc('profile_'+school.username).get();
+              if(!snap.exists) return {username:school.username,total:0,incomplete:0};
+              const data=snap.data()||{};
+              return {username:school.username,...getAdminStudentCounts(data.excel||[])};
+          } catch(error) {
+              console.warn('Could not load admin counts for school:',school.username,error);
+              return {username:school.username,total:null,incomplete:null};
+          }
+      }));
+      dkAdminStudentStats={};
+      results.forEach(item=>{if(item.username)dkAdminStudentStats[item.username]=item;});
+      updateSchoolSummary();
+      loadSchoolTable();
+  }
   function updateSchoolSummary() {
-      const list = Array.isArray(registeredSchoolsList) ? registeredSchoolsList : [];
-      const set = (id, value) => { const el=document.getElementById(id); if(el) el.textContent=String(value); };
-      set('dkAdminTotal', list.length);
-      set('dkAdminLoginCount', list.filter(s=>String(s.username||'').trim()).length);
-      set('dkAdminUdiseCount', list.filter(s=>String(s.udise||'').trim()).length);
-      set('dkAdminMobileCount', list.filter(s=>String(s.mobile||'').trim()).length);
+      const list=Array.isArray(registeredSchoolsList)?registeredSchoolsList:[];
+      const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=String(value);};
+      set('dkAdminTotal',list.length);
+      set('dkAdminLoginCount',list.filter(s=>String(s.username||'').trim()).length);
+      set('dkAdminUdiseCount',list.filter(s=>String(s.udise||'').trim()).length);
+      set('dkAdminMobileCount',list.filter(s=>String(s.mobile||'').trim()).length);
+      const known=list.map(s=>dkAdminStudentStats[s.username]).filter(x=>x&&x.total!==null&&x.incomplete!==null);
+      set('dkAdminStudentTotal',known.length===list.length?known.reduce((n,x)=>n+x.total,0):'काही शाळांचा डेटा उपलब्ध नाही');
+      set('dkAdminIncompleteTotal',known.length===list.length?known.reduce((n,x)=>n+x.incomplete,0):'काही शाळांचा डेटा उपलब्ध नाही');
   }
 
   function filterSchoolTable() { loadSchoolTable(); }
@@ -2869,16 +2935,17 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       if(!tbody) return;
       tbody.innerHTML = '';
       updateSchoolSummary();
+      if(!dkAdminStatsLoaded) loadAdminStudentStats();
       const query = String(document.getElementById('dkSchoolSearch')?.value || '').trim().toLowerCase();
       const matched = registeredSchoolsList.map((school, originalIndex)=>({school, originalIndex})).filter(({school:s}) =>
           !query || [s.name,s.username,s.udise,s.mobile].some(v=>String(v||'').toLowerCase().includes(query))
       );
       if(registeredSchoolsList.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#7f8c8d;">अद्याप शाळा नोंदणीकृत नाही.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#7f8c8d;">अद्याप शाळा नोंदणीकृत नाही.</td></tr>`;
           return;
       }
       if(!matched.length) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#7f8c8d;">या शोधासाठी शाळा सापडली नाही.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#7f8c8d;">या शोधासाठी शाळा सापडली नाही.</td></tr>`;
           return;
       }
       matched.forEach(({school:s, originalIndex:index}, displayIndex) => {
@@ -2887,6 +2954,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
                   <td>${displayIndex+1}</td>
                   <td><strong>${s.name||'-'}</strong></td>
                   <td>UDISE: ${s.udise||'-'}<br>मोबाईल: ${s.mobile||'-'}</td>
+                  <td>${dkAdminStudentStats[s.username]&&dkAdminStudentStats[s.username].total!==null ? '<strong>'+dkAdminStudentStats[s.username].total+'</strong> विद्यार्थी<br><span style="color:#b45309;">'+dkAdminStudentStats[s.username].incomplete+' दुरुस्ती बाकी</span>' : 'मोजणी उपलब्ध नाही'}</td>
                   <td>
                       Username: <input type="text" id="editUser_${index}" value="${forceEnglishCredentialValue(s.username)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px;display:inline-block;padding:2px;"><br>
                       Password: <input type="password" id="editPass_${index}" value="${forceEnglishCredentialValue(s.password)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px;display:inline-block;padding:2px;margin-top:2px;"><br>
