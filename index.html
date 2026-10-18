@@ -319,6 +319,7 @@
 .bona-head h1,.bona-head h2,.bona-head h3,.bona-head p{margin:0; line-height:1.28; max-width:100%;}
 .bona-head h1{font-size:17px;font-weight:700;}
 .bona-head h2{font-size:17px;font-weight:800;margin-top:1mm;}
+.bona-head .bona-school-name{font-family:'Rozha One','Tiro Devanagari Marathi',serif!important;font-size:22px!important;line-height:1.28!important;color:var(--brand-navy,#183153)!important;}
 .bona-head h3{font-size:14px;font-weight:700;margin-top:1mm;}
 .bona-title{font-size:18px;font-weight:800;margin-top:2mm!important;}
 .bona-photo{
@@ -327,7 +328,9 @@
 }
 .bona-body{margin-top:2mm;text-align:left;font-weight:600;}
 .bona-line{margin:1.2mm 0;}
-.bona-field{font-weight:800;}
+.bona-field{font-weight:800;color:#000!important;}
+.bona-fixed{color:#0756a0!important;font-weight:700;}
+.bona-serial{position:relative;text-align:right;margin:0 0 1mm;font-size:12px;}
 .bona-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:9mm;font-weight:700;}
 .bona-footer .sign{width:30%;text-align:center;}
 .bona-controls{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:12px;}
@@ -1077,6 +1080,7 @@ html, body{max-width:100%; overflow-x:hidden}
 
         <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
             <input id="bonaAcademicYear" value="" placeholder="शैक्षणिक वर्ष (उदा. २०२६-२७)" style="max-width:220px;">
+            <input id="bonaSerialNo" type="text" placeholder="अ.क्र. (प्रमाणपत्र क्रमांक)" style="max-width:220px;">
             <input id="bonaIssueDate" type="date" style="max-width:190px;">
             <button onclick="printBonafide()" style="width:auto;background:#27ae60;">🖨️ Print / PDF</button>
         </div>
@@ -3141,6 +3145,12 @@ function validateDakhalaPrintFields(){
       const hscIndex=escBona(profile.hscIndex||'');
       const academic=escBona(document.getElementById('bonaAcademicYear').value||currentAcademicYearMarathi());
       const issueDate=escBona(getIssueDateMarathi());
+      const serialNo=escBona(document.getElementById('bonaSerialNo')?.value || '');
+      const gender=String(r[20]||'').trim().toLowerCase();
+      const isFemale=['female','स्त्री','मुलगी','girl'].includes(gender);
+      const studentWord=isFemale ? 'विद्यार्थिनी' : 'विद्यार्थी';
+      const studyingWord=isFemale ? 'शिकत होती' : 'शिकत होता';
+      const genderPronoun=isFemale ? 'तिची' : 'त्याची';
 
       const card=document.getElementById('bonaCard');
       card.innerHTML=`
@@ -3148,7 +3158,7 @@ function validateDakhalaPrintFields(){
           ${logo ? `<img class="bona-logo" src="${logo}" alt="">` : ''}
           ${photoHtml}
           <h1>${inst}</h1>
-          <h2>${school}</h2>
+          <h2 class="bona-school-name">${school}</h2>
           <h3>${address}</h3>
           ${phone ? `<div class="bona-school-detail">फोन नंबर : ${phone}</div>` : ''}
           ${email ? `<div class="bona-school-detail">इ-मेल : ${email}</div>` : ''}
@@ -3158,16 +3168,17 @@ function validateDakhalaPrintFields(){
           <div class="bona-title">बोनाफाईड सर्टिफिकेट</div>
         </div>
         <div class="bona-body">
-          <div class="bona-line">दाखला देण्यात येतो कि, <span class="bona-field">${escBona(r[4])}</span> हा/ही या विद्यालयाचा/विद्यालयाची विद्यार्थी/विद्यार्थिनी आहे.</div>
-          <div class="bona-line">तो/ती सन <span class="bona-field">${academic}</span> या शैक्षणिक वर्षात इयत्ता <span class="bona-field">${escBona(r[18])}</span> मध्ये शिकत आहे. विद्यालयाच्या जनरल रजिस्टर मधील रजिस्टर नंबर <span class="bona-field">${escBona(r[0])}</span> नुसार त्याची/तिची माहिती खालीलप्रमाणे आहे.</div>
-          <div class="bona-line">आईचे नाव : <span class="bona-field">${escBona(r[5])}</span>
-            <span style="display:inline-block;margin-left:35mm;">धर्म : <span class="bona-field">${escBona(r[8])}</span></span>
-            <span style="display:inline-block;margin-left:18mm;">जात : <span class="bona-field">${escBona(r[9])}</span></span>
+          <div class="bona-serial"><span class="bona-fixed">अ.क्र. :</span> <span class="bona-field">${serialNo}</span></div>
+          <div class="bona-line"><span class="bona-fixed">दाखला देण्यात येतो की,</span> <span class="bona-field">${escBona(r[4])}</span> <span class="bona-fixed">${isFemale ? "ही या शाळेची" : "हा या शाळेचा"} ${studentWord} आहे.</span></div>
+          <div class="bona-line"><span class="bona-fixed">${isFemale ? "ती" : "तो"} सन</span> <span class="bona-field">${academic}</span> <span class="bona-fixed">या शैक्षणिक वर्षात इयत्ता</span> <span class="bona-field">${escBona(r[18])}</span> <span class="bona-fixed">मध्ये ${studyingWord}. शाळेच्या जनरल रजिस्टरमधील रजिस्टर नंबर</span> <span class="bona-field">${escBona(r[0])}</span> <span class="bona-fixed">नुसार ${genderPronoun} माहिती खालीलप्रमाणे आहे.</span></div>
+          <div class="bona-line"><span class="bona-fixed">आईचे नाव :</span> <span class="bona-field">${escBona(r[5])}</span>
+            <span style="display:inline-block;margin-left:22mm;"><span class="bona-fixed">धर्म :</span> <span class="bona-field">${escBona(r[8])}</span></span>
+            <span style="display:inline-block;margin-left:12mm;"><span class="bona-fixed">जात :</span> <span class="bona-field">${escBona(r[9])}</span></span>
           </div>
-          <div class="bona-line">जन्मतारीख : <span class="bona-field">${escBona(formatExcelDate(r[14]))}</span>
-            <span style="display:inline-block;margin-left:30mm;">अक्षरी : <span class="bona-field">${escBona(dateToMarathiWords(r[14]))}</span></span>
+          <div class="bona-line"><span class="bona-fixed">जन्मतारीख :</span> <span class="bona-field">${escBona(formatExcelDate(r[14]))}</span>
+            <span style="display:inline-block;margin-left:22mm;"><span class="bona-fixed">अक्षरी :</span> <span class="bona-field">${escBona(dateToMarathiWords(r[14]))}</span></span>
           </div>
-          <div class="bona-line">जन्मस्थळ : <span class="bona-field">${escBona(r[11])}</span></div>
+          <div class="bona-line"><span class="bona-fixed">जन्मस्थळ :</span> <span class="bona-field">${escBona(r[11])}</span></div>
         </div>
         <div class="bona-footer">
           <div class="sign">दिनांक : ${issueDate}</div>
@@ -3269,6 +3280,7 @@ function validateDakhalaPrintFields(){
         .bona-school-detail { font-size: 10px; line-height: 1.2; margin-top: 1px; text-align: center; overflow-wrap: anywhere; }
         .bona-head h1 { font-size: 17px !important; font-weight: 700 !important; }
         .bona-head h2 { font-size: 17px !important; font-weight: 800 !important; margin-top: 1mm !important; }
+        .bona-head .bona-school-name { font-family: 'Rozha One','Tiro Devanagari Marathi',serif !important; font-size: 22px !important; line-height: 1.28 !important; color: #183153 !important; }
         .bona-head h3 { font-size: 14px !important; font-weight: 700 !important; margin-top: 1mm !important; }
         .bona-title { font-size: 18px !important; font-weight: 800 !important; margin-top: 2mm !important; }
 
@@ -3307,7 +3319,10 @@ function validateDakhalaPrintFields(){
 
         .bona-field {
             font-weight: 800 !important;
+            color: #000 !important;
         }
+        .bona-fixed { color: #0756a0 !important; font-weight: 700 !important; }
+        .bona-serial { position: relative !important; text-align: right !important; margin: 0 0 1mm !important; font-size: 12px !important; }
 
         .bona-footer {
             display: flex !important;
