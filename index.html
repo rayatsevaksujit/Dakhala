@@ -1013,7 +1013,19 @@ html, body{max-width:100%; overflow-x:hidden}
   #mainAppContainer.school-dashboard-compact #homeDashboard .tool-card{transition:none!important}
 }
 </style>
-    </head>
+    <style id="dk-admin-dashboard">
+#tabSchoolMgmt .dk-admin-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
+#tabSchoolMgmt .dk-admin-stat{background:linear-gradient(135deg,#fff,#f1f6ff);border:1px solid #d7e3f7;border-radius:14px;padding:15px;box-shadow:0 4px 14px rgba(31,58,138,.07)}
+#tabSchoolMgmt .dk-admin-stat span{display:block;color:#53657e;font-size:12px;line-height:1.4}
+#tabSchoolMgmt .dk-admin-stat strong{display:block;color:#1f3a8a;font-size:27px;line-height:1.25;margin-top:5px}
+#tabSchoolMgmt .dk-admin-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 6px}
+#tabSchoolMgmt .dk-admin-toolbar input{flex:1 1 280px;min-width:0;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}
+#tabSchoolMgmt .dk-admin-toolbar button{width:auto;margin:0;white-space:normal}
+#tabSchoolMgmt .data-table{min-width:820px}
+#tabSchoolMgmt{overflow-x:auto}
+@media(max-width:700px){#tabSchoolMgmt .dk-admin-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}#tabSchoolMgmt .dk-admin-stat{padding:11px}#tabSchoolMgmt .dk-admin-stat strong{font-size:23px}#tabSchoolMgmt .dk-admin-toolbar button{width:100%}}
+</style>
+</head>
 <body>
 
 <!-- Login Screen -->
@@ -1289,8 +1301,19 @@ html, body{max-width:100%; overflow-x:hidden}
 
     <!-- Tab: School Management (Master Admin Only) -->
     <div id="tabSchoolMgmt" class="tab-content">
-        <h3>🏛️ शाळा व्यवस्थापन, लॉगिन नाव बदल व एक्सेल डेटा (Master Admin Panel)</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">येथून तुम्ही नवीन शाळा जोडू शकता, शाळेचे युजरनेम/पासवर्ड बदलू शकता तसेच एक्सेल फाईल थेट अपलोड करू शकता.</p>
+        <h3>🏛️ शाळा व्यवस्थापन — Admin Control Panel</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">शाळांचा आढावा, शोध, लॉगिन व्यवस्थापन आणि डेटा बॅकअप. विद्यार्थी/शाळा डेटा बदलण्यासाठी संबंधित कृतीच वापरा.</p>
+        <div id="dk-admin-summary" class="dk-admin-summary" aria-live="polite">
+          <div class="dk-admin-stat"><span>नोंदणीकृत शाळा</span><strong id="dkAdminTotal">—</strong></div>
+          <div class="dk-admin-stat"><span>Username उपलब्ध</span><strong id="dkAdminLoginCount">—</strong></div>
+          <div class="dk-admin-stat"><span>UDISE नोंदलेले</span><strong id="dkAdminUdiseCount">—</strong></div>
+          <div class="dk-admin-stat"><span>मोबाईल नोंदलेले</span><strong id="dkAdminMobileCount">—</strong></div>
+        </div>
+        <div class="dk-admin-toolbar">
+          <input id="dkSchoolSearch" type="search" placeholder="🔎 शाळेचे नाव, Username, UDISE किंवा मोबाईल शोधा..." oninput="filterSchoolTable()" autocomplete="off" aria-label="शाळा शोधा">
+          <button type="button" onclick="backupPortalData()" style="background:#176b4d;">⬇️ सर्व डेटा बॅकअप (JSON)</button>
+        </div>
+        <p id="dkBackupNote" style="font-size:12px;color:#805b17;margin:0 0 14px;">🔐 बॅकअपमध्ये शाळांची लॉगिन माहिती व विद्यार्थी डेटा असू शकतो. फाइल सुरक्षित ठिकाणी ठेवा आणि इतरांना पाठवू नका.</p>
         
         <div style="max-width: 500px; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 20px;">
             <h4 style="margin-top:0; color:var(--primary-color);">नवीन शाळा नोंदणी</h4>
@@ -2830,35 +2853,87 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       } catch(e) { alert("Error: " + e.message); }
   }
 
+  function updateSchoolSummary() {
+      const list = Array.isArray(registeredSchoolsList) ? registeredSchoolsList : [];
+      const set = (id, value) => { const el=document.getElementById(id); if(el) el.textContent=String(value); };
+      set('dkAdminTotal', list.length);
+      set('dkAdminLoginCount', list.filter(s=>String(s.username||'').trim()).length);
+      set('dkAdminUdiseCount', list.filter(s=>String(s.udise||'').trim()).length);
+      set('dkAdminMobileCount', list.filter(s=>String(s.mobile||'').trim()).length);
+  }
+
+  function filterSchoolTable() { loadSchoolTable(); }
+
   function loadSchoolTable() {
-      let tbody = document.getElementById('schoolTableBody');
+      const tbody = document.getElementById('schoolTableBody');
+      if(!tbody) return;
       tbody.innerHTML = '';
+      updateSchoolSummary();
+      const query = String(document.getElementById('dkSchoolSearch')?.value || '').trim().toLowerCase();
+      const matched = registeredSchoolsList.map((school, originalIndex)=>({school, originalIndex})).filter(({school:s}) =>
+          !query || [s.name,s.username,s.udise,s.mobile].some(v=>String(v||'').toLowerCase().includes(query))
+      );
       if(registeredSchoolsList.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#7f8c8d;">No schools registered yet.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#7f8c8d;">अद्याप शाळा नोंदणीकृत नाही.</td></tr>`;
           return;
       }
-      registeredSchoolsList.forEach((s, index) => {
+      if(!matched.length) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#7f8c8d;">या शोधासाठी शाळा सापडली नाही.</td></tr>`;
+          return;
+      }
+      matched.forEach(({school:s, originalIndex:index}, displayIndex) => {
           tbody.innerHTML += `
               <tr>
-                  <td>${index+1}</td>
-                  <td><strong>${s.name}</strong></td>
-                  <td>Udise: ${s.udise||'-'}<br>Mob: ${s.mobile||'-'}</td>
+                  <td>${displayIndex+1}</td>
+                  <td><strong>${s.name||'-'}</strong></td>
+                  <td>UDISE: ${s.udise||'-'}<br>मोबाईल: ${s.mobile||'-'}</td>
                   <td>
-                      User: <input type="text" id="editUser_${index}" value="${forceEnglishCredentialValue(s.username)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px; display:inline-block; padding:2px;"><br>
-                      Pass: <input type="password" id="editPass_${index}" value="${forceEnglishCredentialValue(s.password)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px; display:inline-block; padding:2px; margin-top:2px;"><br>
-                      <button onclick="updateSchoolCredentials(${index})" style="background:#2980b9; padding:2px 6px; font-size:10px; width:auto; margin-top:3px;">💾 Update Login</button>
+                      Username: <input type="text" id="editUser_${index}" value="${forceEnglishCredentialValue(s.username)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px;display:inline-block;padding:2px;"><br>
+                      Password: <input type="password" id="editPass_${index}" value="${forceEnglishCredentialValue(s.password)}" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)" style="width:100px;display:inline-block;padding:2px;margin-top:2px;"><br>
+                      <button onclick="updateSchoolCredentials(${index})" style="background:#2980b9;padding:2px 6px;font-size:10px;width:auto;margin-top:3px;">💾 Login अपडेट</button>
                   </td>
                   <td>
-                      <input type="file" id="adminExcel_${s.username}" accept=".xlsx, .xls, .csv" style="font-size:11px; margin-bottom:4px;"><br>
-                      <button onclick="uploadSchoolExcel('${s.username}')" style="background:#27ae60; padding:3px 8px; font-size:11px; width:auto;">📤 Upload Excel</button>
-                      <button onclick="downloadExcelSample()" style="background:#2980b9; padding:3px 8px; font-size:11px; width:auto;">📥 Sample</button>
-                      <button onclick="exportSchoolExcel('${s.username}')" style="background:#8e44ad; padding:3px 8px; font-size:11px; width:auto;">📤 Export</button>
+                      <input type="file" id="adminExcel_${s.username}" accept=".xlsx,.xls,.csv" style="font-size:11px;margin-bottom:4px;"><br>
+                      <button onclick="uploadSchoolExcel('${s.username}')" style="background:#27ae60;padding:3px 8px;font-size:11px;width:auto;">📤 Excel Upload</button>
+                      <button onclick="downloadExcelSample()" style="background:#2980b9;padding:3px 8px;font-size:11px;width:auto;">📥 Sample</button>
+                      <button onclick="exportSchoolExcel('${s.username}')" style="background:#8e44ad;padding:3px 8px;font-size:11px;width:auto;">📤 Export</button>
                   </td>
-                  <td>
-                      <button onclick="deleteSchool(${index})" style="background:#c0392b; padding:4px 8px; font-size:11px; width:auto;">Delete</button>
-                  </td>
+                  <td><button onclick="deleteSchool(${index})" style="background:#c0392b;padding:4px 8px;font-size:11px;width:auto;">Delete</button></td>
               </tr>`;
       });
+  }
+
+  async function backupPortalData() {
+      if(getActiveRole()!=='master') { alert('ही सुविधा फक्त Admin साठी आहे.'); return; }
+      if(!confirm('सर्व नोंदणीकृत शाळा आणि प्रत्येक शाळेचा उपलब्ध profile/विद्यार्थी डेटा JSON फाइलमध्ये डाउनलोड करायचा आहे का? फाइल संवेदनशील आहे.')) return;
+      const btn = document.querySelector('#tabSchoolMgmt .dk-admin-toolbar button');
+      if(btn) { btn.disabled=true; btn.textContent='⏳ बॅकअप तयार होत आहे…'; }
+      try {
+          const backup = { format:'Dakhala-portal-backup', version:1, createdAt:new Date().toISOString(), registeredSchools:[], profiles:{} };
+          const schoolDoc = await db.collection('portalData').doc('registeredSchools').get();
+          if(!schoolDoc.exists) throw new Error('registeredSchools दस्तऐवज Firebase मध्ये सापडला नाही.');
+          backup.registeredSchools = schoolDoc.data().list || [];
+          for(const school of backup.registeredSchools) {
+              if(!school || !school.username) continue;
+              const profileDoc = await db.collection('portalData').doc('profile_'+school.username).get();
+              if(profileDoc.exists) backup.profiles[school.username] = profileDoc.data();
+              else backup.profiles[school.username] = null;
+          }
+          const adminProfile = await db.collection('portalData').doc('profile_admin').get();
+          if(adminProfile.exists) backup.profiles.admin = adminProfile.data();
+          const blob = new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href=url; link.download='Dakhala_Backup_'+new Date().toISOString().slice(0,10)+'.json';
+          document.body.appendChild(link); link.click(); link.remove();
+          setTimeout(()=>URL.revokeObjectURL(url),1500);
+          alert('✅ बॅकअप फाइल डाउनलोड सुरू झाले. फाइल सुरक्षित ठिकाणी ठेवा.');
+      } catch(error) {
+          console.error('Dakhala backup failed:',error);
+          alert('❌ बॅकअप तयार झाला नाही: '+(error.message||error));
+      } finally {
+          if(btn) { btn.disabled=false; btn.textContent='⬇️ सर्व डेटा बॅकअप (JSON)'; }
+      }
   }
 
   async function updateSchoolCredentials(index) {
