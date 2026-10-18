@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-        '<base href="' + location.href.replace(/"/g, '&quot;') + '">' +
-        '<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Tiro+Devanagari+Marathi&display=swap" rel="stylesheet">' +
     <title>School Management & Certificate Portal - Master & School Admin</title>
     
     <!-- Sakal Marathi: 'fonts' फोल्डरमध्ये SakalMarathi.ttf/.woff2 फाईल अपलोड करा -->
@@ -3330,7 +3328,7 @@ function validateDakhalaPrintFields(){
         .bona-school-detail { font-size: 10px; line-height: 1.2; margin-top: 1px; text-align: center; overflow-wrap: anywhere; }
         .bona-head h1 { font-size: 17px !important; font-weight: 700 !important; }
         .bona-head h2 { font-size: 17px !important; font-weight: 800 !important; margin-top: 1mm !important; }
-        .bona-head .bona-school-name { font-family: 'Rozha One','Tiro Devanagari Marathi',serif !important; font-size: 22px !important; line-height: 1.28 !important; color: #183153 !important; }
+        .bona-head .bona-school-name { font-family: 'Tiro Devanagari Marathi','Sakal Marathi',serif !important; font-size: 22px !important; font-weight: 400 !important; line-height: 1.28 !important; color: #183153 !important; }
         .bona-head h3 { font-size: 14px !important; font-weight: 700 !important; margin-top: 1mm !important; }
         .bona-title { font-size: 18px !important; font-weight: 800 !important; margin-top: 2mm !important; }
 
@@ -3419,6 +3417,8 @@ function validateDakhalaPrintFields(){
         '<head>' +
         '<meta charset="UTF-8">' +
         '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+        '<base href="' + location.href.replace(/&/g, '&amp;').replace(/"/g, '&quot;') + '">' +
+        '<link id="bonafide-print-marathi-font" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Marathi&display=swap">' +
         '<title>Bonafide Print</title>' +
         '<style>' + printCss + '</style>' +
         '</head>' +
@@ -3440,10 +3440,28 @@ function validateDakhalaPrintFields(){
           });
       }));
 
+      // Print window मध्ये Marathi calligraphy font प्रत्यक्ष load होईपर्यंत थांबा.
+      const fontLink = printWindow.document.getElementById('bonafide-print-marathi-font');
+      if (fontLink && !fontLink.sheet) {
+          await new Promise(resolve => {
+              fontLink.addEventListener('load', resolve, { once: true });
+              fontLink.addEventListener('error', resolve, { once: true });
+              setTimeout(resolve, 2500);
+          });
+      }
+      try {
+          if (printWindow.document.fonts && printWindow.document.fonts.load) {
+              await Promise.race([
+                  printWindow.document.fonts.load('22px "Tiro Devanagari Marathi"'),
+                  new Promise(resolve => setTimeout(resolve, 2500))
+              ]);
+              await printWindow.document.fonts.ready;
+          }
+      } catch (e) { console.warn('Print font load issue:', e); }
       setTimeout(() => {
           printWindow.focus();
           printWindow.print();
-      }, 700);
+      }, 300);
 
       printWindow.onafterprint = function() {
           setTimeout(() => {
