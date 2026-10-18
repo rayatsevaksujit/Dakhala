@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+        '<base href="' + location.href.replace(/"/g, '&quot;') + '">' +
+        '<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Tiro+Devanagari+Marathi&display=swap" rel="stylesheet">' +
     <title>School Management & Certificate Portal - Master & School Admin</title>
     
     <!-- Sakal Marathi: 'fonts' फोल्डरमध्ये SakalMarathi.ttf/.woff2 फाईल अपलोड करा -->
@@ -330,7 +332,7 @@
 .bona-line{margin:1.2mm 0;}
 .bona-field{font-weight:800;color:#000!important;}
 .bona-fixed{color:#0756a0!important;font-weight:700;}
-.bona-serial{position:relative;text-align:right;margin:0 0 1mm;font-size:12px;}
+.bona-serial{position:relative;text-align:right;margin:0 18mm 1mm 0;font-size:12px;}
 .bona-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:9mm;font-weight:700;}
 .bona-footer .sign{width:30%;text-align:center;}
 .bona-controls{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:12px;}
@@ -3149,7 +3151,7 @@ function validateDakhalaPrintFields(){
       const gender=String(r[20]||'').trim().toLowerCase();
       const isFemale=['female','स्त्री','मुलगी','girl'].includes(gender);
       const studentWord=isFemale ? 'विद्यार्थिनी' : 'विद्यार्थी';
-      const studyingWord=isFemale ? 'शिकत होती' : 'शिकत होता';
+      const studyingWord='शिकत आहे';
       const genderPronoun=isFemale ? 'तिची' : 'त्याची';
 
       const card=document.getElementById('bonaCard');
@@ -3157,14 +3159,8 @@ function validateDakhalaPrintFields(){
         <div class="bona-head">
           ${logo ? `<img class="bona-logo" src="${logo}" alt="">` : ''}
           ${photoHtml}
-          <h1>${inst}</h1>
           <h2 class="bona-school-name">${school}</h2>
           <h3>${address}</h3>
-          ${phone ? `<div class="bona-school-detail">फोन नंबर : ${phone}</div>` : ''}
-          ${email ? `<div class="bona-school-detail">इ-मेल : ${email}</div>` : ''}
-          ${recognition ? `<div class="bona-school-detail">शाळा मान्यता क्रमांक : ${recognition}</div>` : ''}
-          ${udise ? `<div class="bona-school-detail">यु-डायस क्रमांक : ${udise}</div>` : ''}
-          ${(sscIndex || hscIndex) ? `<div class="bona-school-detail">${sscIndex ? 'एस.एस.सी. इंडेक्स नंबर : ' + sscIndex : ''}${(sscIndex && hscIndex) ? ' | ' : ''}${hscIndex ? 'एच.एस.सी. इंडेक्स नंबर : ' + hscIndex : ''}</div>` : ''}
           <div class="bona-title">बोनाफाईड सर्टिफिकेट</div>
         </div>
         <div class="bona-body">
@@ -3322,7 +3318,7 @@ function validateDakhalaPrintFields(){
             color: #000 !important;
         }
         .bona-fixed { color: #0756a0 !important; font-weight: 700 !important; }
-        .bona-serial { position: relative !important; text-align: right !important; margin: 0 0 1mm !important; font-size: 12px !important; }
+        .bona-serial { position: relative !important; text-align: right !important; margin: 0 18mm 1mm 0 !important; font-size: 12px !important; }
 
         .bona-footer {
             display: flex !important;
