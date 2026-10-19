@@ -1228,11 +1228,17 @@ html, body{max-width:100%; overflow-x:hidden}
     <!-- Main Dashboard Cards -->
     <div id="homeDashboard" class="no-print">
         <div class="dashboard-grid">
-            <div class="tool-card" id="cardSchoolMgmt" onclick="openTab('tabSchoolMgmt')" style="display:none; background: #fef9e7; border-color: #f39c12;">
-                <div class="tool-icon">🏛️</div>
-                <div class="tool-title">शाळा व्यवस्थापन</div>
-                <div class="tool-desc">नवीन शाळा, लॉगिन नाव/पासवर्ड बदल व एक्सेल डेटा मॅनेज करा.</div>
-                <a class="tool-link" style="color: #d35400;">व्यवस्थापन करा &rarr;</a>
+            <div class="tool-card" id="cardSchoolRegistration" onclick="openTab('tabSchoolRegistration')" style="display:none; background: #fef9e7; border-color: #f39c12;">
+                <div class="tool-icon">🏫</div>
+                <div class="tool-title">शाळा नोंदणी</div>
+                <div class="tool-desc">नवीन शाळेची नोंदणी व लॉगिन तयार करा.</div>
+                <a class="tool-link" style="color: #d35400;">नोंदणी करा &rarr;</a>
+            </div>
+            <div class="tool-card" id="cardSchoolMgmt" onclick="openTab('tabSchoolMgmt')" style="display:none; background: #eef6ff; border-color: #3b82f6;">
+                <div class="tool-icon">📊</div>
+                <div class="tool-title">विद्यार्थी माहिती व शाळा व्यवस्थापन</div>
+                <div class="tool-desc">शाळांची यादी, विद्यार्थी संख्या, लॉगिन व्यवस्थापन व बॅकअप.</div>
+                <a class="tool-link" style="color: #1d4ed8;">माहिती पहा &rarr;</a>
             </div>
 
             <div class="tool-card" id="cardSchoolInfo" onclick="openTab('tabSchoolInfo')">
@@ -1448,17 +1454,9 @@ html, body{max-width:100%; overflow-x:hidden}
         </div>
     </div>
 
-    <!-- Tab: School Management (Master Admin Only) -->
-    <div id="tabSchoolMgmt" class="tab-content">
-        <h3>🏛️ शाळा व्यवस्थापन — Admin Control Panel</h3>
-        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">शाळांचा आढावा, शोध, लॉगिन व्यवस्थापन आणि डेटा बॅकअप. विद्यार्थी/शाळा डेटा बदलण्यासाठी संबंधित कृतीच वापरा.</p>
-
-        <div class="dk-admin-inner-tabs" role="tablist" aria-label="Admin व्यवस्थापन विभाग">
-          <button type="button" class="dk-admin-inner-tab active" id="dkAdminTabRegistrationBtn" onclick="switchAdminPanel('registration')" role="tab" aria-selected="true">🏫 शाळा नोंदणी</button>
-          <button type="button" class="dk-admin-inner-tab" id="dkAdminTabInfoBtn" onclick="switchAdminPanel('info')" role="tab" aria-selected="false">📊 विद्यार्थी माहिती व सेटिंग</button>
-        </div>
-        <section id="dkAdminPanelRegistration" class="dk-admin-inner-panel active" role="tabpanel" aria-labelledby="dkAdminTabRegistrationBtn">
-          <p class="dk-admin-panel-note">येथे नवीन शाळा नोंदणी करा. नोंदणी झालेल्या शाळांची यादी आणि विद्यार्थी संख्या दुसऱ्या टॅबमध्ये पाहता येईल.</p>
+    <!-- Tab: School Registration (Master Admin Only) -->
+    <div id="tabSchoolRegistration" class="tab-content">
+        <h3>🏫 नवीन शाळा नोंदणी — Admin Control Panel</h3>
         <div style="max-width: 500px; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 20px;">
             <h4 style="margin-top:0; color:var(--primary-color);">नवीन शाळा नोंदणी</h4>
             <div class="form-group"><label>शाळेचे नाव (School Name):</label><input type="text" id="newSchoolName" placeholder="Enter school name"></div>
@@ -1471,8 +1469,12 @@ html, body{max-width:100%; overflow-x:hidden}
 
 
         </section>
-        <section id="dkAdminPanelInfo" class="dk-admin-inner-panel" role="tabpanel" aria-labelledby="dkAdminTabInfoBtn" hidden>
-          <div class="dk-admin-settings-action">
+    </div>
+
+    <!-- Tab: School Information & Student Summary (Master Admin Only) -->
+    <div id="tabSchoolMgmt" class="tab-content">
+        <h3>📊 विद्यार्थी माहिती व शाळा व्यवस्थापन</h3>
+        <div class="dk-admin-settings-action">
             <div><strong>⚙️ शाळेची माहिती व लोगो सेटिंग</strong><div class="dk-admin-panel-note">शाळेचे नाव, पत्ता, मान्यता, संपर्क आणि लोगो तपासण्यासाठी/बदलण्यासाठी उघडा.</div></div>
             <button type="button" onclick="openTab('tabSchoolInfo')">शाळा सेटिंग उघडा</button>
           </div>
@@ -1506,7 +1508,6 @@ html, body{max-width:100%; overflow-x:hidden}
             <tbody id="schoolTableBody"></tbody>
         </table>
 
-        </section>
     </div>
 
     <!-- Tab: School Profile Settings -->
@@ -2197,7 +2198,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
   function setupDashboard(role, username) {
       const dashboardCards = [
-          'cardSchoolMgmt','cardSchoolInfo','cardEntry','cardDakhala','cardGenRegister',
+          'cardSchoolRegistration','cardSchoolMgmt','cardSchoolInfo','cardEntry','cardDakhala','cardGenRegister',
           'cardBonafide','cardTeacherPhoto','cardDataCompleteness','cardPrintReport','cardIdCard'
       ];
       const upcomingSection = document.querySelector('#homeDashboard .dk-upcoming-section');
@@ -2206,7 +2207,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           // Master Admin dashboard is for school management only; student/certificate actions stay in School Login.
           dashboardCards.forEach(id => {
               const card = document.getElementById(id);
-              if(card) card.style.display = id === 'cardSchoolMgmt' ? 'block' : 'none';
+              if(card) card.style.display = ['cardSchoolRegistration','cardSchoolMgmt'].includes(id) ? 'block' : 'none';
           });
           if(upcomingSection) upcomingSection.style.display = 'none';
           const support=document.getElementById('dkSchoolSupport'); if(support) support.style.display='none';
