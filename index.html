@@ -32,6 +32,16 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
+
+        .dk-admin-inner-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;padding:5px;background:#f0f4f8;border:1px solid #d9e2ec;border-radius:10px}
+        .dk-admin-inner-tab{flex:1;min-width:190px;background:#e1e8f0;color:#24364b;border:1px solid #cbd5e1;border-radius:8px;padding:11px 14px;font-weight:700;cursor:pointer}
+        .dk-admin-inner-tab.active{background:#1f4f8f;color:#fff;border-color:#1f4f8f}
+        .dk-admin-inner-panel{padding:4px 0}
+        .dk-admin-inner-panel[hidden]{display:none!important}
+        .dk-admin-panel-note{font-size:12px;color:#64748b;margin:5px 0 14px}
+        .dk-admin-settings-action{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;margin:0 0 14px;border:1px solid #dbe4ee;border-radius:10px;background:#f8fafc}
+        .dk-admin-settings-action button{width:auto;background:#1f4f8f}
+        @media(max-width:600px){.dk-admin-inner-tab{min-width:100%;}.dk-admin-settings-action button{width:100%}}
         :root {
             --brand-blue: #1F3A8A;
             --brand-navy: #14296B;
@@ -1317,6 +1327,30 @@ html, body{max-width:100%; overflow-x:hidden}
     <div id="tabSchoolMgmt" class="tab-content">
         <h3>🏛️ शाळा व्यवस्थापन — Admin Control Panel</h3>
         <p style="font-size: 12px; color: #666; margin-bottom: 12px;">शाळांचा आढावा, शोध, लॉगिन व्यवस्थापन आणि डेटा बॅकअप. विद्यार्थी/शाळा डेटा बदलण्यासाठी संबंधित कृतीच वापरा.</p>
+
+        <div class="dk-admin-inner-tabs" role="tablist" aria-label="Admin व्यवस्थापन विभाग">
+          <button type="button" class="dk-admin-inner-tab active" id="dkAdminTabRegistrationBtn" onclick="switchAdminPanel('registration')" role="tab" aria-selected="true">🏫 शाळा नोंदणी</button>
+          <button type="button" class="dk-admin-inner-tab" id="dkAdminTabInfoBtn" onclick="switchAdminPanel('info')" role="tab" aria-selected="false">📊 विद्यार्थी माहिती व सेटिंग</button>
+        </div>
+        <section id="dkAdminPanelRegistration" class="dk-admin-inner-panel active" role="tabpanel" aria-labelledby="dkAdminTabRegistrationBtn">
+          <p class="dk-admin-panel-note">येथे नवीन शाळा नोंदणी करा. नोंदणी झालेल्या शाळांची यादी आणि विद्यार्थी संख्या दुसऱ्या टॅबमध्ये पाहता येईल.</p>
+        <div style="max-width: 500px; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 20px;">
+            <h4 style="margin-top:0; color:var(--primary-color);">नवीन शाळा नोंदणी</h4>
+            <div class="form-group"><label>शाळेचे नाव (School Name):</label><input type="text" id="newSchoolName" placeholder="Enter school name"></div>
+            <div class="form-group"><label>युडायस कोड (UDISE Code):</label><input type="text" id="newSchoolUdise" placeholder="Enter UDISE code"></div>
+            <div class="form-group"><label>अधिकृत मोबाईल नंबर (Mobile Number):</label><input type="text" id="newSchoolMobile" placeholder="Enter official mobile number"></div>
+            <div class="form-group"><label>युजरनेम (Username) — फक्त English:</label><input type="text" id="newSchoolUser" placeholder="Enter login username (English only)" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)"></div>
+            <div class="form-group"><label>पासवर्ड (Password) — फक्त English:</label><input type="text" id="newSchoolPass" placeholder="Enter login password (English only)" inputmode="latin" autocomplete="new-password" oninput="forceEnglishCredential(this)"></div>
+            <button onclick="registerNewSchool()" style="background: #27ae60; margin-top: 5px;">नवीन शाळा जोडा (Register School)</button>
+        </div>
+
+
+        </section>
+        <section id="dkAdminPanelInfo" class="dk-admin-inner-panel" role="tabpanel" aria-labelledby="dkAdminTabInfoBtn" hidden>
+          <div class="dk-admin-settings-action">
+            <div><strong>⚙️ शाळेची माहिती व लोगो सेटिंग</strong><div class="dk-admin-panel-note">शाळेचे नाव, पत्ता, मान्यता, संपर्क आणि लोगो तपासण्यासाठी/बदलण्यासाठी उघडा.</div></div>
+            <button type="button" onclick="openTab('tabSchoolInfo')">शाळा सेटिंग उघडा</button>
+          </div>
         <div id="dk-admin-summary" class="dk-admin-summary" aria-live="polite">
           <div class="dk-admin-stat"><span>नोंदणीकृत शाळा</span><strong id="dkAdminTotal">—</strong></div>
           <div class="dk-admin-stat"><span>एकूण विद्यार्थी</span><strong id="dkAdminStudentTotal">मोजत आहे…</strong></div>
@@ -1331,16 +1365,6 @@ html, body{max-width:100%; overflow-x:hidden}
         </div>
         <p id="dkBackupNote" style="font-size:12px;color:#805b17;margin:0 0 14px;">🔐 बॅकअपमध्ये शाळांची लॉगिन माहिती व विद्यार्थी डेटा असू शकतो. फाइल सुरक्षित ठिकाणी ठेवा आणि इतरांना पाठवू नका.</p>
         
-        <div style="max-width: 500px; background: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin-bottom: 20px;">
-            <h4 style="margin-top:0; color:var(--primary-color);">नवीन शाळा नोंदणी</h4>
-            <div class="form-group"><label>शाळेचे नाव (School Name):</label><input type="text" id="newSchoolName" placeholder="Enter school name"></div>
-            <div class="form-group"><label>युडायस कोड (UDISE Code):</label><input type="text" id="newSchoolUdise" placeholder="Enter UDISE code"></div>
-            <div class="form-group"><label>अधिकृत मोबाईल नंबर (Mobile Number):</label><input type="text" id="newSchoolMobile" placeholder="Enter official mobile number"></div>
-            <div class="form-group"><label>युजरनेम (Username) — फक्त English:</label><input type="text" id="newSchoolUser" placeholder="Enter login username (English only)" inputmode="latin" autocomplete="off" oninput="forceEnglishCredential(this)"></div>
-            <div class="form-group"><label>पासवर्ड (Password) — फक्त English:</label><input type="text" id="newSchoolPass" placeholder="Enter login password (English only)" inputmode="latin" autocomplete="new-password" oninput="forceEnglishCredential(this)"></div>
-            <button onclick="registerNewSchool()" style="background: #27ae60; margin-top: 5px;">नवीन शाळा जोडा (Register School)</button>
-        </div>
-
         <h4>नोंदणीकृत शाळांची यादी व नियंत्रण पॅनल</h4>
         <table class="data-table">
             <thead>
@@ -1356,8 +1380,8 @@ html, body{max-width:100%; overflow-x:hidden}
             </thead>
             <tbody id="schoolTableBody"></tbody>
         </table>
-    </div>
 
+        </section>
     <!-- Tab: School Profile Settings -->
     <div id="tabSchoolInfo" class="tab-content">
         <h3>⚙️ शाळेची तपशीलवार माहिती, मान्यता व लोगो सेटिंग्ज</h3>
@@ -2021,6 +2045,27 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       const schoolName=sessionStorage.getItem('currentSchoolName')||profile.school||username||'शाळा';
       const message='नमस्कार, Dakhala सॉफ्टवेअर सपोर्ट हवा आहे. शाळेचे नाव: '+schoolName+'; Username: '+username+'. कृपया मदत करा.';
       window.open('https://wa.me/919333411111?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
+  }
+
+  function switchAdminPanel(panel) {
+      const registration = panel === 'registration';
+      const regPanel = document.getElementById('dkAdminPanelRegistration');
+      const infoPanel = document.getElementById('dkAdminPanelInfo');
+      const regBtn = document.getElementById('dkAdminTabRegistrationBtn');
+      const infoBtn = document.getElementById('dkAdminTabInfoBtn');
+      if(!regPanel || !infoPanel || !regBtn || !infoBtn) return;
+      regPanel.hidden = !registration;
+      infoPanel.hidden = registration;
+      regPanel.classList.toggle('active', registration);
+      infoPanel.classList.toggle('active', !registration);
+      regBtn.classList.toggle('active', registration);
+      infoBtn.classList.toggle('active', !registration);
+      regBtn.setAttribute('aria-selected', registration ? 'true' : 'false');
+      infoBtn.setAttribute('aria-selected', registration ? 'false' : 'true');
+      if(!registration) {
+          updateSchoolSummary();
+          if(typeof loadAdminStudentStats === 'function') loadAdminStudentStats();
+      }
   }
 
   function setupDashboard(role, username) {
