@@ -1044,6 +1044,131 @@ html, body{max-width:100%; overflow-x:hidden}
 .dk-school-support button{flex-shrink:0}
 @media(max-width:700px){#tabSchoolMgmt .dk-admin-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.dk-school-support button{width:100%!important}}
 </style>
+
+<style id="dk-a4-dakhala-print-fix">
+/* Final A4 print layout for Leaving Certificate; scoped to certificate printing only. */
+@media print {
+  @page { size: A4 portrait; margin: 8mm; }
+  html, body {
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  body:not(.bulk-print-mode) #mainAppContainer {
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+  body:not(.bulk-print-mode) #tabDakhala {
+    display: block !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    overflow: visible !important;
+  }
+  body:not(.bulk-print-mode) #printableArea {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  body:not(.bulk-print-mode) #lcCard,
+  .bulk-lc-copy {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 auto !important;
+    padding: 4mm !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  #lcCard #logoContainer, .bulk-lc-copy #logoContainer {
+    min-height: 25mm !important;
+    height: auto !important;
+    margin-bottom: 2mm !important;
+    overflow: visible !important;
+  }
+  #lcCard #printLogo, .bulk-lc-copy #printLogo {
+    max-width: 28mm !important;
+    max-height: 28mm !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+  #lcCard #pInst, .bulk-lc-copy #pInst {
+    margin: 0 0 2mm !important;
+    line-height: 1.25 !important;
+  }
+  #lcCard #pSchool, .bulk-lc-copy #pSchool {
+    font-size: 21px !important;
+    line-height: 1.2 !important;
+    margin: 1mm 0 2mm !important;
+    overflow-wrap: anywhere !important;
+  }
+  #lcCard #pAddress, .bulk-lc-copy #pAddress {
+    margin: 1mm 0 2mm !important;
+    line-height: 1.25 !important;
+  }
+  #lcCard .lc-certificate-title, .bulk-lc-copy .lc-certificate-title {
+    font-size: 16px !important;
+    line-height: 1.25 !important;
+    margin: 2mm 0 !important;
+  }
+  #lcCard .lc-table, .bulk-lc-copy .lc-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    margin-top: 1mm !important;
+  }
+  #lcCard .lc-table th, #lcCard .lc-table td,
+  .bulk-lc-copy .lc-table th, .bulk-lc-copy .lc-table td {
+    padding: 1.2mm 1.5mm !important;
+    font-size: 10.5px !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    vertical-align: top !important;
+  }
+  #lcCard .lc-table input[type="text"], .bulk-lc-copy .lc-table input[type="text"],
+  #lcCard .lc-print-value, .bulk-lc-copy .lc-print-value {
+    font-size: 10.5px !important;
+    line-height: 1.25 !important;
+    padding: 0 1mm !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+  #lcCard .lc-signature-row, .bulk-lc-copy .lc-signature-row {
+    margin-top: 7mm !important;
+    min-height: 8mm !important;
+    break-inside: avoid !important;
+  }
+  body.bulk-print-mode #bulkPrintArea { display: block !important; }
+  body.bulk-print-mode .bulk-lc-copy { page-break-after: always !important; }
+  body.bulk-print-mode .bulk-lc-copy:last-child { page-break-after: auto !important; }
+}
+</style>
 </head>
 <body>
 
