@@ -1788,8 +1788,10 @@ input, textarea, select, button, option{
 
     <div id="tabCasteReport" class="tab-content">
       <h3>📊 जातीनुसार विद्यार्थी अहवाल</h3><p>सध्या लोड असलेल्या जनरल रजिस्टरमधील माहितीवर आधारित वाचन-मात्र अहवाल. येथे मूळ विद्यार्थी नोंदी बदलल्या जात नाहीत.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;"><input id="casteReportSearch" type="search" placeholder="जात, पोटजात, नाव किंवा इयत्ता शोधा..." oninput="renderCasteReport()" style="flex:1;min-width:220px;">
-      <select id="casteReportGender" onchange="renderCasteReport()" style="max-width:170px;"><option value="all">मुले + मुली</option><option value="Male">मुले</option><option value="Female">मुली</option><option value="blank">लिंग नोंद नाही</option></select>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;"><select id="casteReportCaste" onchange="updateCasteSubcasteOptions(true)" style="flex:1;min-width:180px;"><option value="">सर्व जाती</option></select>
+      <select id="casteReportSubcaste" onchange="renderCasteReport()" style="flex:1;min-width:180px;"><option value="">सर्व पोटजाती</option></select>
+      <select id="casteReportGender" onchange="renderCasteReport()" style="max-width:170px;"><option value="all">मुले + मुली</option><option value="Male">फक्त मुले</option><option value="Female">फक्त मुली</option><option value="blank">लिंग नोंद नाही</option></select>
+      <input id="casteReportSearch" type="search" placeholder="नाव, रजिस्टर क्र. किंवा इयत्ता शोधा..." oninput="renderCasteReport()" style="flex:1;min-width:220px;">
       <button type="button" onclick="renderCasteReport()" style="width:auto;">ताजा अहवाल</button><button type="button" onclick="exportCasteReportCSV()" style="width:auto;background:#16804a;">CSV / Excel</button><button type="button" onclick="printCasteReport()" style="width:auto;background:#5b6472;">प्रिंट / PDF</button></div>
       <div id="casteReportSummary" style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;"></div>
       <h4>जात / पोटजातीनुसार संख्या</h4><div style="overflow:auto;max-height:42vh;"><table class="data-table" id="casteSummaryTable"><thead><tr><th>जात</th><th>पोटजात</th><th>मुले</th><th>मुली</th><th>लिंग नोंद नाही</th><th>एकूण</th></tr></thead><tbody id="casteSummaryBody"></tbody></table></div>
@@ -2459,7 +2461,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
               loadSchoolInfo(getActiveUser());
           }
       } else if(tabName === 'tabCasteReport') {
-          renderCasteReport();
+          updateCasteSubcasteOptions(false);
       } else if(tabName === 'tabDataCompleteness') {
           renderIncompleteStudents();
       } else if(tabName === 'tabGenRegister') {
@@ -2479,17 +2481,38 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   // Caste report uses existing student rows; it never writes to Firebase.
   let casteReportRowsCache=[];
   function casteReportEsc(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function updateCasteSubcasteOptions(reset){
+    const casteEl=document.getElementById('casteReportCaste'),subEl=document.getElementById('casteReportSubcaste');
+    if(!casteEl||!subEl)return;
+    const oldCaste=casteEl.value,oldSub=subEl.value;
+    const rows=Array.isArray(excelData)?excelData.slice(1):[];
+    const castes=[...new Set(rows.filter(r=>Array.isArray(r)&&r.some(v=>String(v??'').trim())).map(r=>String(r[9]??'').trim()||'जात नोंद नाही'))].sort((a,b)=>a.localeCompare(b,'mr'));
+    casteEl.innerHTML='<option value="">सर्व जाती</option>'+castes.map(c=>'<option value="'+casteReportEsc(c)+'">'+casteReportEsc(c)+'</option>').join('');
+    casteEl.value=(!reset&&castes.includes(oldCaste))?oldCaste:'';
+    const selectedCaste=casteEl.value;
+    const subcastes=[...new Set(rows.filter(r=>Array.isArray(r)&&r.some(v=>String(v??'').trim())&&(!selectedCaste||(String(r[9]??'').trim()||'जात नोंद नाही')===selectedCaste)).map(r=>String(r[10]??'').trim()||'पोटजात नोंद नाही'))].sort((a,b)=>a.localeCompare(b,'mr'));
+    subEl.innerHTML='<option value="">सर्व पोटजाती</option>'+subcastes.map(c=>'<option value="'+casteReportEsc(c)+'">'+casteReportEsc(c)+'</option>').join('');
+    subEl.value=(!reset&&subcastes.includes(oldSub))?oldSub:'';
+    renderCasteReport();
+  }
   function renderCasteReport(){
     const summary=document.getElementById('casteReportSummary'),sb=document.getElementById('casteSummaryBody'),rb=document.getElementById('casteStudentsBody');if(!summary||!sb||!rb)return;
     if(!Array.isArray(excelData)||excelData.length<2){summary.textContent='विद्यार्थी डेटा उपलब्ध नाही. योग्य शाळेचे लॉगिन करून जनरल रजिस्टर लोड करा.';sb.innerHTML='<tr><td colspan="6">डेटा उपलब्ध नाही.</td></tr>';rb.innerHTML='<tr><td colspan="7">डेटा उपलब्ध नाही.</td></tr>';casteReportRowsCache=[];return;}
-    upgradeStudentRows(excelData);const q=(document.getElementById('casteReportSearch')?.value||'').trim().toLocaleLowerCase(),gf=document.getElementById('casteReportGender')?.value||'all';
-    const rows=excelData.slice(1).map((r,i)=>({r:Array.isArray(r)?r:[],i})).filter(x=>x.r.some(v=>String(v??'').trim())).filter(({r})=>{const g=String(r[20]??'').trim();if(gf==='blank'&&g)return false;if(gf!=='all'&&gf!=='blank'&&g!==gf)return false;return !q||[r[0],r[4],r[9],r[10],r[18],r[21],r[22]].some(v=>String(v??'').toLocaleLowerCase().includes(q));});
-    casteReportRowsCache=rows;const groups=new Map();rows.forEach(({r})=>{const c=String(r[9]??'').trim()||'जात नोंद नाही',sc=String(r[10]??'').trim()||'—',k=c+'|#|'+sc;if(!groups.has(k))groups.set(k,{c,sc,b:0,g:0,u:0,n:0});const x=groups.get(k);x.n++;if(String(r[20]??'').trim()==='Male')x.b++;else if(String(r[20]??'').trim()==='Female')x.g++;else x.u++;});
+    upgradeStudentRows(excelData);
+    const caste=(document.getElementById('casteReportCaste')?.value||''),subcaste=(document.getElementById('casteReportSubcaste')?.value||''),q=(document.getElementById('casteReportSearch')?.value||'').trim().toLocaleLowerCase(),gf=document.getElementById('casteReportGender')?.value||'all';
+    const rows=excelData.slice(1).map((r,i)=>({r:Array.isArray(r)?r:[],i})).filter(x=>x.r.some(v=>String(v??'').trim())).filter(({r})=>{
+      const c=String(r[9]??'').trim()||'जात नोंद नाही',sc=String(r[10]??'').trim()||'पोटजात नोंद नाही',g=String(r[20]??'').trim();
+      if(caste&&c!==caste)return false;if(subcaste&&sc!==subcaste)return false;
+      if(gf==='blank'&&g)return false;if(gf!=='all'&&gf!=='blank'&&g!==gf)return false;
+      return !q||[r[0],r[4],r[18],r[21],r[22]].some(v=>String(v??'').toLocaleLowerCase().includes(q));
+    });
+    casteReportRowsCache=rows;const groups=new Map();
+    rows.forEach(({r})=>{const c=String(r[9]??'').trim()||'जात नोंद नाही',sc=String(r[10]??'').trim()||'पोटजात नोंद नाही',k=c+'|#|'+sc;if(!groups.has(k))groups.set(k,{c,sc,b:0,g:0,u:0,n:0});const x=groups.get(k);x.n++;if(String(r[20]??'').trim()==='Male')x.b++;else if(String(r[20]??'').trim()==='Female')x.g++;else x.u++;});
     const gs=[...groups.values()].sort((a,b)=>a.c.localeCompare(b.c,'mr')||a.sc.localeCompare(b.sc,'mr')),boys=rows.filter(x=>String(x.r[20]??'').trim()==='Male').length,girls=rows.filter(x=>String(x.r[20]??'').trim()==='Female').length,missing=rows.filter(x=>!String(x.r[9]??'').trim()).length;
     const stat=(l,n)=>'<div style="flex:1;min-width:125px;padding:10px;border:1px solid #dbe4ee;border-radius:8px;background:#f8fbff;"><small>'+l+'</small><div style="font-size:21px;font-weight:bold;color:#174a7e;">'+n+'</div></div>';
-    summary.innerHTML=stat('दिसणारे विद्यार्थी',rows.length)+stat('मुले',boys)+stat('मुली',girls)+stat('जात नोंद नाही',missing);
-    sb.innerHTML=gs.length?gs.map(x=>'<tr><td>'+casteReportEsc(x.c)+'</td><td>'+casteReportEsc(x.sc)+'</td><td>'+x.b+'</td><td>'+x.g+'</td><td>'+x.u+'</td><td><b>'+x.n+'</b></td></tr>').join(''):'<tr><td colspan="6">नोंदी सापडल्या नाहीत.</td></tr>';
-    rb.innerHTML=rows.length?rows.map(({r},i)=>'<tr><td>'+(i+1)+'</td><td>'+casteReportEsc(r[0]||'—')+'</td><td>'+casteReportEsc(r[4]||'—')+'</td><td>'+casteReportEsc(String(r[20]??'').trim()==='Male'?'मुलगा':String(r[20]??'').trim()==='Female'?'मुलगी':'नोंद नाही')+'</td><td>'+casteReportEsc(r[21]||r[18]||'—')+'</td><td>'+casteReportEsc(String(r[9]??'').trim()||'जात नोंद नाही')+'</td><td>'+casteReportEsc(String(r[10]??'').trim()||'—')+'</td></tr>').join(''):'<tr><td colspan="7">नोंदी सापडल्या नाहीत.</td></tr>';
+    summary.innerHTML=stat('निवडीनुसार विद्यार्थी',rows.length)+stat('मुले',boys)+stat('मुली',girls)+stat('जात नोंद नाही',missing);
+    sb.innerHTML=gs.length?gs.map(x=>'<tr><td>'+casteReportEsc(x.c)+'</td><td>'+casteReportEsc(x.sc)+'</td><td>'+x.b+'</td><td>'+x.g+'</td><td>'+x.u+'</td><td><b>'+x.n+'</b></td></tr>').join(''):'<tr><td colspan="6">या निवडीत नोंदी सापडल्या नाहीत.</td></tr>';
+    rb.innerHTML=rows.length?rows.map(({r},i)=>'<tr><td>'+(i+1)+'</td><td>'+casteReportEsc(r[0]||'—')+'</td><td>'+casteReportEsc(r[4]||'—')+'</td><td>'+casteReportEsc(String(r[20]??'').trim()==='Male'?'मुलगा':String(r[20]??'').trim()==='Female'?'मुलगी':'नोंद नाही')+'</td><td>'+casteReportEsc(r[21]||r[18]||'—')+'</td><td>'+casteReportEsc(String(r[9]??'').trim()||'जात नोंद नाही')+'</td><td>'+casteReportEsc(String(r[10]??'').trim()||'पोटजात नोंद नाही')+'</td></tr>').join(''):'<tr><td colspan="7">या निवडीत नोंदी सापडल्या नाहीत.</td></tr>';
   }
   function exportCasteReportCSV(){if(!casteReportRowsCache.length){alert('CSV साठी विद्यार्थी नोंदी उपलब्ध नाहीत.');return;}const data=[['जनरल रजिस्टर क्रमांक','विद्यार्थ्याचे नाव','लिंग','इयत्ता','जात','पोटजात'],...casteReportRowsCache.map(({r})=>[r[0]||'',r[4]||'',String(r[20]??'').trim()==='Male'?'मुलगा':String(r[20]??'').trim()==='Female'?'मुलगी':'नोंद नाही',r[21]||r[18]||'',r[9]||'',r[10]||''])];const csv='\uFEFF'+data.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n'),blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='जातीनुसार-विद्यार्थी-अहवाल.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);}
   function printCasteReport(){if(!casteReportRowsCache.length){alert('प्रिंटसाठी नोंदी उपलब्ध नाहीत.');return;}const w=window.open('','_blank');if(!w){alert('प्रिंटसाठी पॉप-अप परवानगी द्या.');return;}const tables=document.getElementById('casteSummaryTable').outerHTML+document.getElementById('casteStudentsTable').outerHTML;w.document.write('<!doctype html><html lang="mr"><head><meta charset="utf-8"><title>जातीनुसार विद्यार्थी अहवाल</title><style>body{font-family:Arial,"Nirmala UI",sans-serif;padding:12px}h2{text-align:center}table{width:100%;border-collapse:collapse;margin:12px 0}th,td{border:1px solid #555;padding:5px;font-size:11px;text-align:left}th{background:#edf2f7}@page{size:A4 portrait;margin:10mm}</style></head><body><h2>जातीनुसार विद्यार्थी अहवाल</h2><p>फिल्टर केलेले विद्यार्थी: '+casteReportRowsCache.length+'</p>'+tables+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),250);}
