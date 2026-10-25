@@ -1169,6 +1169,67 @@ html, body{max-width:100%; overflow-x:hidden}
   body.bulk-print-mode .bulk-lc-copy:last-child { page-break-after: auto !important; }
 }
 </style>
+
+<style id="dakhala-neon-login-standard-ui">
+/* Dakhala UI-only refresh: authentication, Firebase, student data, tabs and print logic remain unchanged. */
+:root{--primary-color:#1747a6;--secondary-color:#22b8ef;--border-color:#d7e1f0}
+body{background:#f2f5fb;color:#20304a;font-family:"Noto Sans Devanagari","Nirmala UI",Arial,sans-serif}
+#loginScreen{
+ position:relative!important;isolation:isolate;overflow:hidden;
+ width:min(100% - 28px,630px)!important;max-width:630px!important;
+ margin:34px auto!important;padding:34px 40px 28px!important;
+ border-radius:28px!important;border:1px solid rgba(99,102,241,.9)!important;
+ background:radial-gradient(ellipse at 50% 0%,rgba(25,91,190,.26),transparent 55%),linear-gradient(145deg,#07142f 0%,#0b1536 58%,#151044 100%)!important;
+ color:#eef5ff!important;box-shadow:0 22px 70px rgba(12,28,80,.32),inset 0 0 30px rgba(43,94,230,.09)!important;
+ text-align:center!important
+}
+#loginScreen:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 12% 20%,#1769ff25 0 2px,transparent 4px),radial-gradient(circle at 88% 18%,#b72cff35 0 3px,transparent 6px),radial-gradient(circle at 8% 76%,#22d3ee22 0 2px,transparent 5px),radial-gradient(circle at 92% 72%,#7c3aed30 0 3px,transparent 7px)}
+#loginScreen .dk-login-icon{width:76px!important;height:76px!important;margin:0 auto 14px!important;border-radius:50%!important;background:linear-gradient(135deg,#08c7f5,#4565ff 60%,#d22cff)!important;color:white!important;font-size:37px!important;box-shadow:0 0 34px #2563eb60,inset 0 0 0 1px #ffffff55!important}
+#loginScreen .dk-login-title{color:#f7f9ff!important;font-size:clamp(23px,3vw,31px)!important;font-weight:800!important;line-height:1.3!important;letter-spacing:-.35px}
+#loginScreen .dk-login-subtitle{color:#bed0f5!important;font-size:14px!important;line-height:1.7!important;margin:7px 0 23px!important}
+#loginScreen .form-group{text-align:left!important;margin:16px 0!important}
+#loginScreen .form-group label{display:block;color:#edf4ff!important;font-size:14px!important;font-weight:650!important;margin-bottom:7px!important}
+#loginScreen input[type="text"],#loginScreen input[type="password"]{width:100%!important;min-height:52px!important;border:1px solid #536fe3!important;border-radius:15px!important;padding:13px 16px!important;background:rgba(17,31,68,.92)!important;color:#f7fbff!important;font-size:14px!important;box-shadow:inset 0 1px 5px #02081755!important}
+#loginScreen input::placeholder{color:#94addb!important;opacity:1}
+#loginScreen input:focus{outline:none!important;border-color:#21c8f5!important;box-shadow:0 0 0 3px #22d3ee25,0 0 20px #2563eb20!important}
+#loginScreen .dk-login-hint{color:#9db3dd!important;font-size:10px!important;margin-top:5px!important}
+#loginScreen .dk-login-button{width:100%!important;min-height:54px!important;height:auto!important;margin:20px auto 0!important;border:0!important;border-radius:999px!important;background:linear-gradient(100deg,#09b8ee,#4562ff 48%,#d72be8)!important;color:white!important;font-size:17px!important;font-weight:800!important;box-shadow:0 10px 28px #3349ff38!important;transition:transform .18s,filter .18s!important}
+#loginScreen .dk-login-button:hover{filter:brightness(1.09)!important;transform:translateY(-1px)!important}
+#loginScreen .dk-login-help{max-width:100%!important;text-align:left!important;margin:17px auto 0!important;border:1px solid #344c87!important;border-radius:12px!important;background:#0d1c40!important;color:#c5d5f3!important;padding:11px 13px!important;font-size:11px!important}
+#loginScreen .dk-login-help summary{color:#eaf2ff!important}
+#loginScreen .dk-login-support{color:#67c9ff!important;font-size:11px!important;margin-top:12px!important}
+#loginScreen .dk-use-card{background:linear-gradient(140deg,#0b1a3b,#101b46)!important;border-color:#2c447e!important;box-shadow:none!important;color:#dbe8ff!important}
+#loginScreen .dk-use-title{color:#e7f0ff!important}
+#loginScreen .dk-use-grid>div{background:#101f45!important;border-color:#293e70!important;color:#e4edff!important}
+#loginScreen .dk-use-grid span{color:#a9bee3!important}
+#loginScreen .dk-credits{border-color:#293e70!important;color:#a9bee3!important}
+#loginScreen .dk-credits-names{color:#e8f1ff!important}
+#loginScreen .dk-rights{color:#a9bee3!important}
+#mainAppContainer.container{max-width:1440px!important;width:calc(100% - 34px)!important;margin:20px auto!important;padding:22px!important;border:1px solid #dce5f1!important;border-radius:22px!important;background:#f6f8fc!important;box-shadow:0 12px 36px rgba(20,47,89,.08)!important}
+#mainAppContainer .app-header{border-radius:17px!important;padding:18px 22px!important;background:linear-gradient(115deg,#102d59,#185da0 70%,#157fa7)!important;box-shadow:0 9px 24px #143d7020!important}
+#mainAppContainer .app-title h2{font-size:clamp(19px,2vw,25px)!important;color:#fff!important}
+#mainAppContainer .app-title p{color:#d6e8ff!important}
+#mainAppContainer .dashboard-grid{gap:15px!important}
+#mainAppContainer .tool-card{position:relative!important;overflow:hidden!important;border:1px solid #dbe5f1!important;border-radius:15px!important;background:#fff!important;padding:18px!important;box-shadow:0 5px 16px rgba(24,55,94,.055)!important;transition:transform .18s,box-shadow .18s!important}
+#mainAppContainer .tool-card:hover{transform:translateY(-3px)!important;box-shadow:0 12px 26px rgba(24,55,94,.12)!important}
+#mainAppContainer .tool-icon{width:44px!important;height:44px!important;display:grid!important;place-items:center!important;border-radius:13px!important;background:#eaf3ff!important;font-size:23px!important}
+#mainAppContainer .tool-title{font-size:15px!important;font-weight:800!important;color:#18365f!important;line-height:1.45!important}
+#mainAppContainer .tool-desc{font-size:12px!important;line-height:1.65!important;color:#687a92!important}
+#mainAppContainer .tool-link{font-size:12px!important;font-weight:800!important;color:#1769aa!important}
+#mainAppContainer .tab-content{border:1px solid #dbe4ef!important;border-radius:15px!important;padding:20px!important;background:#fff!important;box-shadow:0 5px 18px rgba(24,55,94,.045)!important}
+#mainAppContainer .tab-content h3{color:#173a66!important;font-size:18px!important}
+#mainAppContainer .back-bar{margin:12px 0!important}
+#mainAppContainer .back-btn{border-radius:9px!important;background:#eaf2fc!important;color:#174b85!important;border:1px solid #cbdcf0!important;padding:9px 14px!important;font-weight:750!important}
+#mainAppContainer input:not([type=checkbox]):not([type=radio]),#mainAppContainer select,#mainAppContainer textarea{border-radius:8px!important;border-color:#cbd7e5!important}
+#mainAppContainer button{border-radius:9px}
+#mainAppContainer table.data-table{border-collapse:separate!important;border-spacing:0!important}
+#mainAppContainer table.data-table th{background:#eaf2fb!important;color:#1b4777!important;border-color:#d5e0ed!important}
+#mainAppContainer table.data-table td{border-color:#e2e9f1!important}
+@media(max-width:700px){#loginScreen{width:calc(100% - 22px)!important;margin:14px auto!important;padding:25px 19px 20px!important;border-radius:22px!important}#loginScreen .dk-login-icon{width:62px!important;height:62px!important;font-size:30px!important}#loginScreen .dk-login-title{font-size:22px!important}#loginScreen .dk-login-subtitle{font-size:12px!important;margin-bottom:17px!important}#loginScreen .dk-login-button{min-height:49px!important;font-size:15px!important}#mainAppContainer.container{width:calc(100% - 14px)!important;margin:7px auto!important;padding:10px!important;border-radius:15px!important}#mainAppContainer .app-header{padding:13px!important}#mainAppContainer .tool-card{padding:13px!important}#mainAppContainer .tab-content{padding:12px!important}}
+@media(prefers-reduced-motion:reduce){#mainAppContainer .tool-card,#loginScreen .dk-login-button{transition:none!important}}
+@media print{body{background:#fff!important}#loginScreen{display:none!important}#mainAppContainer.container{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}#mainAppContainer .app-header{box-shadow:none!important}}
+</style>
+
 </head>
 <body>
 
