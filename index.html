@@ -1230,6 +1230,64 @@ body{background:#f2f5fb;color:#20304a;font-family:"Noto Sans Devanagari","Nirmal
 @media print{body{background:#fff!important}#loginScreen{display:none!important}#mainAppContainer.container{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}#mainAppContainer .app-header{box-shadow:none!important}}
 </style>
 
+
+<style id="dakhala-login-readability-fix">
+/* Final UI-only correction: readable typography, consistent full-width fields, balanced login layout. */
+html,body{font-family:"Nirmala UI","Noto Sans Devanagari","Mangal",Arial,sans-serif!important}
+#loginScreen{
+ width:min(720px,calc(100vw - 32px))!important;max-width:720px!important;
+ margin:26px auto!important;padding:28px 34px 24px!important;
+ overflow:visible!important;border-radius:24px!important;
+ font-family:"Nirmala UI","Noto Sans Devanagari","Mangal",Arial,sans-serif!important;
+}
+#loginScreen *{font-family:"Nirmala UI","Noto Sans Devanagari","Mangal",Arial,sans-serif!important;letter-spacing:normal}
+#loginScreen .dk-login-title{font-size:clamp(24px,2.2vw,30px)!important;line-height:1.35!important;font-weight:800!important}
+#loginScreen .dk-login-subtitle{font-size:15px!important;line-height:1.65!important;margin:8px 0 20px!important}
+#loginScreen .form-group{width:100%!important;max-width:none!important;margin:0 0 15px!important}
+#loginScreen .form-group label{font-size:14px!important;line-height:1.5!important;font-weight:700!important;margin-bottom:7px!important}
+#loginScreen input,#loginScreen input[type="text"],#loginScreen input[type="password"]{
+ display:block!important;width:100%!important;max-width:none!important;min-width:0!important;
+ height:50px!important;min-height:50px!important;padding:12px 15px!important;
+ border-radius:12px!important;box-sizing:border-box!important;font-family:Arial,"Nirmala UI",sans-serif!important;font-size:15px!important
+}
+#loginScreen .dk-login-hint{font-size:12px!important;line-height:1.5!important;margin-top:5px!important}
+#loginScreen .dk-login-icon{width:68px!important;height:68px!important;margin:0 auto 12px!important;border-radius:50%!important;font-size:32px!important}
+#loginScreen .dk-login-button{width:100%!important;max-width:none!important;min-height:52px!important;height:auto!important;margin:10px auto 0!important;font-size:17px!important;border-radius:999px!important}
+#loginScreen .dk-login-help{max-width:none!important;width:100%!important;margin:14px auto 0!important;padding:12px 14px!important;font-size:13px!important;line-height:1.7!important}
+#loginScreen .dk-login-help summary{font-size:13px!important;line-height:1.6!important}
+#loginScreen .dk-login-help div div{font-size:12px!important;line-height:1.7!important;margin-top:5px!important}
+#loginScreen .dk-login-support{font-size:12px!important;line-height:1.6!important;margin-top:10px!important}
+#loginScreen .dk-use-card{max-width:none!important;width:100%!important;margin:16px auto 0!important;padding:14px!important;border-radius:14px!important}
+#loginScreen .dk-use-title{font-size:14px!important;line-height:1.5!important;margin-bottom:10px!important}
+#loginScreen .dk-use-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important}
+#loginScreen .dk-use-grid>div{min-width:0!important;padding:10px!important;border-radius:10px!important}
+#loginScreen .dk-use-grid b{font-size:12px!important;line-height:1.5!important}
+#loginScreen .dk-use-grid span{font-size:11px!important;line-height:1.55!important}
+#loginScreen .dk-credits{max-width:none!important;width:100%!important;margin:14px auto 0!important;padding:12px 10px!important;font-size:11px!important;line-height:1.65!important}
+#loginScreen .dk-credits-names{font-size:16px!important;line-height:1.6!important}
+#loginScreen .dk-rights{font-size:11px!important}
+@media(min-height:780px) and (min-width:701px){
+ #loginScreen{margin:22px auto!important;padding-top:24px!important;padding-bottom:20px!important}
+ #loginScreen .dk-login-icon{width:60px!important;height:60px!important;margin-bottom:9px!important}
+ #loginScreen .dk-login-subtitle{margin-bottom:15px!important}
+ #loginScreen .form-group{margin-bottom:12px!important}
+ #loginScreen input,#loginScreen input[type="text"],#loginScreen input[type="password"]{height:46px!important;min-height:46px!important}
+ #loginScreen .dk-login-button{min-height:48px!important;margin-top:7px!important}
+ #loginScreen .dk-use-card{margin-top:12px!important;padding:11px!important}
+ #loginScreen .dk-credits{margin-top:10px!important;padding:9px!important}
+}
+@media(max-width:700px){
+ #loginScreen{width:calc(100% - 22px)!important;max-width:none!important;margin:12px auto!important;padding:22px 17px 18px!important;border-radius:20px!important}
+ #loginScreen .dk-login-title{font-size:23px!important}
+ #loginScreen .dk-login-subtitle{font-size:13px!important}
+ #loginScreen .dk-use-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #loginScreen .dk-use-grid b{font-size:12px!important}
+ #loginScreen .dk-use-grid span{font-size:11px!important}
+ #loginScreen .dk-credits-names{font-size:15px!important}
+}
+@media(max-width:420px){#loginScreen .dk-use-grid{grid-template-columns:1fr!important}}
+</style>
+
 </head>
 <body>
 
