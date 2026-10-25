@@ -2520,7 +2520,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
     const rows=Array.isArray(excelData)?excelData.slice(1):[];
     const castes=[...new Set(rows.filter(r=>Array.isArray(r)&&r.some(v=>String(v??'').trim())).map(r=>String(r[9]??'').trim()||'जात नोंद नाही'))].sort((a,b)=>a.localeCompare(b,'mr'));
     casteEl.innerHTML='<option value="">सर्व जाती</option>'+castes.map(c=>'<option value="'+casteReportEsc(c)+'">'+casteReportEsc(c)+'</option>').join('');
-    casteEl.value=(!reset&&castes.includes(oldCaste))?oldCaste:'';
+    casteEl.value=castes.includes(oldCaste)?oldCaste:'';
     const selectedCaste=casteEl.value;
     const subcastes=[...new Set(rows.filter(r=>Array.isArray(r)&&r.some(v=>String(v??'').trim())&&(!selectedCaste||(String(r[9]??'').trim()||'जात नोंद नाही')===selectedCaste)).map(r=>String(r[10]??'').trim()||'पोटजात नोंद नाही'))].sort((a,b)=>a.localeCompare(b,'mr'));
     subEl.innerHTML='<option value="">सर्व पोटजाती</option>'+subcastes.map(c=>'<option value="'+casteReportEsc(c)+'">'+casteReportEsc(c)+'</option>').join('');
