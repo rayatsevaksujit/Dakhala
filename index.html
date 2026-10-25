@@ -2452,7 +2452,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           document.getElementById('roleSubTitle').innerText = 'शाळा लॉगिन : ' + sName;
           dashboardCards.forEach(id => {
               const card = document.getElementById(id);
-              if(card) card.style.display = 'block';
+              if(card) card.style.display = ['cardSchoolRegistration','cardSchoolMgmt'].includes(id) ? 'none' : 'block';
           });
           if(upcomingSection) upcomingSection.style.display = '';
           const support=document.getElementById('dkSchoolSupport'); if(support) support.style.display='flex';
@@ -2468,6 +2468,12 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
   }
 
   async function openTab(tabName) {
+      // Admin-only pages must never be opened from a School Login session.
+      if(['tabSchoolRegistration','tabSchoolMgmt'].includes(tabName) && getActiveRole() !== 'master') {
+          alert('ही सुविधा फक्त Admin Login साठी उपलब्ध आहे.');
+          goHome();
+          return;
+      }
       let contents = document.getElementsByClassName('tab-content');
       for(let c of contents) c.classList.remove('active');
       let targetTab = document.getElementById(tabName);
