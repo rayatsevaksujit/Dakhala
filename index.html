@@ -1480,6 +1480,18 @@ input, textarea, select, button, option{
                 <div class="tool-desc">दाखला व Bonafide कोणत्या विद्यार्थ्यांचे प्रिंट केले याचा अहवाल.</div>
                 <a class="tool-link">रिपोर्ट पहा / PDF &rarr;</a>
             </div>
+            <div class="tool-card" id="cardCasteReport" onclick="openTab('tabCasteReport')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTab('tabCasteReport')}" style="cursor:pointer;background:#eef6ff;border-color:#2874a6;">
+                <div class="tool-icon">📊</div>
+                <div class="tool-title">जातीनुसार विद्यार्थी अहवाल</div>
+                <div class="tool-desc">जात/पोटजातीनुसार मुले, मुली, एकूण संख्या, शोध, CSV आणि प्रिंट अहवाल.</div>
+                <a class="tool-link" style="color:#1f5f91;">अहवाल उघडा →</a>
+            </div>
+            <div class="tool-card" id="cardNutrition" onclick="openTab('tabNutrition')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTab('tabNutrition')}" style="cursor:pointer;background:#f0fdf4;border-color:#23945b;">
+                <div class="tool-icon">🍲</div>
+                <div class="tool-title">शालेय पोषण आहार</div>
+                <div class="tool-desc">दैनिक आहार नोंद, उपस्थित विद्यार्थी, धान्य-साठा आणि मासिक अहवालासाठी विभाग.</div>
+                <a class="tool-link" style="color:#167344;">विभाग उघडा →</a>
+            </div>
             <div class="tool-card" id="cardIdCard" onclick="openTab('tabIdCard')" style="display:none;">
                 <div class="tool-icon">🪪</div>
                 <div class="tool-title">विद्यार्थी ओळखपत्र</div>
@@ -1514,10 +1526,7 @@ input, textarea, select, button, option{
                     <span class="dk-coming-label">लवकरच उपलब्ध</span>
                 </div>
                 
-                <div class="tool-card" id="cardCasteReport" onclick="openTab('tabCasteReport')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTab('tabCasteReport')}" style="cursor:pointer;background:#eef6ff;border-color:#2874a6;">
-                    <div class="tool-icon">📊</div><div class="tool-title">जातीनुसार विद्यार्थी अहवाल</div>
-                    <div class="tool-desc">जात/पोटजातीनुसार मुले, मुली, एकूण संख्या, शोध, CSV आणि प्रिंट अहवाल.</div><a class="tool-link" style="color:#1f5f91;">अहवाल उघडा →</a>
-                </div>
+
                 <div class="tool-card dk-coming-card">
                     <div class="tool-icon">📱</div>
                     <div class="tool-title">पालकांचा मोबाइल नंबर</div>
@@ -1784,6 +1793,28 @@ input, textarea, select, button, option{
             <div class="form-group"><label>यापूर्वीची शाळा :</label><input type="text" id="entPrevSchool" placeholder="मागील शाळेचे नाव"></div>
             <button onclick="saveManualStudent()" style="background: #27ae60; margin-top: 10px;">💾 विद्यार्थी माहिती सेव्ह करा</button>
         </div>
+    </div>
+
+    <div id="tabNutrition" class="tab-content">
+      <h3>🍲 शालेय पोषण आहार</h3>
+      <p>शालेय पोषण आहारासाठी स्वतंत्र विभाग सुरू केला आहे. पुढील टप्प्यात आवश्यक नोंदी व अहवाल शाळेच्या विद्यमान डेटाला धक्का न लावता जोडता येतील.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0;">
+        <div style="border:1px solid #cce8d6;border-left:4px solid #23945b;border-radius:8px;padding:14px;background:#f5fcf7;">
+          <h4 style="margin:0 0 8px;">📅 दैनिक आहार नोंद</h4>
+          <p style="margin:0;color:#52645a;font-size:13px;">दिनांक, आजचा मेनू आणि आहार घेतलेल्या विद्यार्थ्यांची संख्या.</p>
+        </div>
+        <div style="border:1px solid #cce8d6;border-left:4px solid #23945b;border-radius:8px;padding:14px;background:#f5fcf7;">
+          <h4 style="margin:0 0 8px;">🌾 धान्य व साहित्य साठा</h4>
+          <p style="margin:0;color:#52645a;font-size:13px;">प्राप्त साठा, रोजचा वापर आणि शिल्लक साठा.</p>
+        </div>
+        <div style="border:1px solid #cce8d6;border-left:4px solid #23945b;border-radius:8px;padding:14px;background:#f5fcf7;">
+          <h4 style="margin:0 0 8px;">📈 मासिक अहवाल</h4>
+          <p style="margin:0;color:#52645a;font-size:13px;">दिवसनिहाय नोंदी, विद्यार्थी संख्या आणि महिन्याचा सारांश.</p>
+        </div>
+      </div>
+      <div style="border:1px solid #e5c978;background:#fffaf0;border-radius:8px;padding:12px;color:#785b19;">
+        <b>प्रारंभिक विभाग:</b> सध्या हा विभाग फक्त तयार केला आहे; कोणतीही नोंद सेव्ह होत नाही. प्रत्यक्ष नोंदणी व अहवाल जोडण्यापूर्वी आवश्यक फील्ड आणि डेटा कुठे सेव्ह करायचा ते निश्चित करू, म्हणजे विद्यमान Firebase किंवा विद्यार्थी माहितीवर परिणाम होणार नाही.
+      </div>
     </div>
 
     <div id="tabCasteReport" class="tab-content">
