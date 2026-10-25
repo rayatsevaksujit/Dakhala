@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="mr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dakhala | जातीनुसार विद्यार्थी अहवाल — UI Preview</title>
+<style>
+:root{--navy:#14345b;--blue:#1c5d96;--sky:#eaf3fb;--bg:#f3f6fa;--ink:#24364b;--muted:#66778a;--line:#d9e2ec;--green:#16734b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "Noto Sans Devanagari","Nirmala UI",Arial,sans-serif}
+.top{background:linear-gradient(110deg,#102b50,#1d639a);color:#fff;padding:16px max(18px,calc((100% - 1180px)/2));display:flex;align-items:center;justify-content:space-between;gap:15px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border:1px solid #ffffff55;background:#ffffff18;border-radius:12px;display:grid;place-items:center;font-size:24px}.brand h1{font-size:19px;margin:0}.brand p{font-size:12px;color:#d6e8fa;margin:2px 0 0}.preview{font-size:11px;border:1px solid #ffffff55;border-radius:20px;padding:5px 10px;background:#ffffff14}
+.wrap{max-width:1180px;margin:24px auto;padding:0 18px}.crumb{font-size:12px;color:var(--muted);margin-bottom:12px}.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:18px}.head h2{font-size:24px;color:var(--navy);margin:0}.head p{margin:4px 0 0;color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border-radius:9px;border:1px solid var(--line);padding:9px 13px;background:white;color:var(--ink);font-weight:700}button.primary{background:var(--blue);border-color:var(--blue);color:white}button:hover{filter:brightness(.97)}
+.notice{padding:12px 14px;background:#fff8e7;border:1px solid #f0dfae;border-radius:11px;color:#74591b;font-size:12px;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}.stat{background:white;border:1px solid var(--line);border-radius:12px;padding:15px}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:25px;color:var(--navy);margin-top:4px}
+.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:17px;margin-bottom:15px;box-shadow:0 3px 12px #153a6308}.panel h3{margin:0 0 13px;font-size:16px;color:var(--navy)}.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}.field input,.field select{width:100%;border:1px solid #cbd7e4;border-radius:8px;padding:10px;background:#fff;color:var(--ink);font:inherit}.field input:focus,.field select:focus{outline:2px solid #d4e9fb;border-color:var(--blue)}
+.gender{display:flex;gap:14px;flex-wrap:wrap;padding-top:8px}.gender label{display:flex;gap:6px;align-items:center;font-size:13px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:10px 11px;border-bottom:1px solid #e7edf4;text-align:left;white-space:nowrap}th{background:#eef4fa;color:#254b72;font-size:12px;position:sticky;top:0}tbody tr:hover{background:#f8fbff}.empty{text-align:center;padding:24px;color:var(--muted)}
+.columns{display:flex;gap:12px;flex-wrap:wrap}.columns label{display:flex;gap:6px;align-items:center;font-size:12px}
+.footer{text-align:center;font-size:11px;color:#7b8999;padding:12px}
+@media(max-width:760px){.top{padding:13px 16px}.brand h1{font-size:16px}.preview{display:none}.wrap{margin:17px auto;padding:0 12px}.head h2{font-size:21px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:1fr 1fr}.panel{padding:13px}.actions button{flex:1}}
+@media(max-width:440px){.filters{grid-template-columns:1fr}.actions{width:100%}.actions button{width:100%}}
+@media print{body{background:white}.top,.crumb,.notice,.filters-panel,.actions,.footer,.preview-only{display:none!important}.wrap{max-width:none;margin:0;padding:0}.panel{border:0;box-shadow:none;padding:0}.stats{grid-template-columns:repeat(4,1fr)}.stat{padding:8px}th{position:static}table{min-width:0;font-size:10px}th,td{padding:5px;white-space:normal}}
+</style></head>
+<body>
+<header class="top"><div class="brand"><div class="logo">📘</div><div><h1>Dakhala <span style="font-weight:400">| दाखला व्यवस्थापन</span></h1><p>विद्यार्थी नोंदी • अहवाल • शाळा व्यवस्थापन</p></div></div><span class="preview">UI PREVIEW · नमुना माहिती</span></header>
+<main class="wrap">
+<div class="crumb">डॅशबोर्ड　/　विद्यार्थी अहवाल　/　जातीनुसार नोंदी</div>
+<div class="head"><div><h2>📊 जातीनुसार विद्यार्थी अहवाल</h2><p>जात, पोटजात, इयत्ता आणि लिंगानुसार विद्यार्थी संख्या व यादी</p></div><div class="actions"><button onclick="resetFilters()">फिल्टर रीसेट</button><button onclick="exportCSV()">⬇ Excel साठी CSV</button><button class="primary" onclick="window.print()">🖨 प्रिंट / PDF</button></div></div>
+<div class="notice">ही स्वतंत्र UI चाचणी आहे. खालील नावे व आकडे केवळ नमुना आहेत; प्रत्यक्ष Firebase किंवा शाळेच्या विद्यार्थ्यांच्या नोंदींना जोडलेले नाहीत.</div>
+<section class="stats"><div class="stat"><span>फिल्टरनुसार विद्यार्थी</span><strong id="total">0</strong></div><div class="stat"><span>मुले</span><strong id="boys">0</strong></div><div class="stat"><span>मुली</span><strong id="girls">0</strong></div><div class="stat"><span>जात नोंदलेली नाही</span><strong id="missing">0</strong></div></section>
+<section class="panel filters-panel"><h3>🔎 अहवाल फिल्टर</h3><div class="filters">
+<div class="field"><label for="search">नाव / जनरल रजिस्टर क्रमांक शोधा</label><input id="search" placeholder="उदा. १०२ किंवा विद्यार्थी नाव" oninput="render()"></div>
+<div class="field"><label for="caste">जात निवडा</label><select id="caste" onchange="render()"><option value="">सर्व जाती</option></select></div>
+<div class="field"><label for="className">इयत्ता निवडा</label><select id="className" onchange="render()"><option value="">सर्व इयत्ता</option></select></div>
+<div class="field"><label for="gender">लिंग</label><select id="gender" onchange="render()"><option value="">मुले व मुली</option><option>मुलगा</option><option>मुलगी</option></select></div>
+</div></section>
+<section class="panel"><h3>📋 विद्यार्थ्यांची यादी <span id="listCount" style="font-size:12px;color:#66778a;font-weight:400"></span></h3>
+<div class="columns preview-only" style="margin-bottom:12px"><b style="font-size:12px">प्रिंटमध्ये दाखवा:</b><label><input type="checkbox" checked data-col="reg"> जनरल रजिस्टर क्र.</label><label><input type="checkbox" checked data-col="name"> नाव</label><label><input type="checkbox" checked data-col="caste"> जात / पोटजात</label><label><input type="checkbox" checked data-col="gender"> लिंग</label><label><input type="checkbox" checked data-col="className"> इयत्ता</label><label><input type="checkbox" data-col="dob"> जन्मदिनांक</label></div>
+<div class="table-wrap"><table id="studentTable"><thead><tr><th data-field="reg">जनरल रजिस्टर क्र.</th><th data-field="name">विद्यार्थ्याचे नाव</th><th data-field="caste">जात / पोटजात</th><th data-field="gender">लिंग</th><th data-field="className">इयत्ता</th><th data-field="dob" style="display:none">जन्मदिनांक</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<div class="footer">Dakhala · जातीनुसार अहवाल UI Prototype · मूळ विद्यार्थी डेटा न बदलता डिझाइन चाचणी</div>
+</main>
+<script>
+const students=[
+{reg:"101",name:"अमोल पाटील",caste:"मराठा",sub:"",gender:"मुलगा",className:"७ वी",dob:"12/03/2013"},
+{reg:"102",name:"स्नेहा जाधव",caste:"मराठा",sub:"",gender:"मुलगी",className:"७ वी",dob:"24/07/2013"},
+{reg:"103",name:"रोहन कांबळे",caste:"बौद्ध",sub:"",gender:"मुलगा",className:"८ वी",dob:"09/01/2012"},
+{reg:"104",name:"पूजा शिंदे",caste:"महार",sub:"",gender:"मुलगी",className:"६ वी",dob:"18/11/2014"},
+{reg:"105",name:"आदित्य कदम",caste:"लिंगायत",sub:"गुरव",gender:"मुलगा",className:"८ वी",dob:"06/05/2012"},
+{reg:"106",name:"आरती मोरे",caste:"",sub:"",gender:"मुलगी",className:"५ वी",dob:"29/08/2015"},
+{reg:"107",name:"वेदांत पवार",caste:"मराठा",sub:"",gender:"मुलगा",className:"६ वी",dob:"11/02/2014"},
+{reg:"108",name:"प्राजक्ता माने",caste:"लिंगायत",sub:"गुरव",gender:"मुलगी",className:"८ वी",dob:"17/06/2012"},
+{reg:"109",name:"सागर गायकवाड",caste:"बौद्ध",sub:"",gender:"मुलगा",className:"५ वी",dob:"04/09/2015"},
+{reg:"110",name:"नेहा चव्हाण",caste:"मराठा",sub:"",gender:"मुलगी",className:"६ वी",dob:"21/12/2014"}
+];
+const $=id=>document.getElementById(id);
+function fillOptions(id,values){const el=$(id);values.sort((a,b)=>a.localeCompare(b,'mr'));values.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o)})}
+fillOptions('caste',[...new Set(students.map(s=>s.caste||'जात नोंदलेली नाही'))]);fillOptions('className',[...new Set(students.map(s=>s.className))]);
+function filtered(){const q=$('search').value.trim().toLowerCase(),c=$('caste').value,k=$('className').value,g=$('gender').value;return students.filter(s=>(!q||(s.reg+' '+s.name).toLowerCase().includes(q))&&(!c||(s.caste||'जात नोंदलेली नाही')===c)&&(!k||s.className===k)&&(!g||s.gender===g))}
+function render(){const data=filtered();$('total').textContent=data.length;$('boys').textContent=data.filter(s=>s.gender==='मुलगा').length;$('girls').textContent=data.filter(s=>s.gender==='मुलगी').length;$('missing').textContent=data.filter(s=>!s.caste).length;$('listCount').textContent='('+data.length+' नोंदी)';$('rows').innerHTML='';if(!data.length){$('rows').innerHTML='<tr><td colspan="6" class="empty">या फिल्टरनुसार नोंदी सापडल्या नाहीत.</td></tr>';return}data.forEach(s=>{const tr=document.createElement('tr');const values={reg:s.reg,name:s.name,caste:(s.caste||'जात नोंदलेली नाही')+(s.sub?' / '+s.sub:''),gender:s.gender,className:s.className,dob:s.dob};Object.entries(values).forEach(([key,val])=>{const td=document.createElement('td');td.dataset.field=key;td.textContent=val;tr.appendChild(td)});$('rows').appendChild(tr)});applyColumns()}
+function applyColumns(){document.querySelectorAll('[data-col]').forEach(cb=>{document.querySelectorAll('[data-field="'+cb.dataset.col+'"]').forEach(el=>el.style.display=cb.checked?'':'none')});const dob=document.querySelector('[data-col="dob"]');document.querySelectorAll('[data-field="dob"]').forEach(el=>el.style.display=dob.checked?'':'none')}
+document.querySelectorAll('[data-col]').forEach(cb=>cb.addEventListener('change',applyColumns));
+function resetFilters(){$('search').value='';$('caste').value='';$('className').value='';$('gender').value='';render()}
+function exportCSV(){const data=filtered(),cols=[...document.querySelectorAll('[data-col]:checked')].map(x=>x.dataset.col),labels={reg:'जनरल रजिस्टर क्रमांक',name:'विद्यार्थ्याचे नाव',caste:'जात / पोटजात',gender:'लिंग',className:'इयत्ता',dob:'जन्मदिनांक'},rows=[cols.map(c=>labels[c]),...data.map(s=>cols.map(c=>c==='caste'?((s.caste||'जात नोंदलेली नाही')+(s.sub?' / '+s.sub:'')):s[c]))];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='Dakhala_Caste_Report_Demo.csv';a.click();URL.revokeObjectURL(a.href)}
+render();
+</script></body></html>
