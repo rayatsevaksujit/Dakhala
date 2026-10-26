@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preload" href="Sakal%20Marathi_N_Ship.TTF" as="font" type="font/ttf" crossorigin>
     <title>School Management & Certificate Portal - Master & School Admin</title>
     
-    <!-- Sakal Marathi: 'fonts' फोल्डरमध्ये SakalMarathi.ttf/.woff2 फाईल अपलोड करा -->
+    <!-- Sakal Marathi स्थानिक फॉन्ट: बाहेरील फॉन्ट सर्व्हरवरील अवलंबित्व कमी करण्यासाठी -->
     <style>
         @font-face {
             font-family: 'Sakal Marathi';
-            src: url('fonts/SakalMarathi.woff2') format('woff2'),
-                 url('fonts/SakalMarathi.ttf') format('truetype'),
+            src: url('Sakal%20Marathi_N_Ship.TTF') format('truetype'),
                  local('Sakal Marathi'), local('Sakal Marathi Normal');
             font-weight: normal;
             font-style: normal;
@@ -1291,7 +1291,7 @@ html,body{font-family:"Nirmala UI","Noto Sans Devanagari","Mangal",Arial,sans-se
 
 <style id="dakhala-sakal-compact-login">
 /* Compact, readable login: one Marathi typeface, high contrast, no page scrolling on desktop. */
-@font-face{font-family:'Sakal Marathi';src:url('https://trans.tdil-dc.gov.in/Fonts/Sakal%20Marathi%20Normal_Ship.ttf') format('truetype');font-style:normal;font-weight:normal;font-display:swap}
+/* Sakal Marathi is loaded from the local TTF defined above. */
 html,body{font-family:'Sakal Marathi'!important;background:#f3f6fb!important;color:#182944;font-synthesis:weight style!important}
 #loginScreen,#loginScreen *{font-family:'Sakal Marathi'!important;font-synthesis:weight style!important}
 body{margin:0!important}
