@@ -3198,6 +3198,13 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       root.querySelector('#outPrevSchool').value = foundRow[16] || "-";
       root.querySelector('#outAdmissionDate').value = formatExcelDate(foundRow[17]);
       root.querySelector('#outAdmClass').value = foundRow[18] || "";
+      // चालू इयत्ता व शैक्षणिक वर्ष रेकॉर्डनुसार आपोआप भरा (शैक्षणिक वर्ष जूनमध्ये सुरू होते).
+      const studyingClass = String(foundRow[21] || foundRow[18] || '').trim();
+      const academicNow = new Date();
+      const academicStart = academicNow.getMonth() >= 5 ? academicNow.getFullYear() : academicNow.getFullYear() - 1;
+      const academicYear = academicStart + '-' + String(academicStart + 1).slice(-2);
+      const studyingSince = root.querySelector('#outStudyingSince');
+      if (studyingSince) studyingSince.value = studyingClass ? ('इ. ' + studyingClass + ', सन ' + academicYear + ' पासून') : '';
       root.querySelector('#outLeavingDate').value = formatExcelDate(foundRow[19] || "");
       const now=new Date(); root.querySelector('#currentDate').value=String(now.getDate()).padStart(2,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+now.getFullYear();
 
@@ -4156,7 +4163,24 @@ function validateDakhalaPrintFields(){
         '<link id="bonafide-print-marathi-font" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Marathi&display=swap">' +
         '<title>Bonafide Print</title>' +
         '<style>' + printCss + '</style>' +
-        '</head>' +
+        '<style id="dakhala-requested-safe-overrides">
+/* संपूर्ण ॲपसाठी मराठी फॉन्ट fallback क्रम */
+body, body * {
+  font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sans Devanagari', 'Nirmala UI', sans-serif !important;
+}
+/* दाखला A4 प्रिंट: वाचनीय अक्षरे आणि शिक्क्यासाठी जागा */
+@media print {
+  #lcCard .lc-table th,
+  #lcCard .lc-table td {
+    font-size: 14px !important;
+    padding: 5px 6px !important;
+  }
+  #lcCard .lc-signature-row {
+    margin-top: 24mm !important;
+  }
+}
+</style>
+</head>' +
         '<body></body>' +
         '</html>'
       );
