@@ -2470,26 +2470,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       window.open('https://wa.me/919333411111?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
   }
 
-  function switchAdminPanel(panel) {
-      const registration = panel === 'registration';
-      const regPanel = document.getElementById('dkAdminPanelRegistration');
-      const infoPanel = document.getElementById('dkAdminPanelInfo');
-      const regBtn = document.getElementById('dkAdminTabRegistrationBtn');
-      const infoBtn = document.getElementById('dkAdminTabInfoBtn');
-      if(!regPanel || !infoPanel || !regBtn || !infoBtn) return;
-      regPanel.hidden = !registration;
-      infoPanel.hidden = registration;
-      regPanel.classList.toggle('active', registration);
-      infoPanel.classList.toggle('active', !registration);
-      regBtn.classList.toggle('active', registration);
-      infoBtn.classList.toggle('active', !registration);
-      regBtn.setAttribute('aria-selected', registration ? 'true' : 'false');
-      infoBtn.setAttribute('aria-selected', registration ? 'false' : 'true');
-      if(!registration) {
-          updateSchoolSummary();
-          if(typeof loadAdminStudentStats === 'function') loadAdminStudentStats();
-      }
-  }
+  // Removed obsolete switchAdminPanel(): its legacy DOM IDs and tab buttons no longer exist.
 
   function setupDashboard(role, username) {
       const dashboardCards = [
