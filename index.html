@@ -1368,8 +1368,9 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
 @media print {
   #lcCard .lc-table { table-layout: auto !important; }
   #lcCard .lc-table th, #lcCard .lc-table td { font-size:16px !important; padding:5px 6px !important; line-height:1.35 !important; }
-  #lcCard .lc-table strong { font-size:16px !important; white-space:nowrap !important; width:auto !important; }
-  #lcCard .lc-table input[type="text"] { font-size:16px !important; font-weight:700 !important; line-height:1.35 !important; white-space:nowrap !important; max-width:100% !important; }
+  #lcCard .lc-table td strong, #lcCard .lc-table td label, #lcCard .lc-table .lc-label { font-size:16px !important; line-height:1.35 !important; }
+  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly], #lcCard .lc-table .lc-print-value, #lcCard .lc-table span, #lcCard .lc-table div { font-size:16px !important; font-weight:700 !important; line-height:1.35 !important; }
+  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly] { white-space:nowrap !important; max-width:100% !important; }
   #lcCard #outReg, #lcCard #outDakhalaNo, #lcCard #outSchoolRegNo, #lcCard #outStudyingSince { font-size:16px !important; font-weight:700 !important; }
   #lcCard .lc-signature-row { margin-top:15mm !important; min-height:14mm !important; }
 }
