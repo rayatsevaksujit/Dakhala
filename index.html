@@ -2700,9 +2700,9 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           const day = String(d.getUTCDate()).padStart(2, '0');
           const month = String(d.getUTCMonth() + 1).padStart(2, '0');
           const year = d.getUTCFullYear();
-          return `${day}-${month}-${year}`;
+          return toMarathiDigits(`${day}-${month}-${year}`);
       }
-      return s;
+      return toMarathiDigits(s);
   }
 
   // Helper to get Marathi words for dates
@@ -3218,7 +3218,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       const studyingClass = String(foundRow[21] || foundRow[18] || '').trim();
       const academicNow = new Date();
       const academicStart = academicNow.getMonth() >= 5 ? academicNow.getFullYear() : academicNow.getFullYear() - 1;
-      const academicYear = academicStart + '-' + String(academicStart + 1).slice(-2);
+      const academicYear = toMarathiDigits(academicStart + '-' + String(academicStart + 1).slice(-2));
       const studyingSince = root.querySelector('#outStudyingSince');
       if (studyingSince) studyingSince.value = studyingClass ? ('इ. ' + studyingClass + ', सन ' + academicYear + ' पासून') : '';
       root.querySelector('#outLeavingDate').value = toMarathiDigits(formatExcelDate(foundRow[19] || ""));
