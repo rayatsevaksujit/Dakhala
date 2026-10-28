@@ -1366,13 +1366,17 @@ input, textarea, select, button, option{
 <style id="dakhala-requested-safe-overrides">
 body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sans Devanagari', 'Nirmala UI', sans-serif !important; }
 @media print {
-  #lcCard .lc-table { table-layout: auto !important; }
-  #lcCard .lc-table th, #lcCard .lc-table td { font-size:16px !important; padding:5px 6px !important; line-height:1.35 !important; }
-  #lcCard .lc-table td strong, #lcCard .lc-table td label, #lcCard .lc-table .lc-label { font-size:16px !important; line-height:1.35 !important; }
-  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly], #lcCard .lc-table .lc-print-value, #lcCard .lc-table span, #lcCard .lc-table div { font-size:16px !important; font-weight:700 !important; line-height:1.35 !important; }
+  @page { size: A4 portrait; margin: 4mm !important; }
+  html, body, #mainAppContainer, #tabDakhala { width:auto !important; min-width:0 !important; max-width:none !important; margin:0 !important; padding:0 !important; }
+  #lcCard { width:100% !important; max-width:100% !important; margin:0 !important; padding:2mm !important; box-sizing:border-box !important; }
+  #lcCard .lc-table { width:100% !important; table-layout:auto !important; border-collapse:collapse !important; }
+  #lcCard .lc-table th, #lcCard .lc-table td { font-size:16px !important; padding:3px 5px !important; line-height:1.2 !important; }
+  #lcCard .lc-table td strong, #lcCard .lc-table td label, #lcCard .lc-table .lc-label { font-size:16px !important; line-height:1.2 !important; }
+  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly], #lcCard .lc-table .lc-print-value, #lcCard .lc-table span, #lcCard .lc-table div { font-size:16px !important; font-weight:700 !important; line-height:1.2 !important; }
   #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly] { white-space:nowrap !important; max-width:100% !important; }
   #lcCard #outReg, #lcCard #outDakhalaNo, #lcCard #outSchoolRegNo, #lcCard #outStudyingSince { font-size:16px !important; font-weight:700 !important; }
-  #lcCard .lc-signature-row { margin-top:15mm !important; min-height:14mm !important; }
+  #lcCard .lc-signature-row { margin-top:11mm !important; min-height:11mm !important; }
+  #lcCard, #lcCard * { box-sizing:border-box !important; }
 }
 </style>
 </head>
