@@ -2692,7 +2692,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       const s = String(val).trim();
       // YYYYMMDD / YYYY-MM-DD / DD-MM-YYYY सर्वांना print साठी DD-MM-YYYY मध्ये बदला.
       const normalized = normalizeStudentDate(s);
-      if(/^\d{2}-\d{2}-\d{4}$/.test(normalized)) return normalized;
+      if(/^\d{2}-\d{2}-\d{4}$/.test(normalized)) return toMarathiDigits(normalized);
       // Excel serial dates use the same 25569 epoch offset everywhere (UTC avoids timezone shifts).
       const num = Number(s);
       if(Number.isFinite(num) && num > 30000 && num < 60000) {
@@ -3208,11 +3208,11 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       root.querySelector('#outCountry').value = foundRow[13] || "भारत";
       
       let dobRaw = foundRow[14] || "";
-      root.querySelector('#outDobNum').value = formatExcelDate(dobRaw);
+      root.querySelector('#outDobNum').value = toMarathiDigits(formatExcelDate(dobRaw));
       root.querySelector('#outDobWords').value = dateToMarathiWords(dobRaw);
       
       root.querySelector('#outPrevSchool').value = foundRow[16] || "-";
-      root.querySelector('#outAdmissionDate').value = formatExcelDate(foundRow[17]);
+      root.querySelector('#outAdmissionDate').value = toMarathiDigits(formatExcelDate(foundRow[17]));
       root.querySelector('#outAdmClass').value = foundRow[18] || "";
       // चालू इयत्ता व शैक्षणिक वर्ष रेकॉर्डनुसार आपोआप भरा (शैक्षणिक वर्ष जूनमध्ये सुरू होते).
       const studyingClass = String(foundRow[21] || foundRow[18] || '').trim();
@@ -3221,8 +3221,11 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       const academicYear = academicStart + '-' + String(academicStart + 1).slice(-2);
       const studyingSince = root.querySelector('#outStudyingSince');
       if (studyingSince) studyingSince.value = studyingClass ? ('इ. ' + studyingClass + ', सन ' + academicYear + ' पासून') : '';
-      root.querySelector('#outLeavingDate').value = formatExcelDate(foundRow[19] || "");
-      const now=new Date(); root.querySelector('#currentDate').value=String(now.getDate()).padStart(2,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+now.getFullYear();
+      root.querySelector('#outLeavingDate').value = toMarathiDigits(formatExcelDate(foundRow[19] || ""));
+      const now=new Date(); 
+      const todayStr = String(now.getDate()).padStart(2,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+now.getFullYear();
+      const curDtEl = root.querySelector('#currentDate');
+      if(curDtEl) { curDtEl.value = toMarathiDigits(todayStr); curDtEl.innerText = toMarathiDigits(todayStr); }
 
       if(customReason !== undefined) root.querySelector('#outLeavingReason').value = customReason;
       if(customRemark !== undefined) root.querySelector('#outRemark').value = customRemark;
