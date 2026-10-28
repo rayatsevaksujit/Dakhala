@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="mr">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Tiro+Devanagari+Marathi&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>School Management & Certificate Portal - Master & School Admin</title>
@@ -1291,9 +1294,9 @@ html,body{font-family:"Nirmala UI","Noto Sans Devanagari","Mangal",Arial,sans-se
 
 <style id="dakhala-sakal-compact-login">
 /* Compact, readable login: one Marathi typeface, high contrast, no page scrolling on desktop. */
-@font-face{font-family:'Sakal Marathi';src:url('https://trans.tdil-dc.gov.in/Fonts/Sakal%20Marathi%20Normal_Ship.ttf') format('truetype');font-style:normal;font-weight:normal;font-display:swap}
-html,body{font-family:'Sakal Marathi'!important;background:#f3f6fb!important;color:#182944;font-synthesis:weight style!important}
-#loginScreen,#loginScreen *{font-family:'Sakal Marathi'!important;font-synthesis:weight style!important}
+@font-face{font-family:'Sakal Marathi';src:local('Sakal Marathi'),local('Sakal Marathi Normal'),url('./fonts/SakalMarathi.ttf') format('truetype');font-style:normal;font-weight:normal;font-display:swap}
+html,body{font-family:'Sakal Marathi','Tiro Devanagari Marathi','Noto Sans Devanagari','Nirmala UI',sans-serif!important;background:#f3f6fb!important;color:#182944;font-synthesis:weight style!important}
+#loginScreen,#loginScreen *{font-family:'Sakal Marathi','Tiro Devanagari Marathi','Noto Sans Devanagari','Nirmala UI',sans-serif!important;font-synthesis:weight style!important}
 body{margin:0!important}
 #loginScreen{
  box-sizing:border-box!important;width:min(650px,calc(100% - 28px))!important;max-width:650px!important;
@@ -1301,9 +1304,9 @@ body{margin:0!important}
  border-radius:22px!important;overflow:visible!important;
  background:linear-gradient(145deg,#07142e 0%,#0b1940 65%,#151044 100%)!important;
  border:1px solid #5469f4!important;box-shadow:0 14px 42px rgba(18,35,88,.23),inset 0 0 22px rgba(50,105,255,.08)!important;
- color:#f5f8ff!important;font-family:'Sakal Marathi'!important
+ color:#f5f8ff!important;font-family:'Sakal Marathi','Tiro Devanagari Marathi','Noto Sans Devanagari','Nirmala UI',sans-serif!important
 }
-#loginScreen *{font-family:'Sakal Marathi'!important;font-synthesis:weight style!important;letter-spacing:normal!important;box-sizing:border-box!important}
+#loginScreen *{font-family:'Sakal Marathi','Tiro Devanagari Marathi','Noto Sans Devanagari','Nirmala UI',sans-serif!important;font-synthesis:weight style!important;letter-spacing:normal!important;box-sizing:border-box!important}
 #loginScreen .dk-login-icon{width:54px!important;height:54px!important;margin:0 auto 7px!important;border-radius:50%!important;font-size:27px!important;background:linear-gradient(135deg,#05bde9,#4a63ff 58%,#c42fe7)!important;box-shadow:0 0 20px #3864fa55!important}
 #loginScreen .dk-login-title{font-size:clamp(22px,2.2vw,27px)!important;line-height:1.35!important;font-weight:800!important;color:#fff!important;margin:2px 0!important}
 #loginScreen .dk-login-subtitle{font-size:14px!important;line-height:1.45!important;color:#d2e1ff!important;margin:4px 0 13px!important}
@@ -1353,10 +1356,10 @@ body{margin:0!important}
 
 /* Use Sakal Marathi consistently across the entire portal, including login, dashboard, forms, tables and dialogs. */
 html, body, body *{
-  font-family:'Sakal Marathi'!important;
+  font-family:'Sakal Marathi','Tiro Devanagari Marathi','Noto Sans Devanagari','Nirmala UI',sans-serif!important;
 }
 input, textarea, select, button, option{
-  font-family:'Sakal Marathi'!important;
+  font-family:'Sakal Marathi','Tiro Devanagari Marathi','Noto Sans Devanagari','Nirmala UI',sans-serif!important;
 }
 </style>
 
@@ -1615,6 +1618,64 @@ input, textarea, select, button, option{
         </div>
     </div>
 
+
+    <script>
+    let filteredPrintHistory = [];
+    function escapePrintReport(value) {
+        return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+    function reportDate(value) {
+        if (!value) return '';
+        const date = value && typeof value.toDate === 'function' ? value.toDate() :
+            (typeof value === 'string' && /^\\d{4}-\\d{2}-\\d{2}$/.test(value) ? new Date(value+'T00:00:00') : new Date(value));
+        if (Number.isNaN(date.getTime())) return '';
+        return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');
+    }
+    async function recordDakhalaPrintHistory(type, studentName, regNo) {
+        try {
+            if (typeof db === 'undefined' || !db || typeof firebase === 'undefined') return;
+            const username = getActiveUser(); if (!username) return;
+            await db.collection('portalData').doc('printHistory_'+username).collection('records').add({
+                type:String(type||''), studentName:String(studentName||''), regNo:String(regNo||''),
+                printedAt:firebase.firestore.FieldValue.serverTimestamp(),
+                printedBy:String(username), role:String(getActiveRole()||'')
+            });
+        } catch (error) { console.error('Print history save failed:', error); }
+    }
+    async function loadPrintHistoryReport() {
+        const tbody=document.querySelector('#printHistoryTable tbody'), thead=document.querySelector('#printHistoryTable thead'), summary=document.getElementById('printReportSummary');
+        if(!tbody||!thead||!summary)return;
+        tbody.innerHTML='<tr><td colspan="6">रिपोर्ट लोड होत आहे...</td></tr>';
+        try {
+            if(typeof db==='undefined'||!db)throw new Error('Firebase उपलब्ध नाही.');
+            const username=getActiveUser(); if(!username)throw new Error('लॉगिन शाळेची माहिती उपलब्ध नाही.');
+            const type=document.getElementById('printReportType')?.value||'';
+            const from=document.getElementById('printReportFrom')?.value||'';
+            const to=document.getElementById('printReportTo')?.value||'';
+            if(from&&to&&from>to)throw new Error('सुरुवातीची तारीख शेवटच्या तारखेपेक्षा मोठी आहे.');
+            const snap=await db.collection('portalData').doc('printHistory_'+username).collection('records').get();
+            filteredPrintHistory=snap.docs.map(d=>({id:d.id,...d.data()})).filter(r=>{
+                const date=reportDate(r.printedAt);
+                return (!type||String(r.type||'')===type)&&(!from||(date&&date>=from))&&(!to||(date&&date<=to));
+            }).sort((a,b)=>reportDate(b.printedAt).localeCompare(reportDate(a.printedAt)));
+            thead.innerHTML='<tr><th>अ.क्र.</th><th>दिनांक</th><th>प्रकार</th><th>विद्यार्थ्याचे नाव</th><th>रजिस्टर नंबर</th><th>प्रिंट करणारे</th></tr>';
+            tbody.innerHTML=filteredPrintHistory.length?filteredPrintHistory.map((r,i)=>'<tr><td>'+(i+1)+'</td><td>'+escapePrintReport(reportDate(r.printedAt))+'</td><td>'+escapePrintReport(r.type)+'</td><td>'+escapePrintReport(r.studentName)+'</td><td>'+escapePrintReport(r.regNo)+'</td><td>'+escapePrintReport(r.printedBy)+'</td></tr>').join(''):'<tr><td colspan="6">या निकषांनुसार नोंदी उपलब्ध नाहीत.</td></tr>';
+            summary.textContent='एकूण प्रिंट नोंदी: '+filteredPrintHistory.length;
+        } catch(error) {
+            console.error('Print history report error:',error); filteredPrintHistory=[];
+            thead.innerHTML=''; tbody.innerHTML='<tr><td colspan="6">रिपोर्ट लोड करता आला नाही: '+escapePrintReport(error.message)+'</td></tr>';
+            summary.textContent='रिपोर्ट लोड करताना त्रुटी आली.';
+        }
+    }
+    function printPrintHistoryReport() {
+        if(!filteredPrintHistory.length){alert('प्रिंट करण्यासाठी रिपोर्टमध्ये नोंदी उपलब्ध नाहीत.');return;}
+        const table=document.getElementById('printHistoryTable'); if(!table)return;
+        const type=document.getElementById('printReportType')?.value||'सर्व', from=document.getElementById('printReportFrom')?.value||'सुरुवात', to=document.getElementById('printReportTo')?.value||'आजपर्यंत';
+        const win=window.open('','_blank'); if(!win){alert('प्रिंट विंडो उघडता आली नाही. पॉप-अप परवानगी तपासा.');return;}
+        win.document.write('<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>प्रिंट हिस्ट्री रिपोर्ट</title><style>@page{size:A4 landscape;margin:12mm}body{font-family:"Sakal Marathi","Tiro Devanagari Marathi","Noto Sans Devanagari","Nirmala UI",sans-serif;color:#111}h2,p{text-align:center}table{width:100%;border-collapse:collapse}th,td{border:1px solid #555;padding:7px;text-align:left}th{background:#eee}</style></head><body><h2>प्रिंट हिस्ट्री रिपोर्ट</h2><p>प्रकार: '+escapePrintReport(type)+' | दिनांक: '+escapePrintReport(from)+' ते '+escapePrintReport(to)+'</p>'+table.outerHTML+'<script>window.onload=function(){window.print();};<\\/script></body></html>');
+        win.document.close();
+    }
+    </script>
     <!-- ===== ADD-ON: Class Teacher Photo Upload ===== -->
     <div id="tabTeacherPhoto" class="tab-content"><div class="public-photo-title">📷 वर्गशिक्षक विद्यार्थी फोटो अपलोड</div>
         <h3>📷 विद्यार्थ्यांचा फोटो Upload</h3>
@@ -2474,12 +2535,18 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           goHome();
           return;
       }
+      const targetTab = document.getElementById(tabName);
+      if(!targetTab) {
+          console.warn('Dakhala: tab not found:', tabName);
+          return;
+      }
       let contents = document.getElementsByClassName('tab-content');
       for(let c of contents) c.classList.remove('active');
-      let targetTab = document.getElementById(tabName);
-      if(targetTab) targetTab.classList.add('active');
-      document.getElementById('homeDashboard').style.display = 'none';
-      document.getElementById('backBar').style.display = 'flex';
+      targetTab.classList.add('active');
+      const dashboard = document.getElementById('homeDashboard');
+      const backBar = document.getElementById('backBar');
+      if(dashboard) dashboard.style.display = 'none';
+      if(backBar) backBar.style.display = 'flex';
       
       if(tabName === 'tabSchoolInfo') {
           let role = getActiveRole();
@@ -2992,6 +3059,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
             await document.fonts.ready;
             await new Promise(r=>setTimeout(r,120));
             window.focus();window.print();
+            await recordDakhalaPrintHistory('दाखला', document.getElementById('outName')?.value || '', document.getElementById('outReg')?.value || '');
         } finally {
             restorePrintValues();
         }
@@ -4147,6 +4215,7 @@ function validateDakhalaPrintFields(){
       setTimeout(() => {
           printWindow.focus();
           printWindow.print();
+          void recordDakhalaPrintHistory('Bonafide', document.querySelector('#bonaCard .bona-field')?.textContent || '', document.getElementById('bonaRegNo')?.value || '');
       }, 300);
 
       printWindow.onafterprint = function() {
