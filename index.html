@@ -2992,6 +2992,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
             await document.fonts.ready;
             await new Promise(r=>setTimeout(r,120));
             window.focus();window.print();
+            await recordDakhalaPrintHistory('दाखला', document.getElementById('outName')?.value || '', document.getElementById('outReg')?.value || '');
         } finally {
             restorePrintValues();
         }
@@ -4147,6 +4148,7 @@ function validateDakhalaPrintFields(){
       setTimeout(() => {
           printWindow.focus();
           printWindow.print();
+          void recordDakhalaPrintHistory('Bonafide', document.querySelector('#bonaCard .bona-field')?.textContent || '', document.getElementById('bonaRegNo')?.value || '');
       }, 300);
 
       printWindow.onafterprint = function() {
