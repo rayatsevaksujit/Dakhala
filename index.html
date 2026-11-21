@@ -1149,18 +1149,38 @@ html, body{max-width:100%; overflow-x:hidden}
   .bulk-lc-copy .lc-table th, .bulk-lc-copy .lc-table td {
     padding: 1.2mm 1.5mm !important;
     font-size: 11.5px !important;
-    line-height: 1.25 !important;
-    overflow-wrap: anywhere !important;
+    line-height: 1.35 !important;
+    overflow-wrap: break-word !important;
     word-break: normal !important;
     vertical-align: top !important;
   }
-  #lcCard .lc-table input[type="text"], .bulk-lc-copy .lc-table input[type="text"],
-  #lcCard .lc-print-value, .bulk-lc-copy .lc-print-value {
-    font-size: 10.5px !important;
-    line-height: 1.25 !important;
+  #lcCard .lc-table td strong, .bulk-lc-copy .lc-table td strong {
+    display: inline !important;
+    width: auto !important;
+    white-space: nowrap !important;
+    font-weight: bold !important;
+    font-size: 11.5px !important;
+    vertical-align: baseline !important;
+  }
+  #lcCard .lc-table input[type="text"], .bulk-lc-copy .lc-table input[type="text"] {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
     padding: 0 1mm !important;
     white-space: normal !important;
-    overflow-wrap: anywhere !important;
+    overflow-wrap: break-word !important;
+  }
+  #lcCard .lc-print-value, .bulk-lc-copy .lc-print-value {
+    display: inline !important;
+    width: auto !important;
+    max-width: 100% !important;
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    padding: 0 0 0 5px !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    font-weight: bold !important;
+    vertical-align: baseline !important;
   }
   #lcCard .lc-signature-row, .bulk-lc-copy .lc-signature-row {
     margin-top: 8mm !important;
@@ -2450,51 +2470,51 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
 
                 <table class="lc-table">
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:135px;">विद्यार्थ्याचे पूर्ण नाव :</strong> <input type="text" id="outName" readonly style="font-weight: bold; font-size: 14px; display:inline-block; width:calc(100% - 140px);"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:140px; white-space:nowrap;">विद्यार्थ्याचे पूर्ण नाव :</strong> <input type="text" id="outName" readonly style="font-weight: bold; font-size: 14px; display:inline-block; width:calc(100% - 145px);"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:135px;">आईचे नाव :</strong> <input type="text" id="outMother" readonly style="display:inline-block; width:calc(100% - 140px); font-weight:bold;"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:140px; white-space:nowrap;">आईचे नाव :</strong> <input type="text" id="outMother" readonly style="display:inline-block; width:calc(100% - 145px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:80px;">राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
-                        <td><strong style="display:inline-block; width:80px;">मातृभाषा :</strong> <input type="text" id="outMotherTongue" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:80px; white-space:nowrap;">राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:80px; white-space:nowrap;">मातृभाषा :</strong> <input type="text" id="outMotherTongue" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:80px;">धर्म :</strong> <input type="text" id="outReligion" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
-                        <td><strong style="display:inline-block; width:100px;">जात व पोटजात :</strong> <input type="text" id="outCaste" readonly style="display:inline-block; width:calc(100% - 105px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:80px; white-space:nowrap;">धर्म :</strong> <input type="text" id="outReligion" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:125px; white-space:nowrap;">जात व पोटजात :</strong> <input type="text" id="outCaste" readonly style="display:inline-block; width:calc(100% - 130px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:135px;">जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace" readonly style="display:inline-block; width:calc(100% - 140px); font-weight:bold;"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:195px; white-space:nowrap;">जन्मस्थळ (गाव/तालुका/जिल्हा) :</strong> <input type="text" id="outBirthPlace" readonly style="display:inline-block; width:calc(100% - 200px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:50px;">राज्य :</strong> <input type="text" id="outState" readonly style="width:150px; display:inline-block; font-weight:bold;"> &nbsp;|&nbsp; <strong>देश :</strong> <input type="text" id="outCountry" readonly style="width:100px; display:inline-block; font-weight:bold;"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:50px; white-space:nowrap;">राज्य :</strong> <input type="text" id="outState" readonly style="width:150px; display:inline-block; font-weight:bold;"> &nbsp;|&nbsp; <strong style="white-space:nowrap;">देश :</strong> <input type="text" id="outCountry" readonly style="width:100px; display:inline-block; font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:120px;">जन्मदिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
-                        <td><strong style="display:inline-block; width:135px;">जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" readonly style="color: #000; font-weight: bold; display:inline-block; width:calc(100% - 140px);"></td>
+                        <td><strong style="display:inline-block; width:160px; white-space:nowrap;">जन्मदिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:calc(100% - 165px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:140px; white-space:nowrap;">जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" readonly style="color: #000; font-weight: bold; display:inline-block; width:calc(100% - 145px);"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:110px;">यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly style="display:inline-block; width:calc(100% - 115px); font-weight:bold;"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:120px; white-space:nowrap;">यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:190px;">या शाळेत प्रवेश घेतल्याचा दिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:calc(100% - 195px); font-weight:bold;"></td>
-                        <td><strong style="display:inline-block; width:80px;">प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:230px; white-space:nowrap;">या शाळेत प्रवेश घेतल्याचा दिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:calc(100% - 235px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:85px; white-space:nowrap;">प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass" readonly style="display:inline-block; width:calc(100% - 90px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:120px;">अभ्यासातील प्रगती :</strong> <input type="text" id="outProgress" readonly value="चांगली" style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
-                        <td><strong style="display:inline-block; width:70px;">वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली" style="display:inline-block; width:calc(100% - 75px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:120px; white-space:nowrap;">अभ्यासातील प्रगती :</strong> <input type="text" id="outProgress" readonly value="चांगली" style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
+                        <td><strong style="display:inline-block; width:70px; white-space:nowrap;">वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली" style="display:inline-block; width:calc(100% - 75px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block;width:180px;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" readonly placeholder="DD-MM-YYYY" maxlength="10" style="width:150px;font-weight:bold;background:#fff;border:none;"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:180px; white-space:nowrap;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" readonly placeholder="DD-MM-YYYY" maxlength="10" style="width:150px;font-weight:bold;background:#fff;border:none;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block;width:290px;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block;width:calc(100% - 295px);font-weight:bold;"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:290px; white-space:nowrap;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block; width:calc(100% - 295px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:140px;">शाळा सोडल्याचे कारण :</strong> <input type="text" id="outLeavingReason" class="editable-field" value="शिक्षण पूर्ण / संतोषजनक" style="display:inline-block; width:calc(100% - 145px);"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:165px; white-space:nowrap;">शाळा सोडल्याचे कारण :</strong> <input type="text" id="outLeavingReason" class="editable-field" value="शिक्षण पूर्ण / संतोषजनक" style="display:inline-block; width:calc(100% - 170px);"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:50px;">शेरा :</strong> <input type="text" id="outRemark" class="editable-field" value="-" style="display:inline-block; width:calc(100% - 55px);"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:50px; white-space:nowrap;">शेरा :</strong> <input type="text" id="outRemark" class="editable-field" value="-" style="display:inline-block; width:calc(100% - 55px);"></td>
                     </tr>
                 </table>
 
@@ -3100,6 +3120,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
        }
        const mrToEn = { '०': '0', '१': '1', '२': '2', '३': '3', '४': '4', '५': '5', '६': '6', '७': '7', '८': '8', '९': '9' };
        let s = String(val).trim().replace(/[०-९]/g, ch => mrToEn[ch] || ch).replace(/\s+/g, '');
+       // Strip leading/trailing asterisks or non-digit punctuation (e.g. *12-04-2016)
+       s = s.replace(/^[^0-9]+/, '').replace(/[^0-9]+$/, '');
        const num = Number(s);
        if (Number.isFinite(num) && num > 30000 && num < 60000) {
            const d = new Date(Math.round((num - 25569) * 86400 * 1000));
@@ -3457,12 +3479,14 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           span.className = 'lc-print-value';
           span.textContent = input.value || '';
           span.style.cssText = input.getAttribute('style') || '';
-          span.style.display = 'inline-block';
+          span.style.display = 'inline';
+          span.style.width = 'auto';
+          span.style.maxWidth = '100%';
           span.style.boxSizing = 'border-box';
-          span.style.paddingLeft = '8px';
-          span.style.lineHeight = '1.6';
+          span.style.paddingLeft = '5px';
+          span.style.lineHeight = '1.35';
           span.style.overflow = 'visible';
-          span.style.whiteSpace = 'pre-wrap';
+          span.style.whiteSpace = 'normal';
           input.parentNode.replaceChild(span, input);
           restore.push(() => { if (span.parentNode) span.parentNode.replaceChild(input, span); });
       });
