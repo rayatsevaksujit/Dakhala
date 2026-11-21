@@ -1778,7 +1778,7 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
         return ord[day]+' '+months[month]+' '+yearWords;
     }
     function setProfileFields(){
-        const p=window.currentSchoolProfile||{};
+        const p=(typeof currentSchoolProfile!=='undefined'&&currentSchoolProfile)||{};
         val('enLcInst',latinOnlyProfile(p.inst));
         val('enLcSchool',latinOnlyProfile(p.school));
         val('enLcAddress',latinOnlyProfile(p.address));
@@ -1821,8 +1821,8 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
         const mode=byId('enLcSearchMode').value;
         const q=String(byId('enLcSearchQuery').value||'').trim().toLowerCase();
         if(!q){alert('Please enter a Register Number, Student Name or Class.');return;}
-        if(!Array.isArray(window.excelData)||window.excelData.length<=1){alert('General Register data is not available for this school.');return;}
-        const matches=window.excelData.slice(1).filter(row=>{
+        if(typeof excelData==='undefined'||!Array.isArray(excelData)||excelData.length<=1){alert('General Register data is not available for this school.');return;}
+        const matches=excelData.slice(1).filter(row=>{
             row=row||[];
             if(mode==='name')return String(row[4]||'').toLowerCase().includes(q);
             if(mode==='class')return String(row[18]||row[21]||'').toLowerCase().includes(q);
