@@ -1753,8 +1753,7 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
         const table=document.getElementById('printHistoryTable'); if(!table)return;
         const type=document.getElementById('printReportType')?.value||'सर्व', from=document.getElementById('printReportFrom')?.value||'सुरुवात', to=document.getElementById('printReportTo')?.value||'आजपर्यंत';
         const win=window.open('','_blank'); if(!win){alert('प्रिंट विंडो उघडता आली नाही. पॉप-अप परवानगी तपासा.');return;}
-        win.document.write('<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>प्रिंट हिस्ट्री रिपोर्ट</title><style>@page{size:A4 landscape;margin:12mm}body{font-family:"Sakal Marathi","Tiro Devanagari Marathi","Noto Sans Devanagari","Nirmala UI",sans-serif;color:#111}h2,p{text-align:center}table{width:100%;border-collapse:collapse}th,td{border:1px solid #555;padding:7px;text-align:left}th{background:#eee}</style></head><body><h2>प्रिंट हिस्ट्री रिपोर्ट</h2><p>प्रकार: '+escapePrintReport(type)+' | दिनांक: '+escapePrintReport(from)+' ते '+escapePrintReport(to)+'</p>'+table.outerHTML+'<script>window.onload=function(){window.print();};<\\/script>
-</body></html>');
+        win.document.write('<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>प्रिंट हिस्ट्री रिपोर्ट</title><style>@page{size:A4 landscape;margin:12mm}body{font-family:"Sakal Marathi","Tiro Devanagari Marathi","Noto Sans Devanagari","Nirmala UI",sans-serif;color:#111}h2,p{text-align:center}table{width:100%;border-collapse:collapse}th,td{border:1px solid #555;padding:7px;text-align:left}th{background:#eee}</style></head><body><h2>प्रिंट हिस्ट्री रिपोर्ट</h2><p>प्रकार: '+escapePrintReport(type)+' | दिनांक: '+escapePrintReport(from)+' ते '+escapePrintReport(to)+'</p>'+table.outerHTML+'<script>window.onload=function(){window.print();};<\/script></body></html>');
         win.document.close();
     }
     </script>
