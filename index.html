@@ -663,6 +663,14 @@ input:focus,select:focus{
 .dk-login-help div div{margin-top:6px;line-height:1.4}
 .dk-login-support{display:inline-block;margin-top:13px;color:#155eef !important;font-size:11px;text-decoration:none;font-weight:700}
 @media(max-width:430px){#loginScreen{margin:22px auto !important;padding:24px 18px 18px !important}}
+/* Dynamic 3D password character boxes */
+.dk-password-box-wrap{position:relative;min-height:48px;margin-top:2px;padding:6px 42px 6px 8px;display:flex;align-items:center;justify-content:center;border:1px solid #cbd5e1;border-radius:12px;background:linear-gradient(145deg,#f8fafc,#e9eef5);box-shadow:inset 3px 3px 7px rgba(15,23,42,.08),inset -3px -3px 7px rgba(255,255,255,.95);cursor:text;overflow:hidden}
+.dk-password-boxes{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;width:100%;min-height:34px;max-height:78px;overflow-y:auto;pointer-events:none}
+.dk-password-boxes span{width:27px;height:32px;flex:0 0 27px;display:flex;align-items:center;justify-content:center;border-radius:7px;background:linear-gradient(145deg,#fff,#e7edf5);border:1px solid #d5deea;box-shadow:3px 3px 6px rgba(15,23,42,.12),-2px -2px 5px rgba(255,255,255,.9);color:#173b72;font-size:15px;font-weight:800}
+.dk-password-real-input{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;z-index:2;padding:0!important;cursor:text!important}
+.dk-password-toggle{position:absolute;right:6px;top:7px;width:32px;height:32px;padding:0;border-radius:8px;background:#dce7f5;color:#173b72;z-index:3;font-size:16px}
+.dk-password-box-wrap:focus-within{border-color:#3984d6;box-shadow:0 0 0 3px rgba(57,132,214,.12),inset 2px 2px 5px rgba(15,23,42,.08)}
+
 </style>
 
 <style id="dakhala-final-polish">.dk-use-card{margin:14px auto 0;max-width:720px;text-align:left;background:linear-gradient(135deg,#fff,#f4f8ff);border:1px solid #dbe7ff;border-radius:16px;padding:15px;box-shadow:0 8px 25px rgba(30,64,175,.08)}.dk-use-title{text-align:center;font-size:15px;font-weight:900;color:#173b7a;margin-bottom:10px}.dk-use-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.dk-use-grid>div{padding:9px 10px;border-radius:11px;background:#fff;border:1px solid #e8edf5}.dk-use-grid b{display:block;font-size:12px}.dk-use-grid span{display:block;margin-top:3px;font-size:10.5px;color:#64748b}.dk-credits{margin:14px auto 4px;max-width:720px;text-align:center;padding:13px 10px;border-top:1px solid #d7dee9;border-bottom:1px solid #d7dee9;color:#475569;font-size:10.5px;line-height:1.5}.dk-credits-names{font-size:14px;font-weight:900;color:#173b7a}.dk-credits-names span{padding:0 6px;color:#94a3b8}.dk-rights{margin-top:6px;font-weight:800}.dk-notice-wrap{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;pointer-events:none}.dk-notice-wrap.dk-notice-blocking{pointer-events:auto;background:rgba(15,23,42,.35)}.dk-notice{min-width:280px;max-width:92vw;padding:15px 20px;border-radius:16px;background:#fff;border:1px solid #dbe4f0;box-shadow:0 18px 55px rgba(15,23,42,.22);text-align:center;font-weight:800;font-size:14px;animation:dkNoticeIn .28s ease both;pointer-events:auto}.dk-notice.err{border-color:#f2b8b8}.dk-notice.warn{border-color:#f6d58a}.dk-notice-scroll{max-height:80vh;display:flex;flex-direction:column;padding:0;overflow:hidden}.dk-notice-closebar{position:sticky;top:0;background:#fff;padding:12px 20px 8px;border-bottom:1px solid #f1d7d7;z-index:1}.dk-notice-closebtn{background:#c0392b;color:#fff;border:none;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:800;cursor:pointer}.dk-notice-closebtn:hover{background:#a93226}.dk-notice-body{padding:12px 20px 18px;overflow-y:auto}@keyframes dkNoticeIn{from{opacity:0;transform:translateY(-18px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes dkNoticeOut{to{opacity:0;transform:translateY(-10px) scale(.97)}}#lcCard{font-size:14px!important;line-height:1.22!important}#lcCard #printLogo{max-height:125px!important;max-width:145px!important;width:auto!important;height:auto!important;object-fit:contain!important}#lcCard .lc-table td{padding:3px 5px!important;font-size:14px!important}#lcCard input{font-size:14px!important}@media(max-width:700px){.dk-use-grid{grid-template-columns:1fr}}@media print{.dk-notice-wrap{display:none!important}}</style>
@@ -1615,9 +1623,13 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
 
     <div class="form-group">
         <label for="loginPass">Password</label>
-        <input type="password" id="loginPass" placeholder="Password टाका" inputmode="latin" autocomplete="current-password"
-               oninput="forceEnglishCredential(this)"
-               onkeydown="if(event.key==='Enter'){event.preventDefault();handleLogin();}">
+        <div class="dk-password-box-wrap">
+            <div id="loginPasswordBoxes" class="dk-password-boxes" aria-hidden="true"></div>
+            <input type="password" id="loginPass" class="dk-password-real-input" placeholder="Password टाका" inputmode="latin" autocomplete="current-password"
+                   oninput="forceEnglishCredential(this);renderPasswordBoxes()"
+                   onkeydown="if(event.key==='Enter'){event.preventDefault();handleLogin();}">
+            <button type="button" class="dk-password-toggle" id="loginPasswordToggle" onclick="toggleLoginPassword(event)" aria-label="पासवर्ड दाखवा">◉</button>
+        </div>
         <div class="dk-login-hint">Password फक्त English मध्ये</div>
     </div>
 
@@ -2141,6 +2153,25 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
           <button type="button" onclick="backupPortalData()" style="background:#176b4d;">⬇️ सर्व डेटा बॅकअप (JSON)</button>
         </div>
         <p id="dkBackupNote" style="font-size:12px;color:#805b17;margin:0 0 14px;">🔐 बॅकअपमध्ये शाळांची लॉगिन माहिती व विद्यार्थी डेटा असू शकतो. फाइल सुरक्षित ठिकाणी ठेवा आणि इतरांना पाठवू नका.</p>
+
+        <section id="dkCasteFeatureAdmin" style="margin:14px 0;padding:14px;border:1px solid #cbdcf2;border-radius:12px;background:linear-gradient(135deg,#f8fbff,#eef5ff);">
+            <h4 style="margin:0 0 6px;color:#1e3a8a;">📊 शाळानिहाय जातीनुसार विद्यार्थी अहवाल नियंत्रण</h4>
+            <p style="font-size:12px;color:#64748b;margin:0 0 10px;">शाळा निवडा, त्या शाळेसाठी जातीनुसार विद्यार्थी अहवाल सुरू/बंद करा आणि Save केलेली स्थिती येथे पाहा.</p>
+            <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(180px,1fr);gap:10px;align-items:end;">
+                <div class="form-group" style="margin:0;">
+                    <label for="dkCasteFeatureSchool">शाळा निवडा:</label>
+                    <select id="dkCasteFeatureSchool" onchange="loadCasteFeatureSetting()" style="font-weight:700;"></select>
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label style="display:flex;align-items:center;gap:8px;">
+                        <input type="checkbox" id="dkCasteFeatureEnabled" style="width:18px;height:18px;margin:0;">
+                        जातीनुसार विद्यार्थी अहवाल सुरू
+                    </label>
+                    <button type="button" onclick="saveCasteFeatureSetting()" style="margin-top:7px;background:#16804a;">💾 सेटिंग Save करा</button>
+                </div>
+            </div>
+            <div id="dkCasteFeatureSavedStatus" aria-live="polite" style="margin-top:10px;padding:9px 11px;border-radius:8px;background:#fff;border:1px solid #dbe4ee;color:#334155;font-size:12px;font-weight:700;">शाळा निवडा.</div>
+        </section>
         
         <h4>नोंदणीकृत शाळांची यादी व नियंत्रण पॅनल</h4>
         <table class="data-table">
@@ -2901,6 +2932,31 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
   function getActiveUser() { return sessionStorage.getItem('activeUser'); }
   function getActiveRole() { return sessionStorage.getItem('activeRole'); }
 
+  // Render one raised 3D box for every password character; authentication still uses loginPass.
+  window.renderPasswordBoxes = function() {
+      const input=document.getElementById('loginPass');
+      const boxes=document.getElementById('loginPasswordBoxes');
+      if(!input||!boxes)return;
+      const value=String(input.value||'');
+      boxes.innerHTML='';
+      for(const character of value){
+          const box=document.createElement('span');
+          box.textContent=input.type==='text'?character:'•';
+          boxes.appendChild(box);
+      }
+  };
+  window.toggleLoginPassword = function(event) {
+      if(event){event.preventDefault();event.stopPropagation();}
+      const input=document.getElementById('loginPass');
+      const button=document.getElementById('loginPasswordToggle');
+      if(!input||!button)return;
+      input.type=input.type==='password'?'text':'password';
+      button.textContent=input.type==='password'?'◉':'◎';
+      button.setAttribute('aria-label',input.type==='password'?'पासवर्ड दाखवा':'पासवर्ड लपवा');
+      renderPasswordBoxes();
+      input.focus();
+  };
+
   // Login credentials नेहमी English/ASCII मध्येच ठेवतो.
   function forceEnglishCredential(el) {
       if(!el) return;
@@ -3153,6 +3209,9 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
               const card = document.getElementById(id);
               if(card) card.style.display = ['cardSchoolRegistration','cardSchoolMgmt'].includes(id) ? 'none' : 'block';
           });
+          const schoolFeature=registeredSchoolsList.find(s=>s&&s.username===username);
+          const casteCard=document.getElementById('cardCasteReport');
+          if(casteCard&&schoolFeature&&schoolFeature.casteReportEnabled===false)casteCard.style.display='none';
           if(upcomingSection) upcomingSection.style.display = '';
           const support=document.getElementById('dkSchoolSupport'); if(support) support.style.display='flex';
           document.getElementById('mainAppContainer').classList.add('school-dashboard-compact');
@@ -3164,6 +3223,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       sessionStorage.clear();
       document.getElementById('mainAppContainer').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'block';
+      const password=document.getElementById('loginPass');
+      if(password){password.value='';password.type='password';renderPasswordBoxes();}
   }
 
   async function openTab(tabName) {
@@ -3186,7 +3247,9 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       if(dashboard) dashboard.style.display = 'none';
       if(backBar) backBar.style.display = 'flex';
       
-      if(tabName === 'tabSchoolInfo') {
+      if(tabName === 'tabSchoolMgmt') {
+          populateCasteFeatureSchoolSelect();
+      } else if(tabName === 'tabSchoolInfo') {
           let role = getActiveRole();
           if(role === 'master') {
               let selDiv = document.getElementById('adminSchoolSelectorDiv');
@@ -4348,7 +4411,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
       if(!name || !user || !pass) { alert("Please fill required fields!"); return; }
 
-      registeredSchoolsList.push({name, udise, mobile, username: user, password: pass});
+      registeredSchoolsList.push({name, udise, mobile, username: user, password: pass, casteReportEnabled: true});
       try {
           await db.collection("portalData").doc("registeredSchools").set({ list: registeredSchoolsList });
           await db.collection("portalData").doc("profile_" + user).set({
@@ -4370,6 +4433,74 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           alert("New school registered successfully!");
           loadSchoolTable();
       } catch(e) { alert("Error: " + e.message); }
+  }
+
+  function populateCasteFeatureSchoolSelect() {
+      const select=document.getElementById('dkCasteFeatureSchool');
+      if(!select)return;
+      const previous=select.value;
+      select.innerHTML='<option value="">-- शाळा निवडा --</option>'+registeredSchoolsList
+          .filter(s=>s&&s.username)
+          .map(s=>'<option value="'+String(s.username).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+String(s.name||s.username).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+' ('+String(s.username).replace(/</g,'&lt;').replace(/>/g,'&gt;')+')</option>')
+          .join('');
+      if(previous&&registeredSchoolsList.some(s=>s.username===previous))select.value=previous;
+      else if(select.options.length>1)select.selectedIndex=1;
+      loadCasteFeatureSetting();
+  }
+
+  function loadCasteFeatureSetting() {
+      const select=document.getElementById('dkCasteFeatureSchool');
+      const checkbox=document.getElementById('dkCasteFeatureEnabled');
+      const status=document.getElementById('dkCasteFeatureSavedStatus');
+      if(!select||!checkbox||!status)return;
+      const school=registeredSchoolsList.find(s=>s&&s.username===select.value);
+      if(!school){
+          checkbox.checked=false;checkbox.disabled=true;status.textContent='कृपया शाळा निवडा.';
+          return;
+      }
+      checkbox.disabled=false;
+      // Existing schools remain enabled unless an Admin explicitly saved them as disabled.
+      const enabled=school.casteReportEnabled!==false;
+      checkbox.checked=enabled;
+      if(school.casteReportSavedAt){
+          const date=new Date(school.casteReportSavedAt);
+          const when=Number.isNaN(date.getTime())?'':date.toLocaleString('mr-IN');
+          status.textContent='✅ '+(enabled?'सुरू':'बंद')+' — ही सेटिंग Save केली आहे.'+(when?' शेवटचे Save: '+when:'');
+          status.style.color=enabled?'#166534':'#9f1239';
+      }else{
+          status.textContent='ℹ️ या शाळेसाठी जुनी सेटिंग कायम आहे: '+(enabled?'सुरू':'बंद')+'. बदल केल्यास Save करा.';
+          status.style.color='#475569';
+      }
+  }
+
+  async function saveCasteFeatureSetting() {
+      if(getActiveRole()!=='master'){alert('ही सुविधा फक्त Admin साठी आहे.');return;}
+      const select=document.getElementById('dkCasteFeatureSchool');
+      const checkbox=document.getElementById('dkCasteFeatureEnabled');
+      const status=document.getElementById('dkCasteFeatureSavedStatus');
+      const username=select?select.value:'';
+      const schoolIndex=registeredSchoolsList.findIndex(s=>s&&s.username===username);
+      if(schoolIndex<0){alert('कृपया शाळा निवडा.');return;}
+      const enabled=!!checkbox.checked;
+      const old={...registeredSchoolsList[schoolIndex]};
+      registeredSchoolsList[schoolIndex].casteReportEnabled=enabled;
+      registeredSchoolsList[schoolIndex].casteReportSavedAt=new Date().toISOString();
+      try{
+          await db.collection('portalData').doc('registeredSchools').set({list:registeredSchoolsList});
+          const verify=await db.collection('portalData').doc('registeredSchools').get();
+          if(!verify.exists)throw new Error('Save पडताळणीसाठी नोंद सापडली नाही.');
+          const savedList=(verify.data()||{}).list||[];
+          const saved=savedList.find(s=>s&&s.username===username);
+          if(!saved||saved.casteReportEnabled!==enabled)throw new Error('Firebase Save पडताळणी अयशस्वी.');
+          registeredSchoolsList=savedList;
+          loadCasteFeatureSetting();
+          if(status)status.textContent='✅ '+(enabled?'सुरू':'बंद')+' — '+(saved.name||username)+' साठी सेटिंग यशस्वीरित्या Save व पडताळली.';
+          alert('✅ '+(enabled?'जातीनुसार विद्यार्थी अहवाल सुरू':'जातीनुसार विद्यार्थी अहवाल बंद')+' — '+(saved.name||username)+' साठी Save झाले.');
+      }catch(error){
+          registeredSchoolsList[schoolIndex]=old;
+          loadCasteFeatureSetting();
+          alert('❌ सेटिंग Save झाली नाही: '+(error.message||error));
+      }
   }
 
   let dkAdminStudentStats = {};
