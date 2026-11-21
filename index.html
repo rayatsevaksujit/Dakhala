@@ -1665,6 +1665,15 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
 
     <!-- Main Dashboard Cards -->
     <div id="homeDashboard" class="no-print">
+        <section id="dkMasterSchoolWorkspace" style="display:none;margin:0 0 16px;padding:14px 16px;border:1px solid #bfd3ef;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eaf2ff);box-shadow:0 5px 18px rgba(31,58,138,.07);">
+            <div style="font-size:16px;font-weight:800;color:#173b72;margin-bottom:5px;">🏫 शाळा निवडा आणि त्या शाळेचे सर्व काम करा</div>
+            <div style="font-size:12px;color:#52657e;margin-bottom:10px;">निवडलेल्या शाळेची विद्यार्थी माहिती, दाखले, जनरल रजिस्टर, रिपोर्ट आणि इतर सर्व शाळा लॉगिन पर्याय Admin ला उपलब्ध होतील.</div>
+            <label for="dkMasterSchoolSelect" style="font-size:13px;font-weight:700;color:#243b63;">शाळा निवडा:</label>
+            <select id="dkMasterSchoolSelect" onchange="onMasterWorkspaceSchoolChange()" style="width:100%;max-width:620px;margin-top:5px;padding:11px;border:1px solid #b8cbe5;border-radius:9px;background:#fff;font-weight:700;">
+                <option value="">शाळा निवडा</option>
+            </select>
+            <div id="dkMasterSchoolStatus" aria-live="polite" style="margin-top:8px;font-size:12px;color:#1e40af;font-weight:700;">शाळा निवडल्यानंतर तिचे सर्व पर्याय वापरता येतील.</div>
+        </section>
         <div class="dashboard-grid">
             <div class="tool-card" id="cardSchoolRegistration" onclick="openTab('tabSchoolRegistration')" style="display:none; background: #fef9e7; border-color: #f39c12;">
                 <div class="tool-icon">🏫</div>
@@ -3185,24 +3194,74 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
   // Removed obsolete switchAdminPanel(): its legacy DOM IDs and tab buttons no longer exist.
 
+  function populateMasterWorkspaceSchoolSelect() {
+      const select=document.getElementById('dkMasterSchoolSelect');
+      if(!select)return;
+      const previous=window.adminEditingTarget||sessionStorage.getItem('adminSelectedSchool')||'';
+      select.innerHTML='<option value="">-- शाळा निवडा --</option>'+registeredSchoolsList
+          .filter(s=>s&&s.username)
+          .map(s=>'<option value="'+String(s.username).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+String(s.name||s.username).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+' ('+String(s.username).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+')</option>')
+          .join('');
+      if(previous&&registeredSchoolsList.some(s=>s&&s.username===previous))select.value=previous;
+      else if(registeredSchoolsList.length)select.selectedIndex=1;
+      if(select.value)onMasterWorkspaceSchoolChange();
+      else {
+          window.adminEditingTarget='';
+          const status=document.getElementById('dkMasterSchoolStatus');
+          if(status)status.textContent='अद्याप शाळा नोंदणीकृत नाही. प्रथम “नवीन शाळा जोडा” वापरा.';
+      }
+  }
+
+  async function onMasterWorkspaceSchoolChange() {
+      if(getActiveRole()!=='master')return;
+      const select=document.getElementById('dkMasterSchoolSelect');
+      const username=select?select.value:'';
+      const status=document.getElementById('dkMasterSchoolStatus');
+      if(!username){
+          window.adminEditingTarget='';
+          sessionStorage.removeItem('adminSelectedSchool');
+          if(status)status.textContent='शाळा निवडा. शाळेची माहिती/दाखले वापरण्यासाठी निवड आवश्यक आहे.';
+          return;
+      }
+      if(status)status.textContent='⏳ शाळेची माहिती लोड होत आहे…';
+      try{
+          await loadAdminSelectedSchoolProfile(username);
+          sessionStorage.setItem('adminSelectedSchool',username);
+          const school=registeredSchoolsList.find(s=>s&&s.username===username);
+          if(status)status.textContent='✅ निवडलेली शाळा: '+(school?.name||username)+' — आता खालील सर्व शाळा लॉगिन पर्याय वापरू शकता.';
+          const infoSelect=document.getElementById('adminSchoolSelect');
+          if(infoSelect)infoSelect.value=username;
+          const casteSelect=document.getElementById('dkCasteFeatureSchool');
+          if(casteSelect)casteSelect.value=username;
+      }catch(error){
+          if(status)status.textContent='❌ शाळेची माहिती लोड झाली नाही: '+(error.message||error);
+          alert('शाळेची माहिती लोड करताना त्रुटी: '+(error.message||error));
+      }
+  }
+
   function setupDashboard(role, username) {
       const dashboardCards = [
-          'cardSchoolRegistration','cardSchoolMgmt','cardSchoolInfo','cardEntry','cardDakhala','cardGenRegister',
+          'cardSchoolRegistration','cardSchoolMgmt','cardSchoolInfo','cardEntry','cardDakhala','cardEnglishLC','cardGenRegister',
           'cardBonafide','cardTeacherPhoto','cardDataCompleteness','cardPrintReport','cardIdCard','cardCasteReport','cardNutrition'
       ];
       const upcomingSection = document.querySelector('#homeDashboard .dk-upcoming-section');
       if(role === 'master') {
           document.getElementById('roleSubTitle').innerText = 'डिजिटल साथीदार प्रशासकीय प्रणाली (Master Admin)';
-          // Master Admin dashboard is for school management only; student/certificate actions stay in School Login.
+          // Master Admin gets every school-login tool plus all existing admin controls.
           dashboardCards.forEach(id => {
               const card = document.getElementById(id);
-              if(card) card.style.display = ['cardSchoolRegistration','cardSchoolMgmt'].includes(id) ? 'block' : 'none';
+              if(card) card.style.display = 'block';
           });
-          if(upcomingSection) upcomingSection.style.display = 'none';
+          const workspace=document.getElementById('dkMasterSchoolWorkspace');
+          if(workspace)workspace.style.display='block';
+          if(upcomingSection) upcomingSection.style.display = '';
           const support=document.getElementById('dkSchoolSupport'); if(support) support.style.display='none';
           document.getElementById('mainAppContainer').classList.remove('school-dashboard-compact');
           loadSchoolTable();
+          populateMasterWorkspaceSchoolSelect();
       } else {
+          const workspace=document.getElementById('dkMasterSchoolWorkspace');
+          if(workspace)workspace.style.display='none';
           let sName = sessionStorage.getItem('currentSchoolName') || username;
           document.getElementById('roleSubTitle').innerText = 'शाळा लॉगिन : ' + sName;
           dashboardCards.forEach(id => {
@@ -3234,6 +3293,12 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           goHome();
           return;
       }
+      const masterSchoolTabs=['tabSchoolInfo','tabEntry','tabDakhala','tabEnglishLC','tabGenRegister','tabBonafide','tabTeacherPhoto','tabDataCompleteness','tabPrintReport','tabIdCard','tabCasteReport','tabNutrition'];
+      if(getActiveRole()==='master'&&masterSchoolTabs.includes(tabName)&&!window.adminEditingTarget){
+          alert('कृपया आधी वरून शाळा निवडा. त्यानंतर त्या शाळेचे सर्व पर्याय वापरता येतील.');
+          goHome();
+          return;
+      }
       const targetTab = document.getElementById(tabName);
       if(!targetTab) {
           console.warn('Dakhala: tab not found:', tabName);
@@ -3259,8 +3324,10 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
                   sel.innerHTML += `<option value="${s.username}">${s.name} (${s.username})</option>`;
               });
               selDiv.style.display = 'block';
-              if(registeredSchoolsList.length > 0) {
-                  await loadAdminSelectedSchoolProfile(registeredSchoolsList[0].username);
+              const preferred=window.adminEditingTarget||sessionStorage.getItem('adminSelectedSchool')||registeredSchoolsList[0]?.username||'';
+              if(preferred&&registeredSchoolsList.some(s=>s.username===preferred)) {
+                  sel.value=preferred;
+                  await loadAdminSelectedSchoolProfile(preferred);
               }
           } else {
               document.getElementById('adminSchoolSelectorDiv').style.display = 'none';
@@ -4392,6 +4459,9 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           excelData = [];
       }
       window.adminEditingTarget = username;
+      sessionStorage.setItem('adminSelectedSchool',username);
+      const workspaceSelect=document.getElementById('dkMasterSchoolSelect');
+      if(workspaceSelect&&workspaceSelect.value!==username)workspaceSelect.value=username;
       loadSchoolInfo(username);
   }
 
@@ -4432,6 +4502,8 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           }, { merge: true });
           alert("New school registered successfully!");
           loadSchoolTable();
+          populateMasterWorkspaceSchoolSelect();
+          populateCasteFeatureSchoolSelect();
       } catch(e) { alert("Error: " + e.message); }
   }
 
