@@ -3093,86 +3093,91 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
        el.value = v;
    }
 
-   function normalizeStudentDate(val) {
-       if(!val) return '';
-       if(val instanceof Date && !isNaN(val.getTime())) {
-           return String(val.getDate()).padStart(2,'0') + '-' + String(val.getMonth()+1).padStart(2,'0') + '-' + val.getFullYear();
+   function parseStudentDateParts(val) {
+       if (val === null || val === undefined || String(val).trim() === '') return null;
+       if (val instanceof Date && !isNaN(val.getTime())) {
+           return { day: val.getDate(), month: val.getMonth() + 1, year: val.getFullYear() };
        }
-       let v = String(val).trim().replace(/\s+/g,'');
-       let p = v.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
-       if(p) return p[1].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[3];
-       p = v.match(/^(\d{8})$/);
-       if(p) return p[1].slice(6,8) + '-' + p[1].slice(4,6) + '-' + p[1].slice(0,4);
-       p = v.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
-       if(p) return p[3].padStart(2,'0') + '-' + p[2].padStart(2,'0') + '-' + p[1];
-       return v;
+       const mrToEn = { '०': '0', '१': '1', '२': '2', '३': '3', '४': '4', '५': '5', '६': '6', '७': '7', '८': '8', '९': '9' };
+       let s = String(val).trim().replace(/[०-९]/g, ch => mrToEn[ch] || ch).replace(/\s+/g, '');
+       const num = Number(s);
+       if (Number.isFinite(num) && num > 30000 && num < 60000) {
+           const d = new Date(Math.round((num - 25569) * 86400 * 1000));
+           return { day: d.getUTCDate(), month: d.getUTCMonth() + 1, year: d.getUTCFullYear() };
+       }
+       let p = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})$/);
+       if (p) return { day: Number(p[1]), month: Number(p[2]), year: Number(p[3]) };
+       p = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})$/);
+       if (p) return { day: Number(p[3]), month: Number(p[2]), year: Number(p[1]) };
+       p = s.match(/^(\d{4})(\d{2})(\d{2})$/);
+       if (p) return { day: Number(p[3]), month: Number(p[2]), year: Number(p[1]) };
+       p = s.match(/^(\d{2})(\d{2})(\d{4})$/);
+       if (p) return { day: Number(p[1]), month: Number(p[2]), year: Number(p[3]) };
+       return null;
+   }
+
+   function normalizeStudentDate(val) {
+       if (!val) return '';
+       const parts = parseStudentDateParts(val);
+       if (!parts) return String(val).trim();
+       const dd = String(parts.day).padStart(2, '0');
+       const mm = String(parts.month).padStart(2, '0');
+       return `${dd}-${mm}-${parts.year}`;
    }
 
    function formatExcelDate(val) {
-      if(val === null || val === undefined || String(val).trim() === "") return "";
-      const s = String(val).trim();
-      // YYYYMMDD / YYYY-MM-DD / DD-MM-YYYY सर्वांना print साठी DD-MM-YYYY मध्ये बदला.
-      const normalized = normalizeStudentDate(s);
-      if(/^\d{2}-\d{2}-\d{4}$/.test(normalized)) return toMarathiDigits(normalized);
-      // Excel serial dates use the same 25569 epoch offset everywhere (UTC avoids timezone shifts).
-      const num = Number(s);
-      if(Number.isFinite(num) && num > 30000 && num < 60000) {
-          const d = new Date(Math.round((num - 25569) * 86400 * 1000));
-          const day = String(d.getUTCDate()).padStart(2, '0');
-          const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-          const year = d.getUTCFullYear();
-          return toMarathiDigits(`${day}-${month}-${year}`);
-      }
-      return toMarathiDigits(s);
-  }
-
-  // Helper to get Marathi words for dates
-  const ones = ["", "एक", "दोन", "तीन", "चार", "पाच", "सहा", "सात", "आठ", "नऊ", "दहा",
-      "अकरा", "बारा", "तेरा", "चौदा", "पंधरा", "सोळा", "सतरा", "अठरा", "एकोणीस", "वीस",
-      "एकवीस", "बावीस", "तेवीस", "चोवीस", "पंचवीस", "सव्वीस", "सत्तावीस", "अठ्ठावीस", "एकोणतीस", "तीस", "एकतीस"];
-
-  const marathiMonthsFull = { 1: "जानेवारी", 2: "फेब्रुवारी", 3: "मार्च", 4: "एप्रिल", 5: "मे", 6: "जून", 7: "जुलै", 8: "ऑगस्ट", 9: "सप्टेंबर", 10: "ऑक्टोबर", 11: "नोव्हेंबर", 12: "डिसेंबर" };
-
-  function convertNumberToWords(num) {
-      if (num <= 31) return ones[num];
-      if (num == 1982) return "एकोणीस शे ब्याऐंशी";
-      if (num >= 1900 && num < 2000) {
-          let rem = num - 1900;
-          let century = "एकोणीस शे ";
-          if (rem === 0) return "एकोणीस शे";
-          return century + convertNumberToWords(rem);
-      }
-      if (num >= 2000 && num < 2100) {
-          let rem = num - 2000;
-          let century = "दोन हजार ";
-          if (rem === 0) return "दोन हजार";
-          return century + convertNumberToWords(rem);
-      }
-      return num.toString();
-  }
-
-  function dateToMarathiWords(val) {
-       try {
-           if(val === null || val === undefined || String(val).trim() === '') return '';
-           let normalized;
-           if(val instanceof Date && !isNaN(val.getTime())) {
-               normalized = String(val.getDate()).padStart(2, '0') + '-' +
-                   String(val.getMonth() + 1).padStart(2, '0') + '-' + val.getFullYear();
-           } else {
-               // Use the exact same date normalization as the numeric certificate field.
-               normalized = formatExcelDate(val);
-           }
-           const match = String(normalized).match(/^(\d{2})-(\d{2})-(\d{4})$/);
-           if(!match) return String(val);
-           const day = Number(match[1]), month = Number(match[2]), year = Number(match[3]);
-           const d = new Date(year, month - 1, day);
-           if(d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) return String(val);
-           const dayWord = ones[day] || String(day);
-           const monthWord = marathiMonthsFull[month] || "";
-           const yearWord = convertNumberToWords(year);
-           return dayWord + " " + monthWord + " " + yearWord;
-       } catch(e) { return val ? String(val) : ""; }
+       if (val === null || val === undefined || String(val).trim() === '') return '';
+       const parts = parseStudentDateParts(val);
+       if (!parts) return toMarathiDigits(String(val).trim());
+       const dd = String(parts.day).padStart(2, '0');
+       const mm = String(parts.month).padStart(2, '0');
+       return toMarathiDigits(`${dd}-${mm}-${parts.year}`);
    }
+
+   // Helper to get Marathi words for dates
+   const marathiNumbers1to99 = [
+     "", "एक", "दोन", "तीन", "चार", "पाच", "सहा", "सात", "आठ", "नऊ", "दहा",
+     "अकरा", "बारा", "तेरा", "चौदा", "पंधरा", "सोळा", "सतरा", "अठरा", "एकोणीस", "वीस",
+     "एकवीस", "बावीस", "तेवीस", "चोवीस", "पंचवीस", "सव्वीस", "सत्तावीस", "अठ्ठावीस", "एकोणतीस", "तीस",
+     "एकतीस", "बत्तीस", "तेहेतीस", "चौतीस", "पस्तीस", "छत्तीस", "सदतीस", "अडतीस", "एकोणचाळीस", "चाळीस",
+     "एक्केचाळीस", "बेचाळीस", "त्रेचाळीस", "चव्वेचाळीस", "पंचेचाळीस", "शेहेचाळीस", "सत्तेचाळीस", "अठ्ठेचाळीस", "एकोणपन्नास", "पन्नास",
+     "एक्कावन्न", "बावन्न", "त्रेपन्न", "चोपन्न", "पंचावन्न", "छप्पन्न", "सत्तावन्न", "अठ्ठावन्न", "एकोणसाठ", "साठ",
+     "एकसष्ठ", "बासष्ठ", "त्रेसष्ठ", "चौसष्ठ", "पासष्ठ", "सहासष्ठ", "सदुसष्ठ", "अडुसष्ठ", "एकोणसत्तर", "सत्तर",
+     "एकाहत्तर", "बाहत्तर", "त्र्याहत्तर", "चौऱ्याहत्तर", "पंच्याहत्तर", "शहात्तर", "सत्त्याहत्तर", "अठ्ठ्याहत्तर", "एकोणऐंशी", "ऐंशी",
+     "एक्याऐंशी", "ब्याऐंशी", "त्र्याऐंशी", "चौऱ्याऐंशी", "पंच्याऐंशी", "शहाऐंशी", "सत्त्याऐंशी", "अठ्ठ्याऐंशी", "एकोणनव्वद", "नव्वद",
+     "एक्याण्णव", "ब्याण्णव", "त्र्याण्णव", "चौऱ्याण्णव", "पंच्याण्णव", "शहाण्णव", "सत्त्याण्णव", "अठ्ठ्याण्णव", "नव्व्याण्णव"
+   ];
+
+   const marathiMonthsFull = { 1: "जानेवारी", 2: "फेब्रुवारी", 3: "मार्च", 4: "एप्रिल", 5: "मे", 6: "जून", 7: "जुलै", 8: "ऑगस्ट", 9: "सप्टेंबर", 10: "ऑक्टोबर", 11: "नोव्हेंबर", 12: "डिसेंबर" };
+
+   function convertNumberToWords(num) {
+       if (num <= 99) return marathiNumbers1to99[num] || String(num);
+       if (num >= 1900 && num < 2000) {
+           let rem = num - 1900;
+           let century = "एकोणीस शे ";
+           if (rem === 0) return "एकोणीस शे";
+           return century + (marathiNumbers1to99[rem] || rem);
+       }
+       if (num >= 2000 && num < 2100) {
+           let rem = num - 2000;
+           let century = "दोन हजार ";
+           if (rem === 0) return "दोन हजार";
+           return century + (marathiNumbers1to99[rem] || rem);
+       }
+       return num.toString();
+   }
+
+   function dateToMarathiWords(val) {
+        try {
+            if (val === null || val === undefined || String(val).trim() === '') return '';
+            const parts = parseStudentDateParts(val);
+            if (!parts) return String(val).trim();
+            const dayWord = marathiNumbers1to99[parts.day] || String(parts.day);
+            const monthWord = marathiMonthsFull[parts.month] || '';
+            const yearWord = convertNumberToWords(parts.year);
+            return (dayWord + ' ' + monthWord + ' ' + yearWord).trim();
+        } catch(e) { return val ? String(val) : ''; }
+    }
 
    // Lazy Load / Search in General Register with formatted dates and words
   function filterGenTable() {
@@ -3650,8 +3655,6 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
 
       if(customReason !== undefined) root.querySelector('#outLeavingReason').value = customReason;
       if(customRemark !== undefined) root.querySelector('#outRemark').value = customRemark;
-
-      root.querySelector('#currentDate').innerText = toMarathiDigits(new Date().toLocaleDateString('mr-IN'));
   }
 
   // ===== Search Functions for LC Tab =====
