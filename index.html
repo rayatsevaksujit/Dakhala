@@ -1877,18 +1877,24 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
         return /[A-Za-z]/.test(v) && !/[\u0900-\u097F]/.test(v) ? v : '';
     };
     function englishDateWords(raw){
-        const formatted=String(raw||'').trim();
-        const m=formatted.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
-        if(!m)return '';
+        let day, month, year;
+        if (typeof parseStudentDateParts === 'function') {
+            const p = parseStudentDateParts(raw);
+            if (p) { day = p.day; month = p.month; year = p.year; }
+        }
+        if (!day) {
+            const formatted = String(raw || '').trim().replace(/^[^0-9]+/, '').replace(/[^0-9]+$/, '');
+            const m = formatted.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+            if (!m) return '';
+            day = Number(m[1]); month = Number(m[2]); year = Number(m[3]);
+        }
         const n=['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
         const tens=['','','Twenty','Thirty'];
         const words=x=>x<20?n[x]:(tens[Math.floor(x/10)]+(x%10?' '+n[x%10]:''));
-        const ord=['','First','Second','Third','Fourth','Fifth','Sixth','Seventh','Eighth','Ninth','Tenth','Eleventh','Twelfth','Thirteenth','Fourteenth','Fifteenth','Sixteenth','Seventeenth','Eighteenth','Nineteenth','Twentieth','Twenty First','Twenty Second','Twenty Third','Twenty Fourth','Twenty Fifth','Twenty Sixth','Twenty Seventh','Twenty Eighth','Twenty Ninth','Thirtieth','Thirty First'];
         const months=['','January','February','March','April','May','June','July','August','September','October','November','December'];
-        const day=Number(m[1]),month=Number(m[2]),year=Number(m[3]);
         if(!day||day>31||!months[month])return '';
         const yearWords=year>=2000 ? 'Two Thousand'+(year%100?' '+words(year%100):'') : words(Math.floor(year/100))+' Hundred '+words(year%100);
-        return ord[day]+' '+months[month]+' '+yearWords;
+        return words(day)+' '+months[month]+' '+yearWords;
     }
     function setProfileFields(){
         const p=(typeof currentSchoolProfile!=='undefined'&&currentSchoolProfile)||{};
