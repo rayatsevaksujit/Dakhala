@@ -1514,66 +1514,79 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
         padding:0 1mm !important;
         font-family:Arial,Helvetica,sans-serif !important;
         color:#000 !important;
-        font-size:12.5px !important;
+        font-size:11.5px !important;
         font-weight:700 !important;
     }
     body.english-lc-print #enLcCard .lc-table {
         width:100% !important;
         table-layout:fixed !important;
         border-collapse:collapse !important;
-        margin:1.5mm 0 !important;
+        margin:1mm 0 !important;
     }
     body.english-lc-print #enLcCard .lc-table td {
         border:1px solid #000 !important;
-        padding:2.2mm 2.5mm !important;
-        font-size:12.5px !important;
-        line-height:1.35 !important;
+        padding:1.6mm 2.2mm !important;
+        font-size:11.5px !important;
+        line-height:1.25 !important;
         vertical-align:middle !important;
+        box-sizing:border-box !important;
+        overflow-wrap:break-word !important;
     }
     body.english-lc-print #enLcCard .lc-table td strong {
-        font-size:12.5px !important;
-        line-height:1.35 !important;
+        font-size:11.5px !important;
+        line-height:1.25 !important;
+        white-space:nowrap !important;
+        vertical-align:middle !important;
+        font-weight:700 !important;
     }
-    body.english-lc-print #enLcCard input {
-        font-size:12.5px !important;
+    body.english-lc-print #enLcCard input,
+    body.english-lc-print #enLcCard .lc-print-value {
+        font-size:11.5px !important;
+        font-weight:700 !important;
+        line-height:1.25 !important;
+        vertical-align:middle !important;
+        box-sizing:border-box !important;
+        padding-left:3px !important;
     }
     body.english-lc-print #enLcLogoContainer {
-        min-height:26mm !important;
+        min-height:18mm !important;
         display:flex !important;
         align-items:center !important;
         justify-content:center !important;
-        margin-bottom:1mm !important;
+        margin-bottom:0.5mm !important;
     }
     body.english-lc-print #enLcLogo {
-        max-width:28mm !important;
-        max-height:28mm !important;
+        max-width:22mm !important;
+        max-height:22mm !important;
         object-fit:contain !important;
     }
     body.english-lc-print #enLcInst {
-        font-size:14px !important;
+        font-size:13px !important;
         font-weight:bold !important;
-        margin-bottom:0.8mm !important;
+        margin-bottom:0.5mm !important;
     }
     body.english-lc-print #enLcSchool {
-        font-size:23px !important;
+        font-size:19px !important;
         font-weight:900 !important;
-        margin-bottom:0.8mm !important;
+        margin-bottom:0.5mm !important;
         color:#183153 !important;
     }
     body.english-lc-print .lc-certificate-title {
-        font-size:20px !important;
-        margin:2.5mm 0 !important;
+        font-size:16px !important;
+        margin:1.2mm 0 !important;
     }
     body.english-lc-print #enLcSignRow,
     body.english-lc-print .en-lc-sign-row {
         margin-top:auto !important;
-        padding-top:14mm !important;
-        margin-bottom:3mm !important;
+        padding-top:7mm !important;
+        margin-bottom:1.5mm !important;
         display:flex !important;
         justify-content:space-between !important;
-        font-size:13px !important;
+        font-size:12px !important;
         font-weight:bold !important;
         text-align:center !important;
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
     }
 }
 @media(max-width:700px) {
@@ -1933,12 +1946,12 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
     }
     function setProfileFields(){
         const p=(typeof currentSchoolProfile!=='undefined'&&currentSchoolProfile)||{};
-        val('enLcInst',latinOnlyProfile(p.inst));
-        val('enLcSchool',latinOnlyProfile(p.school));
-        val('enLcAddress',latinOnlyProfile(p.address));
+        val('enLcInst',latinOnlyProfile(p.inst) || (p.inst || ''));
+        val('enLcSchool',latinOnlyProfile(p.school) || (p.school || ''));
+        val('enLcAddress',latinOnlyProfile(p.address) || (p.address || ''));
         val('enLcPhone',englishDigits(p.phone||''));
         val('enLcEmail',p.email||'');
-        const rec=latinOnlyProfile(p.recognition);
+        const rec=latinOnlyProfile(p.recognition) || (p.recognition || '');
         const udise=englishDigits(p.udise||'');
         val('enLcRecognition',[rec,udise?'UDISE No.: '+udise:''].filter(Boolean).join(' | '));
         val('enLcIndexes',[
@@ -2037,6 +2050,7 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
         const card=byId('enLcCard');
         if(!card||card.style.display==='none'){alert('Please select a student or enter the certificate details first.');return;}
         document.body.classList.add('english-lc-print');
+        const restorePrintValues = typeof convertLcValuesToPrintText === 'function' ? convertLcValuesToPrintText(card) : (typeof window.convertLcValuesToPrintText === 'function' ? window.convertLcValuesToPrintText(card) : () => {});
         const originalTitle = document.title;
         const name = (byId('enLcName')?.value || '').trim();
         const reg = (byId('enLcReg')?.value || '').trim();
@@ -2044,6 +2058,7 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
         const cleanup=()=>{
             document.title = originalTitle;
             document.body.classList.remove('english-lc-print');
+            restorePrintValues();
             window.removeEventListener('afterprint',cleanup);
         };
         window.addEventListener('afterprint',cleanup);
@@ -2780,38 +2795,38 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
 
                 <table class="lc-table">
                     <colgroup>
-                        <col style="width: 55%;">
-                        <col style="width: 45%;">
+                        <col style="width: 46%;">
+                        <col style="width: 54%;">
                     </colgroup>
-                    <tr><td colspan="2"><strong style="display:inline-block;width:145px;">Full Name of Student:</strong><input type="text" id="enLcName" class="en-lc-edit" style="width:calc(100% - 150px);"></td></tr>
-                    <tr><td colspan="2"><strong style="display:inline-block;width:145px;">Mother's Name:</strong><input type="text" id="enLcMother" class="en-lc-edit" style="width:calc(100% - 150px);"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:160px;white-space:nowrap;vertical-align:middle;">Full Name of Student:</strong> <input type="text" id="enLcName" class="en-lc-edit" style="display:inline-block;width:calc(100% - 165px);vertical-align:middle;"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:160px;white-space:nowrap;vertical-align:middle;">Mother's Name:</strong> <input type="text" id="enLcMother" class="en-lc-edit" style="display:inline-block;width:calc(100% - 165px);vertical-align:middle;"></td></tr>
                     <tr>
-                        <td><strong style="display:inline-block;width:100px;">Nationality:</strong><input type="text" id="enLcNationality" class="en-lc-edit" style="width:calc(100% - 105px);"></td>
-                        <td><strong style="display:inline-block;width:105px;">Mother Tongue:</strong><input type="text" id="enLcTongue" class="en-lc-edit" style="width:calc(100% - 110px);"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:90px;white-space:nowrap;vertical-align:middle;">Nationality:</strong> <input type="text" id="enLcNationality" class="en-lc-edit" style="display:inline-block;width:calc(100% - 95px);vertical-align:middle;"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:115px;white-space:nowrap;vertical-align:middle;">Mother Tongue:</strong> <input type="text" id="enLcTongue" class="en-lc-edit" style="display:inline-block;width:calc(100% - 120px);vertical-align:middle;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block;width:75px;">Religion:</strong><input type="text" id="enLcReligion" class="en-lc-edit" style="width:calc(100% - 80px);"></td>
-                        <td><strong style="display:inline-block;width:100px;">Caste / Sub-caste:</strong><input type="text" id="enLcCaste" class="en-lc-edit" style="width:calc(100% - 105px);"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:90px;white-space:nowrap;vertical-align:middle;">Religion:</strong> <input type="text" id="enLcReligion" class="en-lc-edit" style="display:inline-block;width:calc(100% - 95px);vertical-align:middle;"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:140px;white-space:nowrap;vertical-align:middle;">Caste / Sub-caste:</strong> <input type="text" id="enLcCaste" class="en-lc-edit" style="display:inline-block;width:calc(100% - 145px);vertical-align:middle;"></td>
                     </tr>
-                    <tr><td colspan="2"><strong style="display:inline-block;width:190px;">Place of Birth (Village/Taluka/District):</strong><input type="text" id="enLcBirthPlace" class="en-lc-edit" style="width:calc(100% - 195px);"></td></tr>
-                    <tr><td colspan="2"><strong style="display:inline-block;width:55px;">State:</strong><input type="text" id="enLcState" class="en-lc-edit" style="width:145px;"> &nbsp;|&nbsp; <strong>Country:</strong> <input type="text" id="enLcCountry" class="en-lc-edit" style="width:120px;"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:260px;white-space:nowrap;vertical-align:middle;">Place of Birth (Village/Taluka/District):</strong> <input type="text" id="enLcBirthPlace" class="en-lc-edit" style="display:inline-block;width:calc(100% - 265px);vertical-align:middle;"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:55px;white-space:nowrap;vertical-align:middle;">State:</strong> <input type="text" id="enLcState" class="en-lc-edit" style="width:145px;display:inline-block;vertical-align:middle;"> &nbsp;|&nbsp; <strong style="white-space:nowrap;vertical-align:middle;">Country:</strong> <input type="text" id="enLcCountry" class="en-lc-edit" style="width:120px;display:inline-block;vertical-align:middle;"></td></tr>
                     <tr>
-                        <td><strong style="display:inline-block;width:150px;">Date of Birth (DD-MM-YYYY):</strong><input type="text" id="enLcDob" class="en-lc-edit" style="width:calc(100% - 155px);"></td>
-                        <td><strong style="display:inline-block;width:130px;">Date of Birth (Words):</strong><input type="text" id="enLcDobWords" class="en-lc-edit" style="width:calc(100% - 135px);"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:185px;white-space:nowrap;vertical-align:middle;">Date of Birth (DD-MM-YYYY):</strong> <input type="text" id="enLcDob" class="en-lc-edit" style="display:inline-block;width:calc(100% - 190px);vertical-align:middle;"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:150px;white-space:nowrap;vertical-align:middle;">Date of Birth (Words):</strong> <input type="text" id="enLcDobWords" class="en-lc-edit" style="display:inline-block;width:calc(100% - 155px);vertical-align:middle;"></td>
                     </tr>
-                    <tr><td colspan="2"><strong style="display:inline-block;width:145px;">Previous School:</strong><input type="text" id="enLcPrevSchool" class="en-lc-edit" style="width:calc(100% - 150px);"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:130px;white-space:nowrap;vertical-align:middle;">Previous School:</strong> <input type="text" id="enLcPrevSchool" class="en-lc-edit" style="display:inline-block;width:calc(100% - 135px);vertical-align:middle;"></td></tr>
                     <tr>
-                        <td><strong style="display:inline-block;width:180px;">Date of Admission:</strong><input type="text" id="enLcAdmissionDate" class="en-lc-edit" style="width:calc(100% - 185px);"></td>
-                        <td><strong style="display:inline-block;width:105px;">Admission Class:</strong><input type="text" id="enLcAdmClass" class="en-lc-edit" style="width:calc(100% - 110px);"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:140px;white-space:nowrap;vertical-align:middle;">Date of Admission:</strong> <input type="text" id="enLcAdmissionDate" class="en-lc-edit" style="display:inline-block;width:calc(100% - 145px);vertical-align:middle;"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:130px;white-space:nowrap;vertical-align:middle;">Admission Class:</strong> <input type="text" id="enLcAdmClass" class="en-lc-edit" style="display:inline-block;width:calc(100% - 135px);vertical-align:middle;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block;width:130px;">Academic Progress:</strong><input type="text" id="enLcProgress" class="en-lc-edit" value="Good" style="width:calc(100% - 135px);"></td>
-                        <td><strong style="display:inline-block;width:75px;">Conduct:</strong><input type="text" id="enLcConduct" class="en-lc-edit" value="Good" style="width:calc(100% - 80px);"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:140px;white-space:nowrap;vertical-align:middle;">Academic Progress:</strong> <input type="text" id="enLcProgress" class="en-lc-edit" value="Good" style="display:inline-block;width:calc(100% - 145px);vertical-align:middle;"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block;width:75px;white-space:nowrap;vertical-align:middle;">Conduct:</strong> <input type="text" id="enLcConduct" class="en-lc-edit" value="Good" style="display:inline-block;width:calc(100% - 80px);vertical-align:middle;"></td>
                     </tr>
-                    <tr><td colspan="2"><strong style="display:inline-block;width:150px;">Date of Leaving School:</strong><input type="text" id="enLcLeavingDate" class="en-lc-edit" style="width:calc(100% - 155px);"></td></tr>
-                    <tr><td colspan="2"><strong style="display:inline-block;width:250px;">Class in which the student was studying and since when:</strong><input type="text" id="enLcStudyingSince" class="en-lc-edit" style="width:calc(100% - 255px);"></td></tr>
-                    <tr><td colspan="2"><strong style="display:inline-block;width:150px;">Reason for Leaving:</strong><input type="text" id="enLcReason" class="en-lc-edit" value="Completion of Education" style="width:calc(100% - 155px);"></td></tr>
-                    <tr><td colspan="2"><strong style="display:inline-block;width:60px;">Remarks:</strong><input type="text" id="enLcRemark" class="en-lc-edit" value="-" style="width:calc(100% - 65px);"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:180px;white-space:nowrap;vertical-align:middle;">Date of Leaving School:</strong> <input type="text" id="enLcLeavingDate" class="en-lc-edit" style="display:inline-block;width:calc(100% - 185px);vertical-align:middle;"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:370px;white-space:nowrap;vertical-align:middle;">Class in which the student was studying and since when:</strong> <input type="text" id="enLcStudyingSince" class="en-lc-edit" style="display:inline-block;width:calc(100% - 375px);vertical-align:middle;"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:150px;white-space:nowrap;vertical-align:middle;">Reason for Leaving:</strong> <input type="text" id="enLcReason" class="en-lc-edit" value="Completion of Education" style="display:inline-block;width:calc(100% - 155px);vertical-align:middle;"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:75px;white-space:nowrap;vertical-align:middle;">Remarks:</strong> <input type="text" id="enLcRemark" class="en-lc-edit" value="-" style="display:inline-block;width:calc(100% - 80px);vertical-align:middle;"></td></tr>
                 </table>
 
                 <div style="margin-top:4px;font-size:11px;font-weight:bold;">This is to certify that the above information is correct as per the General Register of the school.</div>
@@ -3921,7 +3936,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       checks.forEach(ch => ch.checked = master.checked);
   }
 
-  // Replace certificate value inputs with text spans during print to avoid clipping Devanagari matras.
+  // Replace certificate value inputs with text spans during print to avoid clipping Devanagari matras / English words.
   function convertLcValuesToPrintText(root) {
       if (!root) return () => {};
       const restore = [];
@@ -3930,11 +3945,12 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           span.className = 'lc-print-value';
           span.textContent = input.value || '';
           span.style.cssText = input.getAttribute('style') || '';
-          span.style.display = 'inline';
-          span.style.width = 'auto';
+          const isBlock = (input.style.display === 'block');
+          span.style.display = isBlock ? 'block' : 'inline-block';
+          span.style.width = isBlock ? '100%' : 'auto';
           span.style.maxWidth = '100%';
           span.style.boxSizing = 'border-box';
-          span.style.paddingLeft = '5px';
+          span.style.paddingLeft = isBlock ? '0' : '4px';
           span.style.lineHeight = '1.35';
           span.style.overflow = 'visible';
           span.style.whiteSpace = 'normal';
@@ -3943,6 +3959,7 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       });
       return () => restore.reverse().forEach(fn => fn());
   }
+  window.convertLcValuesToPrintText = convertLcValuesToPrintText;
 
   async function printDakhalaCurrent(){
     if(!validateDakhalaPrintFields())return;
