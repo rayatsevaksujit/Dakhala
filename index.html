@@ -1366,16 +1366,27 @@ input, textarea, select, button, option{
 <style id="dakhala-requested-safe-overrides">
 body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sans Devanagari', 'Nirmala UI', sans-serif !important; }
 @media print {
-  @page { size: A4 portrait; margin: 4mm !important; }
-  html, body, #mainAppContainer, #tabDakhala { width:auto !important; min-width:0 !important; max-width:none !important; margin:0 !important; padding:0 !important; }
-  #lcCard { width:100% !important; max-width:100% !important; margin:0 !important; padding:2mm !important; box-sizing:border-box !important; }
-  #lcCard .lc-table { width:100% !important; table-layout:auto !important; border-collapse:collapse !important; }
-  #lcCard .lc-table th, #lcCard .lc-table td { font-size:16px !important; padding:3px 5px !important; line-height:1.2 !important; }
-  #lcCard .lc-table td strong, #lcCard .lc-table td label, #lcCard .lc-table .lc-label { font-size:16px !important; line-height:1.2 !important; }
-  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly], #lcCard .lc-table .lc-print-value, #lcCard .lc-table span, #lcCard .lc-table div { font-size:16px !important; font-weight:700 !important; line-height:1.2 !important; }
+  @page { size: A4 portrait; margin: 5mm 6mm !important; }
+  html, body, #mainAppContainer, #tabDakhala { width:100% !important; min-width:0 !important; max-width:none !important; margin:0 !important; padding:0 !important; }
+  #lcCard {
+    width: 196mm !important;
+    max-width: 196mm !important;
+    min-height: 280mm !important;
+    height: 280mm !important;
+    margin: 0 auto !important;
+    padding: 4mm 5mm !important;
+    box-sizing: border-box !important;
+    border: 2px solid #000 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  #lcCard .lc-table { width:100% !important; table-layout:auto !important; border-collapse:collapse !important; margin: 1.5mm 0 !important; }
+  #lcCard .lc-table th, #lcCard .lc-table td { font-size:15px !important; padding:2.5px 5px !important; line-height:1.25 !important; }
+  #lcCard .lc-table td strong, #lcCard .lc-table td label, #lcCard .lc-table .lc-label { font-size:15px !important; line-height:1.25 !important; }
+  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly], #lcCard .lc-table .lc-print-value, #lcCard .lc-table span, #lcCard .lc-table div { font-size:15px !important; font-weight:700 !important; line-height:1.25 !important; }
   #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly] { white-space:nowrap !important; max-width:100% !important; }
-  #lcCard #outReg, #lcCard #outDakhalaNo, #lcCard #outSchoolRegNo, #lcCard #outStudyingSince { font-size:16px !important; font-weight:700 !important; }
-  #lcCard .lc-signature-row { margin-top:11mm !important; min-height:11mm !important; }
+  #lcCard #outReg, #lcCard #outDakhalaNo, #lcCard #outSchoolRegNo, #lcCard #outStudyingSince { font-size:15px !important; font-weight:700 !important; }
+  #lcCard .lc-signature-row { margin-top: auto !important; padding-top: 14mm !important; min-height: 11mm !important; }
   #lcCard, #lcCard * { box-sizing:border-box !important; }
 }
 </style>
@@ -1408,29 +1419,107 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
 }
 .english-lc .en-lc-edit:focus { outline:1px solid #2980b9; background:#fffde7 !important; }
 @media print {
+    @page {
+        size: A4 portrait;
+        margin: 5mm 6mm !important;
+    }
+    body.english-lc-print {
+        background: #fff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
     body.english-lc-print .tab-content:not(#tabEnglishLC) { display:none !important; }
     body.english-lc-print #tabEnglishLC { display:block !important; border:0 !important; padding:0 !important; margin:0 !important; }
-    body.english-lc-print #mainAppContainer { display:block !important; width:auto !important; max-width:none !important; margin:0 !important; padding:0 !important; border:0 !important; box-shadow:none !important; }
+    body.english-lc-print #mainAppContainer { display:block !important; width:100% !important; max-width:none !important; margin:0 !important; padding:0 !important; border:0 !important; box-shadow:none !important; }
     body.english-lc-print #enLcSearchPanel,
     body.english-lc-print #tabEnglishLC > .no-print,
     body.english-lc-print #enLcPrintBtn { display:none !important; }
     body.english-lc-print #enLcPrintableArea { display:block !important; width:100% !important; margin:0 !important; padding:0 !important; }
     body.english-lc-print #enLcCard {
-        display:block !important; width:194mm !important; max-width:194mm !important;
-        margin:0 auto !important; padding:5mm !important; box-sizing:border-box !important;
-        border:2px solid #000 !important; background:#fff !important; color:#000 !important;
+        display:flex !important;
+        flex-direction:column !important;
+        width:196mm !important;
+        max-width:196mm !important;
+        min-height:280mm !important;
+        height:280mm !important;
+        margin:0 auto !important;
+        padding:4mm 5mm !important;
+        box-sizing:border-box !important;
+        border:2px solid #000 !important;
+        background:#fff !important;
+        color:#000 !important;
         font-family:Arial,Helvetica,sans-serif !important;
-        break-inside:avoid !important; page-break-inside:avoid !important;
+        break-inside:avoid !important;
+        page-break-inside:avoid !important;
     }
     body.english-lc-print #enLcCard .en-lc-edit {
-        border:0 !important; background:transparent !important; padding:0 1mm !important;
-        font-family:Arial,Helvetica,sans-serif !important; color:#000 !important;
+        border:0 !important;
+        background:transparent !important;
+        padding:0 1mm !important;
+        font-family:Arial,Helvetica,sans-serif !important;
+        color:#000 !important;
+        font-size:12.5px !important;
+        font-weight:700 !important;
     }
-    body.english-lc-print #enLcCard .lc-table { width:100% !important; table-layout:fixed !important; border-collapse:collapse !important; }
-    body.english-lc-print #enLcCard .lc-table td { border:1px solid #000 !important; padding:1.2mm 1.5mm !important; font-size:11.5px !important; line-height:1.25 !important; }
-    body.english-lc-print #enLcCard input { font-size:10.5px !important; }
-    body.english-lc-print #enLcLogoContainer { min-height:29mm !important; display:flex !important; align-items:center !important; justify-content:center !important; }
-    body.english-lc-print #enLcLogo { max-width:31mm !important; max-height:31mm !important; object-fit:contain !important; }
+    body.english-lc-print #enLcCard .lc-table {
+        width:100% !important;
+        table-layout:fixed !important;
+        border-collapse:collapse !important;
+        margin:1.5mm 0 !important;
+    }
+    body.english-lc-print #enLcCard .lc-table td {
+        border:1px solid #000 !important;
+        padding:2.2mm 2.5mm !important;
+        font-size:12.5px !important;
+        line-height:1.35 !important;
+        vertical-align:middle !important;
+    }
+    body.english-lc-print #enLcCard .lc-table td strong {
+        font-size:12.5px !important;
+        line-height:1.35 !important;
+    }
+    body.english-lc-print #enLcCard input {
+        font-size:12.5px !important;
+    }
+    body.english-lc-print #enLcLogoContainer {
+        min-height:26mm !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        margin-bottom:1mm !important;
+    }
+    body.english-lc-print #enLcLogo {
+        max-width:28mm !important;
+        max-height:28mm !important;
+        object-fit:contain !important;
+    }
+    body.english-lc-print #enLcInst {
+        font-size:14px !important;
+        font-weight:bold !important;
+        margin-bottom:0.8mm !important;
+    }
+    body.english-lc-print #enLcSchool {
+        font-size:23px !important;
+        font-weight:900 !important;
+        margin-bottom:0.8mm !important;
+        color:#183153 !important;
+    }
+    body.english-lc-print .lc-certificate-title {
+        font-size:20px !important;
+        margin:2.5mm 0 !important;
+    }
+    body.english-lc-print #enLcSignRow,
+    body.english-lc-print .en-lc-sign-row {
+        margin-top:auto !important;
+        padding-top:14mm !important;
+        margin-bottom:3mm !important;
+        display:flex !important;
+        justify-content:space-between !important;
+        font-size:13px !important;
+        font-weight:bold !important;
+        text-align:center !important;
+    }
 }
 @media(max-width:700px) {
     #enLcCard { overflow-x:auto; }
@@ -2495,7 +2584,7 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
                 </table>
 
                 <div style="margin-top:4px;font-size:11px;font-weight:bold;">This is to certify that the above information is correct as per the General Register of the school.</div>
-                <div style="margin-top:25px;margin-bottom:4px;display:flex;justify-content:space-between;font-size:12px;font-weight:bold;text-align:center;">
+                <div id="enLcSignRow" class="en-lc-sign-row" style="margin-top:25px;margin-bottom:4px;display:flex;justify-content:space-between;font-size:12px;font-weight:bold;text-align:center;">
                     <div style="width:30%;">Class Teacher</div><div style="width:30%;">Clerk</div><div style="width:30%;">Headmaster / Principal</div>
                 </div>
                 <div style="margin-top:5px;display:flex;justify-content:space-between;font-size:11px;font-weight:bold;">
