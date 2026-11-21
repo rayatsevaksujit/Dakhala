@@ -2153,7 +2153,7 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div class="form-group">
                     <label>प्रवेश इयत्ता :</label>
-                    <select id="entAdmClass">
+                    <select id="entAdmClass" onchange="const c=document.getElementById('entCurrentClass');if(c&&!c.value)c.value=this.value;">
                         <option value="">-- प्रवेश इयत्ता निवडा --</option>
                         <option value="५ वी">५ वी</option>
                         <option value="६ वी">६ वी</option>
@@ -2165,7 +2165,20 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
                         <option value="१२ वी">१२ वी</option>
                     </select>
                 </div>
-                <div class="form-group"><label>चालू इयत्ता :</label><input type="text" id="entCurrentClass" placeholder="सध्याची इयत्ता उदा. ७ वी"></div>
+                <div class="form-group">
+                    <label>चालू इयत्ता :</label>
+                    <select id="entCurrentClass">
+                        <option value="">-- चालू इयत्ता निवडा --</option>
+                        <option value="५ वी">५ वी</option>
+                        <option value="६ वी">६ वी</option>
+                        <option value="७ वी">७ वी</option>
+                        <option value="८ वी">८ वी</option>
+                        <option value="९ वी">९ वी</option>
+                        <option value="१० वी">१० वी</option>
+                        <option value="११ वी">११ वी</option>
+                        <option value="१२ वी">१२ वी</option>
+                    </select>
+                </div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div class="form-group"><label>चालू तुकडी :</label><input type="text" id="entCurrentDivision" placeholder="उदा. अ / ब"></div>
