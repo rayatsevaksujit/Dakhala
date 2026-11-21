@@ -1379,6 +1379,65 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
   #lcCard, #lcCard * { box-sizing:border-box !important; }
 }
 </style>
+
+<style id="english-leaving-certificate-styles">
+/* English LC deliberately reuses the existing Marathi LC dimensions, border and table layout. */
+.english-lc, .english-lc * {
+    font-family: Arial, Helvetica, sans-serif !important;
+    letter-spacing: normal !important;
+    color: #000;
+}
+.english-lc { max-width:780px; }
+.english-lc .lc-table th, .english-lc .lc-table td {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size:12px;
+    line-height:1.35;
+    padding:2px 5px;
+    overflow-wrap:anywhere;
+}
+.english-lc .en-lc-edit {
+    box-sizing:border-box;
+    border:1px dashed #3498db !important;
+    background:#f9fbfd !important;
+    padding:2px 4px !important;
+    font-size:12px !important;
+    font-weight:700;
+    color:#000 !important;
+    min-width:0;
+    max-width:100%;
+}
+.english-lc .en-lc-edit:focus { outline:1px solid #2980b9; background:#fffde7 !important; }
+@media print {
+    body.english-lc-print .tab-content:not(#tabEnglishLC) { display:none !important; }
+    body.english-lc-print #tabEnglishLC { display:block !important; border:0 !important; padding:0 !important; margin:0 !important; }
+    body.english-lc-print #mainAppContainer { display:block !important; width:auto !important; max-width:none !important; margin:0 !important; padding:0 !important; border:0 !important; box-shadow:none !important; }
+    body.english-lc-print #enLcSearchPanel,
+    body.english-lc-print #tabEnglishLC > .no-print,
+    body.english-lc-print #enLcPrintBtn { display:none !important; }
+    body.english-lc-print #enLcPrintableArea { display:block !important; width:100% !important; margin:0 !important; padding:0 !important; }
+    body.english-lc-print #enLcCard {
+        display:block !important; width:194mm !important; max-width:194mm !important;
+        margin:0 auto !important; padding:5mm !important; box-sizing:border-box !important;
+        border:2px solid #000 !important; background:#fff !important; color:#000 !important;
+        font-family:Arial,Helvetica,sans-serif !important;
+        break-inside:avoid !important; page-break-inside:avoid !important;
+    }
+    body.english-lc-print #enLcCard .en-lc-edit {
+        border:0 !important; background:transparent !important; padding:0 1mm !important;
+        font-family:Arial,Helvetica,sans-serif !important; color:#000 !important;
+    }
+    body.english-lc-print #enLcCard .lc-table { width:100% !important; table-layout:fixed !important; border-collapse:collapse !important; }
+    body.english-lc-print #enLcCard .lc-table td { border:1px solid #000 !important; padding:1.2mm 1.5mm !important; font-size:11.5px !important; line-height:1.25 !important; }
+    body.english-lc-print #enLcCard input { font-size:10.5px !important; }
+    body.english-lc-print #enLcLogoContainer { min-height:29mm !important; display:flex !important; align-items:center !important; justify-content:center !important; }
+    body.english-lc-print #enLcLogo { max-width:31mm !important; max-height:31mm !important; object-fit:contain !important; }
+}
+@media(max-width:700px) {
+    #enLcCard { overflow-x:auto; }
+    .english-lc .lc-table td { font-size:11px; }
+}
+</style>
+
 </head>
 <body>
 
@@ -1468,6 +1527,12 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
                 <div class="tool-title">शाळा सोडल्याचा दाखला</div>
                 <div class="tool-desc">रजिस्टर नंबर टाकून एलसी (LC) जनरेट करा.</div>
                 <a class="tool-link">दाखला पहा &rarr;</a>
+            </div>
+            <div class="tool-card" id="cardEnglishLC" onclick="openTab('tabEnglishLC')" style="background:#eef6ff;border-color:#2980b9;">
+                <div class="tool-icon">📄</div>
+                <div class="tool-title">English Leaving Certificate</div>
+                <div class="tool-desc">General Register मधून विद्यार्थी निवडा किंवा स्वतंत्र माहिती भरून इंग्रजी दाखला तयार करा.</div>
+                <a class="tool-link" style="color:#1d4ed8;">Open &rarr;</a>
             </div>
             <div class="tool-card" id="cardGenRegister" onclick="openTab('tabGenRegister')" style="background: #f4ecf7; border-color: #8e44ad;">
                 <div class="tool-icon">📖</div>
@@ -1688,7 +1753,144 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
         const table=document.getElementById('printHistoryTable'); if(!table)return;
         const type=document.getElementById('printReportType')?.value||'सर्व', from=document.getElementById('printReportFrom')?.value||'सुरुवात', to=document.getElementById('printReportTo')?.value||'आजपर्यंत';
         const win=window.open('','_blank'); if(!win){alert('प्रिंट विंडो उघडता आली नाही. पॉप-अप परवानगी तपासा.');return;}
-        win.document.write('<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>प्रिंट हिस्ट्री रिपोर्ट</title><style>@page{size:A4 landscape;margin:12mm}body{font-family:"Sakal Marathi","Tiro Devanagari Marathi","Noto Sans Devanagari","Nirmala UI",sans-serif;color:#111}h2,p{text-align:center}table{width:100%;border-collapse:collapse}th,td{border:1px solid #555;padding:7px;text-align:left}th{background:#eee}</style></head><body><h2>प्रिंट हिस्ट्री रिपोर्ट</h2><p>प्रकार: '+escapePrintReport(type)+' | दिनांक: '+escapePrintReport(from)+' ते '+escapePrintReport(to)+'</p>'+table.outerHTML+'<script>window.onload=function(){window.print();};<\\/script></body></html>');
+        win.document.write('<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>प्रिंट हिस्ट्री रिपोर्ट</title><style>@page{size:A4 landscape;margin:12mm}body{font-family:"Sakal Marathi","Tiro Devanagari Marathi","Noto Sans Devanagari","Nirmala UI",sans-serif;color:#111}h2,p{text-align:center}table{width:100%;border-collapse:collapse}th,td{border:1px solid #555;padding:7px;text-align:left}th{background:#eee}</style></head><body><h2>प्रिंट हिस्ट्री रिपोर्ट</h2><p>प्रकार: '+escapePrintReport(type)+' | दिनांक: '+escapePrintReport(from)+' ते '+escapePrintReport(to)+'</p>'+table.outerHTML+'<script>window.onload=function(){window.print();};<\\/script>
+<script id="english-leaving-certificate-module">
+(function(){
+    const byId = id => document.getElementById(id);
+    const val = (id, value) => { const el=byId(id); if(el) el.value = value == null ? '' : String(value); };
+    const englishDigits = value => String(value == null ? '' : value).replace(/[०-९]/g, d => '०१२३४५६७८९'.indexOf(d));
+    const latinOnlyProfile = value => {
+        const v=String(value||'').trim();
+        return /[A-Za-z]/.test(v) && !/[\u0900-\u097F]/.test(v) ? v : '';
+    };
+    function englishDateWords(raw){
+        const formatted=String(raw||'').trim();
+        const m=formatted.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})$/);
+        if(!m)return '';
+        const n=['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+        const tens=['','','Twenty','Thirty'];
+        const words=x=>x<20?n[x]:(tens[Math.floor(x/10)]+(x%10?' '+n[x%10]:''));
+        const ord=['','First','Second','Third','Fourth','Fifth','Sixth','Seventh','Eighth','Ninth','Tenth','Eleventh','Twelfth','Thirteenth','Fourteenth','Fifteenth','Sixteenth','Seventeenth','Eighteenth','Nineteenth','Twentieth','Twenty First','Twenty Second','Twenty Third','Twenty Fourth','Twenty Fifth','Twenty Sixth','Twenty Seventh','Twenty Eighth','Twenty Ninth','Thirtieth','Thirty First'];
+        const months=['','January','February','March','April','May','June','July','August','September','October','November','December'];
+        const day=Number(m[1]),month=Number(m[2]),year=Number(m[3]);
+        if(!day||day>31||!months[month])return '';
+        const yearWords=year>=2000 ? 'Two Thousand'+(year%100?' '+words(year%100):'') : words(Math.floor(year/100))+' Hundred '+words(year%100);
+        return ord[day]+' '+months[month]+' '+yearWords;
+    }
+    function setProfileFields(){
+        const p=window.currentSchoolProfile||{};
+        val('enLcInst',latinOnlyProfile(p.inst));
+        val('enLcSchool',latinOnlyProfile(p.school));
+        val('enLcAddress',latinOnlyProfile(p.address));
+        val('enLcPhone',englishDigits(p.phone||''));
+        val('enLcEmail',p.email||'');
+        const rec=latinOnlyProfile(p.recognition);
+        const udise=englishDigits(p.udise||'');
+        val('enLcRecognition',[rec,udise?'UDISE No.: '+udise:''].filter(Boolean).join(' | '));
+        val('enLcIndexes',[
+            p.sscIndex?'SSC Index No.: '+p.sscIndex:'',
+            p.hscIndex?'HSC Index No.: '+p.hscIndex:''
+        ].filter(Boolean).join(' | '));
+        const logo=byId('enLcLogo');
+        if(logo&&p.logo){logo.src=p.logo;logo.style.display='block';}
+        else if(logo){logo.removeAttribute('src');logo.style.display='none';}
+    }
+    function showCard(){
+        byId('enLcCard').style.display='block';
+        byId('enLcPrintBtn').style.display='inline-block';
+    }
+    window.showEnglishLCSearch=function(){
+        byId('enLcSearchPanel').style.display='block';
+        byId('enLcSearchResultsWrap').style.display='none';
+        byId('enLcSearchQuery').focus();
+    };
+    window.showEmptyEnglishLC=function(){
+        byId('enLcSearchPanel').style.display='none';
+        byId('enLcSearchResultsWrap').style.display='none';
+        byId('enLcCard').querySelectorAll('input').forEach(el=>el.value='');
+        setProfileFields();
+        val('enLcCountry','India');
+        val('enLcProgress','Good');
+        val('enLcConduct','Good');
+        val('enLcReason','Completion of Education');
+        val('enLcRemark','-');
+        val('enLcIssueDate',new Date().toLocaleDateString('en-GB').replaceAll('/','-'));
+        showCard();
+    };
+    window.searchEnglishLCStudent=function(){
+        const mode=byId('enLcSearchMode').value;
+        const q=String(byId('enLcSearchQuery').value||'').trim().toLowerCase();
+        if(!q){alert('Please enter a Register Number, Student Name or Class.');return;}
+        if(!Array.isArray(window.excelData)||window.excelData.length<=1){alert('General Register data is not available for this school.');return;}
+        const matches=window.excelData.slice(1).filter(row=>{
+            row=row||[];
+            if(mode==='name')return String(row[4]||'').toLowerCase().includes(q);
+            if(mode==='class')return String(row[18]||row[21]||'').toLowerCase().includes(q);
+            return englishDigits(row[0]||'').toLowerCase()===englishDigits(q).toLowerCase();
+        });
+        if(!matches.length){alert('No student found for: '+q);return;}
+        if(matches.length===1){window.fillEnglishLC(matches[0]);return;}
+        window._englishLCMatches=matches;
+        const sel=byId('enLcSearchResults');
+        sel.innerHTML='<option value="">-- Select Student --</option>'+matches.map((r,i)=>'<option value="'+i+'">GR No. '+String(r[0]||'-')+' — '+String(r[4]||'-')+' ('+String(r[18]||r[21]||'-')+')</option>').join('');
+        byId('enLcSearchResultsWrap').style.display='block';
+    };
+    window.pickEnglishLCStudent=function(){
+        const idx=byId('enLcSearchResults').value;
+        if(idx===''||!window._englishLCMatches)return;
+        window.fillEnglishLC(window._englishLCMatches[Number(idx)]);
+    };
+    window.fillEnglishLC=function(r){
+        r=Array.isArray(r)?r:[];
+        setProfileFields();
+        const dob=englishDigits(typeof window.formatExcelDate==='function'?window.formatExcelDate(r[14]||''):(r[14]||''));
+        const adm=englishDigits(typeof window.formatExcelDate==='function'?window.formatExcelDate(r[17]||''):(r[17]||''));
+        const leave=englishDigits(typeof window.formatExcelDate==='function'?window.formatExcelDate(r[19]||''):(r[19]||''));
+        const classNow=String(r[21]||r[18]||'').trim();
+        const now=new Date(),start=now.getMonth()>=5?now.getFullYear():now.getFullYear()-1;
+        const year=start+'-'+String(start+1).slice(-2);
+        val('enLcReg',englishDigits(r[0]||''));
+        val('enLcMedium',r[1]||'');
+        val('enLcPen',englishDigits(r[2]||''));
+        val('enLcAadhaar',englishDigits(r[3]||''));
+        val('enLcName',r[4]||'');
+        val('enLcMother',r[5]||'');
+        val('enLcNationality',r[6]||'');
+        val('enLcTongue',r[7]||'');
+        val('enLcReligion',r[8]||'');
+        val('enLcCaste',[r[9]||'',r[10]&&r[10]!=='-'?'('+r[10]+')':''].filter(Boolean).join(' '));
+        val('enLcBirthPlace',r[11]||'');
+        val('enLcState',r[12]||'');
+        val('enLcCountry',r[13]||'India');
+        val('enLcDob',dob);
+        val('enLcDobWords',englishDateWords(dob));
+        val('enLcPrevSchool',r[16]||'-');
+        val('enLcAdmissionDate',adm);
+        val('enLcAdmClass',r[18]||'');
+        val('enLcLeavingDate',leave);
+        val('enLcStudyingSince',classNow?'Class '+classNow+', from academic year '+year:'');
+        val('enLcCertNo','');
+        val('enLcProgress','Good');
+        val('enLcConduct','Good');
+        val('enLcReason','Completion of Education');
+        val('enLcRemark','-');
+        val('enLcIssueDate',new Date().toLocaleDateString('en-GB').replaceAll('/','-'));
+        byId('enLcSearchPanel').style.display='none';
+        byId('enLcSearchResultsWrap').style.display='none';
+        showCard();
+    };
+    window.printEnglishLC=function(){
+        const card=byId('enLcCard');
+        if(!card||card.style.display==='none'){alert('Please select a student or enter the certificate details first.');return;}
+        document.body.classList.add('english-lc-print');
+        const cleanup=()=>{document.body.classList.remove('english-lc-print');window.removeEventListener('afterprint',cleanup);};
+        window.addEventListener('afterprint',cleanup);
+        setTimeout(()=>{window.focus();window.print();setTimeout(cleanup,3000);},150);
+    };
+})();
+</script>
+
+</body></html>');
         win.document.close();
     }
     </script>
@@ -2201,6 +2403,110 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
             </div>
         </div>
         <button class="no-print" id="printBtn" onclick="printDakhalaCurrent()" style="display:none; background: #8e44ad; margin-top: 10px; max-width: 220px;">🖨️ Print / PDF</button>
+    </div>
+
+    <!-- Tab: English Leaving Certificate (separate from Marathi LC) -->
+    <div id="tabEnglishLC" class="tab-content">
+        <div class="no-print" style="margin-bottom:12px;">
+            <h3 style="margin:0 0 8px;color:#1b4f72;">English Leaving Certificate</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                <button type="button" onclick="showEnglishLCSearch()" style="width:auto;background:#2980b9;">🔎 Select from General Register</button>
+                <button type="button" onclick="showEmptyEnglishLC()" style="width:auto;background:#64748b;">✍️ Enter Manually</button>
+            </div>
+            <div id="enLcSearchPanel" style="display:none;max-width:460px;border:1px solid #d5dbdb;border-radius:8px;padding:12px;background:#f8fafc;">
+                <label for="enLcSearchMode">Search by</label>
+                <select id="enLcSearchMode" style="margin-bottom:8px;">
+                    <option value="reg">General Register Number</option>
+                    <option value="name">Student Name</option>
+                    <option value="class">Class</option>
+                </select>
+                <label for="enLcSearchQuery">Enter search details</label>
+                <input type="text" id="enLcSearchQuery" placeholder="Enter Register Number / Name / Class" autocomplete="off">
+                <button type="button" onclick="searchEnglishLCStudent()" style="width:auto;background:#27ae60;margin-top:8px;">Search Student</button>
+                <div id="enLcSearchResultsWrap" style="display:none;margin-top:10px;">
+                    <label for="enLcSearchResults">Select Student</label>
+                    <select id="enLcSearchResults" onchange="pickEnglishLCStudent()"></select>
+                </div>
+            </div>
+            <p style="font-size:12px;color:#64748b;margin:8px 0 0;">दाखल्यातील सर्व माहिती, शाळेचे नाव आणि स्पेलिंग प्रिंट करण्यापूर्वी बदलता येतील. येथे केलेले बदल General Register किंवा मराठी दाखल्यात सेव्ह होणार नाहीत.</p>
+        </div>
+
+        <div id="enLcPrintableArea">
+            <div class="lc-format english-lc" id="enLcCard" style="display:none;">
+                <div style="font-size:10px;border-bottom:1px dashed #000;padding-bottom:2px;margin-bottom:3px;text-align:center;">
+                    (No alteration or overwriting is permitted in the original school record except by an authorised school official.)
+                </div>
+                <div style="text-align:center;margin-bottom:2px;position:relative;">
+                    <div id="enLcLogoContainer" style="margin-bottom:2px;">
+                        <img id="enLcLogo" src="" alt="School Logo" style="max-height:125px;max-width:145px;display:none;margin:0 auto;">
+                    </div>
+                    <input type="text" id="enLcInst" class="en-lc-edit" placeholder="Institution Name" style="display:block;width:100%;text-align:center;font-size:14px;font-weight:bold;border:0;background:transparent;">
+                    <input type="text" id="enLcSchool" class="en-lc-edit" placeholder="School Name in English" style="display:block;width:100%;text-align:center;font-size:22px;font-weight:900;border:0;background:transparent;color:#183153;">
+                    <input type="text" id="enLcAddress" class="en-lc-edit" placeholder="School Address" style="display:block;width:100%;text-align:center;font-size:11px;font-weight:bold;border:0;background:transparent;">
+                    <div style="display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:bold;margin-top:2px;border-bottom:1px solid #000;padding-bottom:2px;">
+                        <input type="text" id="enLcPhone" class="en-lc-edit" placeholder="Phone Number" style="width:48%;border:0;background:transparent;text-align:left;">
+                        <input type="text" id="enLcEmail" class="en-lc-edit" placeholder="Email" style="width:48%;border:0;background:transparent;text-align:right;">
+                    </div>
+                    <div style="display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:bold;margin-top:3px;">
+                        <span>Certificate No.: <input type="text" id="enLcCertNo" class="en-lc-edit" style="width:85px;"></span>
+                        <span>General Register No.: <input type="text" id="enLcReg" class="en-lc-edit" style="width:75px;"></span>
+                        <span>Medium: <input type="text" id="enLcMedium" class="en-lc-edit" style="width:70px;"></span>
+                    </div>
+                    <input type="text" id="enLcRecognition" class="en-lc-edit" placeholder="School Recognition Number" style="display:block;width:100%;font-size:10px;text-align:center;border:0;background:transparent;border-bottom:1px solid #000;margin-top:3px;">
+                    <input type="text" id="enLcIndexes" class="en-lc-edit" placeholder="SSC / HSC Index Numbers" style="display:block;width:100%;font-size:10px;text-align:center;border:0;background:transparent;border-bottom:1px solid #000;margin-top:3px;">
+                </div>
+
+                <div class="lc-certificate-title" style="text-align:center;font-weight:bold;font-size:18px;margin:5px 0;text-decoration:underline;font-family:Arial,Helvetica,sans-serif!important;">SCHOOL LEAVING CERTIFICATE</div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:bold;margin-bottom:3px;gap:10px;">
+                    <span>Student ID (PEN): <input type="text" id="enLcPen" class="en-lc-edit" style="width:125px;"></span>
+                    <span>Aadhaar No.: <input type="text" id="enLcAadhaar" class="en-lc-edit" style="width:125px;"></span>
+                </div>
+
+                <table class="lc-table">
+                    <tr><td colspan="2"><strong style="display:inline-block;width:145px;">Full Name of Student:</strong><input type="text" id="enLcName" class="en-lc-edit" style="width:calc(100% - 150px);"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:145px;">Mother's Name:</strong><input type="text" id="enLcMother" class="en-lc-edit" style="width:calc(100% - 150px);"></td></tr>
+                    <tr>
+                        <td><strong style="display:inline-block;width:100px;">Nationality:</strong><input type="text" id="enLcNationality" class="en-lc-edit" style="width:calc(100% - 105px);"></td>
+                        <td><strong style="display:inline-block;width:105px;">Mother Tongue:</strong><input type="text" id="enLcTongue" class="en-lc-edit" style="width:calc(100% - 110px);"></td>
+                    </tr>
+                    <tr>
+                        <td><strong style="display:inline-block;width:75px;">Religion:</strong><input type="text" id="enLcReligion" class="en-lc-edit" style="width:calc(100% - 80px);"></td>
+                        <td><strong style="display:inline-block;width:100px;">Caste / Sub-caste:</strong><input type="text" id="enLcCaste" class="en-lc-edit" style="width:calc(100% - 105px);"></td>
+                    </tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:190px;">Place of Birth (Village/Taluka/District):</strong><input type="text" id="enLcBirthPlace" class="en-lc-edit" style="width:calc(100% - 195px);"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:55px;">State:</strong><input type="text" id="enLcState" class="en-lc-edit" style="width:145px;"> &nbsp;|&nbsp; <strong>Country:</strong> <input type="text" id="enLcCountry" class="en-lc-edit" style="width:120px;"></td></tr>
+                    <tr>
+                        <td><strong style="display:inline-block;width:150px;">Date of Birth (DD-MM-YYYY):</strong><input type="text" id="enLcDob" class="en-lc-edit" style="width:calc(100% - 155px);"></td>
+                        <td><strong style="display:inline-block;width:130px;">Date of Birth (Words):</strong><input type="text" id="enLcDobWords" class="en-lc-edit" style="width:calc(100% - 135px);"></td>
+                    </tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:145px;">Previous School:</strong><input type="text" id="enLcPrevSchool" class="en-lc-edit" style="width:calc(100% - 150px);"></td></tr>
+                    <tr>
+                        <td><strong style="display:inline-block;width:180px;">Date of Admission:</strong><input type="text" id="enLcAdmissionDate" class="en-lc-edit" style="width:calc(100% - 185px);"></td>
+                        <td><strong style="display:inline-block;width:105px;">Admission Class:</strong><input type="text" id="enLcAdmClass" class="en-lc-edit" style="width:calc(100% - 110px);"></td>
+                    </tr>
+                    <tr>
+                        <td><strong style="display:inline-block;width:130px;">Academic Progress:</strong><input type="text" id="enLcProgress" class="en-lc-edit" value="Good" style="width:calc(100% - 135px);"></td>
+                        <td><strong style="display:inline-block;width:75px;">Conduct:</strong><input type="text" id="enLcConduct" class="en-lc-edit" value="Good" style="width:calc(100% - 80px);"></td>
+                    </tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:150px;">Date of Leaving School:</strong><input type="text" id="enLcLeavingDate" class="en-lc-edit" style="width:calc(100% - 155px);"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:250px;">Class in which the student was studying and since when:</strong><input type="text" id="enLcStudyingSince" class="en-lc-edit" style="width:calc(100% - 255px);"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:150px;">Reason for Leaving:</strong><input type="text" id="enLcReason" class="en-lc-edit" value="Completion of Education" style="width:calc(100% - 155px);"></td></tr>
+                    <tr><td colspan="2"><strong style="display:inline-block;width:60px;">Remarks:</strong><input type="text" id="enLcRemark" class="en-lc-edit" value="-" style="width:calc(100% - 65px);"></td></tr>
+                </table>
+
+                <div style="margin-top:4px;font-size:11px;font-weight:bold;">This is to certify that the above information is correct as per the General Register of the school.</div>
+                <div style="margin-top:25px;margin-bottom:4px;display:flex;justify-content:space-between;font-size:12px;font-weight:bold;text-align:center;">
+                    <div style="width:30%;">Class Teacher</div><div style="width:30%;">Clerk</div><div style="width:30%;">Headmaster / Principal</div>
+                </div>
+                <div style="margin-top:5px;display:flex;justify-content:space-between;font-size:11px;font-weight:bold;">
+                    <div>Date: <input type="text" id="enLcIssueDate" class="en-lc-edit" placeholder="DD-MM-YYYY" style="width:105px;"></div>
+                </div>
+                <div style="margin-top:4px;font-size:9px;font-weight:bold;text-align:center;border-top:1px dashed #000;padding-top:2px;">
+                    (Unauthorised alterations to this certificate may invite legal action.)
+                </div>
+            </div>
+        </div>
+        <button type="button" class="no-print" id="enLcPrintBtn" onclick="printEnglishLC()" style="display:none;background:#8e44ad;margin-top:10px;max-width:220px;">🖨️ Print / Save as PDF</button>
     </div>
 </div>
 
