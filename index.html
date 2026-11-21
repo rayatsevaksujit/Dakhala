@@ -1147,12 +1147,13 @@ html, body{max-width:100%; overflow-x:hidden}
   }
   #lcCard .lc-table th, #lcCard .lc-table td,
   .bulk-lc-copy .lc-table th, .bulk-lc-copy .lc-table td {
-    padding: 1.2mm 1.5mm !important;
+    padding: 2.2mm 2.5mm !important;
     font-size: 11.5px !important;
-    line-height: 1.35 !important;
+    line-height: 1.4 !important;
     overflow-wrap: break-word !important;
     word-break: normal !important;
-    vertical-align: top !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
   }
   #lcCard .lc-table td strong, .bulk-lc-copy .lc-table td strong {
     display: inline !important;
@@ -1160,27 +1161,28 @@ html, body{max-width:100%; overflow-x:hidden}
     white-space: nowrap !important;
     font-weight: bold !important;
     font-size: 11.5px !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
   }
   #lcCard .lc-table input[type="text"], .bulk-lc-copy .lc-table input[type="text"] {
     font-size: 11px !important;
-    line-height: 1.35 !important;
+    line-height: 1.4 !important;
     padding: 0 1mm !important;
     white-space: normal !important;
     overflow-wrap: break-word !important;
+    vertical-align: middle !important;
   }
   #lcCard .lc-print-value, .bulk-lc-copy .lc-print-value {
     display: inline !important;
     width: auto !important;
     max-width: 100% !important;
     font-size: 11px !important;
-    line-height: 1.35 !important;
+    line-height: 1.4 !important;
     padding: 0 0 0 5px !important;
     white-space: normal !important;
     word-break: normal !important;
     overflow-wrap: break-word !important;
     font-weight: bold !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
   }
   #lcCard .lc-signature-row, .bulk-lc-copy .lc-signature-row {
     margin-top: 8mm !important;
@@ -1400,14 +1402,47 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
     display: flex !important;
     flex-direction: column !important;
   }
-  #lcCard .lc-table { width:100% !important; table-layout:auto !important; border-collapse:collapse !important; margin: 1.5mm 0 !important; }
-  #lcCard .lc-table th, #lcCard .lc-table td { font-size:15px !important; padding:2.5px 5px !important; line-height:1.25 !important; }
-  #lcCard .lc-table td strong, #lcCard .lc-table td label, #lcCard .lc-table .lc-label { font-size:15px !important; line-height:1.25 !important; }
-  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly], #lcCard .lc-table .lc-print-value, #lcCard .lc-table span, #lcCard .lc-table div { font-size:15px !important; font-weight:700 !important; line-height:1.25 !important; }
-  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly] { white-space:nowrap !important; max-width:100% !important; }
-  #lcCard #outReg, #lcCard #outDakhalaNo, #lcCard #outSchoolRegNo, #lcCard #outStudyingSince { font-size:15px !important; font-weight:700 !important; }
-  #lcCard .lc-signature-row { margin-top: auto !important; padding-top: 14mm !important; min-height: 11mm !important; }
-  #lcCard, #lcCard * { box-sizing:border-box !important; }
+  #lcCard .lc-table, .bulk-lc-copy .lc-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    margin: 1.5mm 0 !important;
+  }
+  #lcCard .lc-table th, #lcCard .lc-table td,
+  .bulk-lc-copy .lc-table th, .bulk-lc-copy .lc-table td {
+    font-size: 12px !important;
+    padding: 2.2mm 2.8mm !important;
+    line-height: 1.35 !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    overflow-wrap: break-word !important;
+  }
+  #lcCard .lc-table td strong, #lcCard .lc-table td label, #lcCard .lc-table .lc-label,
+  .bulk-lc-copy .lc-table td strong, .bulk-lc-copy .lc-table td label, .bulk-lc-copy .lc-table .lc-label {
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+    font-weight: 700 !important;
+  }
+  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly], #lcCard .lc-table .lc-print-value,
+  .bulk-lc-copy .lc-table input[type="text"], .bulk-lc-copy .lc-table input[readonly], .bulk-lc-copy .lc-table .lc-print-value,
+  #lcCard .lc-table span, #lcCard .lc-table div, .bulk-lc-copy .lc-table span, .bulk-lc-copy .lc-table div {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    padding-left: 3px !important;
+  }
+  #lcCard .lc-table input[type="text"], #lcCard .lc-table input[readonly],
+  .bulk-lc-copy .lc-table input[type="text"], .bulk-lc-copy .lc-table input[readonly] {
+    white-space: normal !important;
+    max-width: 100% !important;
+  }
+  #lcCard #outReg, #lcCard #outDakhalaNo, #lcCard #outSchoolRegNo, #lcCard #outStudyingSince { font-size:12.5px !important; font-weight:700 !important; }
+  #lcCard .lc-signature-row, .bulk-lc-copy .lc-signature-row { margin-top: auto !important; padding-top: 14mm !important; min-height: 11mm !important; }
+  #lcCard, #lcCard *, .bulk-lc-copy, .bulk-lc-copy * { box-sizing:border-box !important; }
 }
 </style>
 
@@ -2002,9 +2037,17 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
         const card=byId('enLcCard');
         if(!card||card.style.display==='none'){alert('Please select a student or enter the certificate details first.');return;}
         document.body.classList.add('english-lc-print');
-        const cleanup=()=>{document.body.classList.remove('english-lc-print');window.removeEventListener('afterprint',cleanup);};
+        const originalTitle = document.title;
+        const name = (byId('enLcName')?.value || '').trim();
+        const reg = (byId('enLcReg')?.value || '').trim();
+        if(name || reg) document.title = [name, reg].filter(Boolean).join(' - ');
+        const cleanup=()=>{
+            document.title = originalTitle;
+            document.body.classList.remove('english-lc-print');
+            window.removeEventListener('afterprint',cleanup);
+        };
         window.addEventListener('afterprint',cleanup);
-        setTimeout(()=>{window.focus();window.print();setTimeout(cleanup,3000);},150);
+        setTimeout(()=>{window.focus();window.print();setTimeout(cleanup,60000);},150);
     };
 })();
 </script>
@@ -2603,6 +2646,10 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
                 </div>
 
                 <table class="lc-table">
+                    <colgroup>
+                        <col style="width: 58%;">
+                        <col style="width: 42%;">
+                    </colgroup>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:140px; white-space:nowrap;">विद्यार्थ्याचे पूर्ण नाव :</strong> <input type="text" id="outName" readonly style="font-weight: bold; font-size: 14px; display:inline-block; width:calc(100% - 145px);"></td>
                     </tr>
@@ -2610,8 +2657,8 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
                         <td colspan="2"><strong style="display:inline-block; width:140px; white-space:nowrap;">आईचे नाव :</strong> <input type="text" id="outMother" readonly style="display:inline-block; width:calc(100% - 145px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; width:80px; white-space:nowrap;">राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
-                        <td><strong style="display:inline-block; width:80px; white-space:nowrap;">मातृभाषा :</strong> <input type="text" id="outMotherTongue" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
+                        <td style="width:58%;"><strong style="display:inline-block; width:80px; white-space:nowrap;">राष्ट्रीयत्व :</strong> <input type="text" id="outNationality" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
+                        <td style="width:42%;"><strong style="display:inline-block; width:80px; white-space:nowrap;">मातृभाषा :</strong> <input type="text" id="outMotherTongue" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
                     </tr>
                     <tr>
                         <td><strong style="display:inline-block; width:80px; white-space:nowrap;">धर्म :</strong> <input type="text" id="outReligion" readonly style="display:inline-block; width:calc(100% - 85px); font-weight:bold;"></td>
@@ -2624,14 +2671,14 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
                         <td colspan="2"><strong style="display:inline-block; width:50px; white-space:nowrap;">राज्य :</strong> <input type="text" id="outState" readonly style="width:150px; display:inline-block; font-weight:bold;"> &nbsp;|&nbsp; <strong style="white-space:nowrap;">देश :</strong> <input type="text" id="outCountry" readonly style="width:100px; display:inline-block; font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; font-size:12px; white-space:nowrap; vertical-align:middle;">जन्मदिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:90px; font-size:12px; font-weight:bold; vertical-align:middle; padding-left:3px;"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block; font-size:12px; white-space:nowrap; vertical-align:middle;">जन्मदिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outDobNum" readonly style="display:inline-block; width:90px; font-size:12px; font-weight:bold; vertical-align:middle; padding-left:3px;"></td>
                         <td><strong style="display:inline-block; width:135px; white-space:nowrap; vertical-align:middle;">जन्मदिनांक (अक्षरी) :</strong> <input type="text" id="outDobWords" readonly style="color: #000; font-weight: bold; display:inline-block; width:calc(100% - 140px); vertical-align:middle;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:120px; white-space:nowrap;">यापूर्वीची शाळा :</strong> <input type="text" id="outPrevSchool" readonly style="display:inline-block; width:calc(100% - 125px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td><strong style="display:inline-block; font-size:11.5px; white-space:nowrap; vertical-align:middle;">या शाळेत प्रवेश घेतल्याचा दिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:90px; font-size:11.5px; font-weight:bold; vertical-align:middle; padding-left:3px;"></td>
+                        <td style="white-space:nowrap;"><strong style="display:inline-block; font-size:11.5px; white-space:nowrap; vertical-align:middle;">या शाळेत प्रवेश घेतल्याचा दिनांक (DD-MM-YYYY) :</strong> <input type="text" id="outAdmissionDate" readonly style="display:inline-block; width:90px; font-size:11.5px; font-weight:bold; vertical-align:middle; padding-left:3px;"></td>
                         <td><strong style="display:inline-block; width:85px; white-space:nowrap; vertical-align:middle;">प्रवेश इयत्ता :</strong> <input type="text" id="outAdmClass" readonly style="display:inline-block; width:calc(100% - 90px); font-weight:bold; vertical-align:middle;"></td>
                     </tr>
                     <tr>
@@ -2639,7 +2686,7 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
                         <td><strong style="display:inline-block; width:70px; white-space:nowrap;">वर्तणूक :</strong> <input type="text" id="outConduct" readonly value="चांगली" style="display:inline-block; width:calc(100% - 75px); font-weight:bold;"></td>
                     </tr>
                     <tr>
-                        <td colspan="2"><strong style="display:inline-block; width:180px; white-space:nowrap;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" readonly placeholder="DD-MM-YYYY" maxlength="10" style="width:150px;font-weight:bold;background:#fff;border:none;"></td>
+                        <td colspan="2"><strong style="display:inline-block; width:180px; white-space:nowrap; vertical-align:middle;">शाळा सोडल्याचा दिनांक :</strong> <input type="text" id="outLeavingDate" readonly placeholder="DD-MM-YYYY" maxlength="10" style="display:inline-block; width:120px; font-weight:bold; background:transparent; border:none; vertical-align:middle; padding-left:4px;"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><strong style="display:inline-block; width:290px; white-space:nowrap;">कोणत्या इयत्तेत शिकत होता व केंव्हापासून :</strong> <input type="text" id="outStudyingSince" readonly value="इ. १० वी, सन २०२५-२६ पासून" style="display:inline-block; width:calc(100% - 295px); font-weight:bold;"></td>
@@ -2732,6 +2779,10 @@ body, body * { font-family: 'Sakal Marathi', 'Tiro Devanagari Marathi', 'Noto Sa
                 </div>
 
                 <table class="lc-table">
+                    <colgroup>
+                        <col style="width: 55%;">
+                        <col style="width: 45%;">
+                    </colgroup>
                     <tr><td colspan="2"><strong style="display:inline-block;width:145px;">Full Name of Student:</strong><input type="text" id="enLcName" class="en-lc-edit" style="width:calc(100% - 150px);"></td></tr>
                     <tr><td colspan="2"><strong style="display:inline-block;width:145px;">Mother's Name:</strong><input type="text" id="enLcMother" class="en-lc-edit" style="width:calc(100% - 150px);"></td></tr>
                     <tr>
@@ -3902,11 +3953,23 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
         const usedNo=await reserveDakhalaNumber();if(!usedNo)return;
         if(printBtn)printBtn.style.display='none';
         const restorePrintValues=convertLcValuesToPrintText(source);
+        const originalTitle = document.title;
+        const studentName = (document.getElementById('outName')?.value || '').trim();
+        const regNo = (document.getElementById('outReg')?.value || '').trim();
+        if (studentName || regNo) {
+            document.title = [studentName, regNo].filter(Boolean).join(' - ');
+        }
+        const restoreTitle = () => {
+            document.title = originalTitle;
+            window.removeEventListener('afterprint', restoreTitle);
+        };
+        window.addEventListener('afterprint', restoreTitle);
+        setTimeout(restoreTitle, 60000);
         try {
             await document.fonts.ready;
             await new Promise(r=>setTimeout(r,120));
             window.focus();window.print();
-            await recordDakhalaPrintHistory('दाखला', document.getElementById('outName')?.value || '', document.getElementById('outReg')?.value || '');
+            await recordDakhalaPrintHistory('दाखला', studentName, regNo);
         } finally {
             restorePrintValues();
         }
@@ -3930,6 +3993,18 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
       renderLC(row, commonReason, commonRemark);
       const source=document.getElementById('lcCard');
       const restorePrintValues=convertLcValuesToPrintText(source);
+      const originalTitle = document.title;
+      const studentName = String(row[4] || '').trim();
+      const regNo = String(row[0] || '').trim();
+      if (studentName || regNo) {
+          document.title = [studentName, regNo].filter(Boolean).join(' - ');
+      }
+      const restoreTitle = () => {
+          document.title = originalTitle;
+          window.removeEventListener('afterprint', restoreTitle);
+      };
+      window.addEventListener('afterprint', restoreTitle);
+      setTimeout(restoreTitle, 60000);
       try { await document.fonts.ready; window.print(); }
       finally { restorePrintValues(); }
   }
@@ -3973,6 +4048,21 @@ const MASTER_ADMIN_PASSWORD_HASH = '71a06e1e89584d7ecc8c4bdebd797ce08acca530d195
           area.appendChild(clone);
           convertLcValuesToPrintText(clone);
       });
+
+      const originalTitle = document.title;
+      if (selectedRows.length === 1) {
+          const studentName = String(selectedRows[0][4] || '').trim();
+          const regNo = String(selectedRows[0][0] || '').trim();
+          if (studentName || regNo) document.title = [studentName, regNo].filter(Boolean).join(' - ');
+      } else {
+          document.title = 'दाखले - एकत्र प्रिंट (' + selectedRows.length + ' विद्यार्थी)';
+      }
+      const restoreTitle = () => {
+          document.title = originalTitle;
+          window.removeEventListener('afterprint', restoreTitle);
+      };
+      window.addEventListener('afterprint', restoreTitle);
+      setTimeout(restoreTitle, 60000);
 
       document.body.classList.add('bulk-print-mode');
       window._bulkPrintActive = true;
